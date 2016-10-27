@@ -1,0 +1,27 @@
+{
+	"Id" : "Critter001",
+	"Name" : "CRITTER001",
+	"AvatarSpriteId" : "sprite_icon_critter",	
+	"Prefab" : "Critter",
+	"Type" : "Player",
+	"CoreAiBehaviour" : "SupportRangedAtk",
+	"RangedProjectileType" : "Orb",
+	"AttackContactTimeNormalized" : 0.3333,
+	"MainHeroDamagePerHitPct" : 0.4,
+	"LimitedLifetimeSeconds" : 12.0,
+	"BaseStats" : {
+		"Life" : 999,
+		"AttacksPerSecond" : 1.0,
+		"AttackRange" : 4.0,
+		"DamagePerHit" : 0.0,
+		"CriticalHitChancePct" : 0.00,
+		"CriticalHitMultiplier" : 2.0,
+		"CleaveDamagePct" : 0.0,
+		"CleaveRange" : 0.0,
+		"MovementSpeed" : 9.2, 
+		"Threat" : 0.0,
+		"UniversalArmorBonus" : 0.0,
+		"SkillDamage" : 0.0,
+		"UniversalXpBonus" : 0.0
+	}	
+}

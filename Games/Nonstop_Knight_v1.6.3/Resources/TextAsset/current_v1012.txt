@@ -1,0 +1,843 @@
+{
+
+	// --- INFO ---
+
+	"ContentVersion" : 1012,
+	"Variant" : "default",
+	"RequiredClientVersion" : {
+		"iOS" : 10,
+		"Android" : 10
+	},
+	
+	// --- CONFIG META ---
+	
+	"ConfigMeta" : {
+	
+		// --- ECONOMY CONTROLLER VARIABLES	
+		"COIN_GAIN_CONTROLLER" : 1,
+		"XP_GAIN_CONTROLLER" : 1,
+		"TOKEN_REWARD_CONTROLLER" : 1,
+		
+		// --- PROGRESS
+		"LEVEL_TO_FLOOR_MULTIPLIER" : 2,
+		"PROGRESS_VALUE_EXPONENT" : 1.04,
+		"PROGRESS_DIFFICULTY_EXPONENT" : 1.03,
+		"PROGRESS_COST_EXPONENT" : 1.065,
+		"PROGRESS_MINIONS_PER_FLOOR" : 20,
+		"GLOBAL_LEVEL_CAP" : 1000,
+		"DIFFICULTY_AVERAGE_SKILL_DAMAGE_MULTIPLIER" : 3.0,
+		
+		// --- ITEM MULTIPLIERS
+		"ITEM_HEALTH_MULTIPLIER" : 200,
+		"ITEM_DAMAGE_MULTIPLIER" : 15,
+		"ITEM_SKILLDAMAGE_MULTIPLIER" : 18,
+		"ITEM_BASECOST_MULTIPLIER" : 5,
+		
+		// --- ENEMY DIFFICULTY
+		"MINION_HEALTH_MULTIPLIER" : 100,
+		"MINION_DAMAGE_MULTIPLIER" : 1,
+		"BOSS_HEALTH_MULTIPLIER" : 300,
+		"BOSS_DAMAGE_MULTIPLIER" : 15,
+		"WILD_BOSS_HEALTH_MULTIPLIER" : 200,
+		"WILD_BOSS_DAMAGE_MULTIPLIER" : 10,
+		
+		// --- PASSIVE INCOME
+		"PASSIVE_COIN_GAIN_CEREMONY_COOLDOWN_SECONDS" : 60,
+		"PASSIVE_MINION_KILL_FREQUENCY_SECONDS" : 17,
+		"PASSIVE_COIN_EARNING_RATE_MULTIPLIER" : 1.5,
+        "PASSIVE_BOSS_KILL_FREQUENCY_SECONDS" : 0.0,
+        "PASSIVE_MAX_MINION_COIN_DROP_COUNT" : 1000,
+        "PASSIVE_MAX_BOSS_ENCOUNTER_COUNT" : 0,
+        "PASSIVE_MAX_BOSS_ITEM_DROP_COUNT" : 0,
+        "PASSIVE_ITEM_UPGRADE_COUNT_AFTER_BOSS_FIGHT" : 0,
+		
+		// --- VENDOR & MONETIZATION
+		"VENDOR_INVENTORY_SIZE" : 3,
+		"VENDOR_REFRESH_INTERVAL_SECONDS" : 10800,
+		"VENDOR_SLOT1_ADS" : true,
+		"VENDOR_SLOT1_PRICE" : 10,
+		"VENDOR_SLOT2_PRICE" : 25,
+		"VENDOR_SLOT3_PRICE" : 50,
+		"VENDOR_SLOT1_NUM_ALLOWED_PURCHASES" : 1,
+		"VENDOR_SLOT2_NUM_ALLOWED_PURCHASES" : 10,
+		"VENDOR_SLOT3_NUM_ALLOWED_PURCHASES" : 10,		
+		"VENDOR_FIXED_SLOTS_ENABLED" : true,
+		"VENDOR_FIXED_SLOT1_ENTRY" : "MegaBoxBundleSmall",
+		"VENDOR_FIXED_SLOT2_ENTRY" : "MegaBoxBundleMedium",
+		"VENDOR_FIXED_SLOT3_ENTRY" : "MegaBoxBundleLarge",			
+		"REVIVE_PRICE_BASE" : 10,
+		"REVIVE_PRICE_INCREMENT" : 5,
+		"INSTANT_ITEM_UPGRADE_PRICE" : 10,
+        "DAILY_ADS_LIMIT_VENDOR" : 20,
+        "DAILY_ADS_LIMIT_ADVENTURE_MYSTERY" : 20,
+        "DAILY_ADS_LIMIT_TOURNAMENT_MYSTERY" : 20,
+        "DAILY_ADS_LIMIT_TOURNAMENT_CARDS" : 20,
+		"DAILY_DIAMOND_LIMIT" : 20,
+		"MYSTERY_CHEST_COOLDOWN_SECONDS" : 150,
+		"VENDOR_AUGMENTATION_SALE_CONTROLLER" : 1.0,
+		"REROLL_PRICE_BASE_PER_RARITY" : {
+			"0" : 1,
+			"1" : 2,
+			"2" : 3,
+			"3" : 10
+		},
+		"REROLL_PRICE_INCREMENT_PER_RARITY" : {
+			"0" : 1,
+			"1" : 1,
+			"2" : 2,
+			"3" : 5
+		},
+		"VENDOR_FRENZY_BUNDLES" : {
+			"FrenzyBundleSmall" : 1,
+			"FrenzyBundleMedium" : 3,
+			"FrenzyBundleLarge" : 10
+		},	
+		"VENDOR_DUST_BUNDLES" : {
+			"DustBundleSmall" : 100,
+			"DustBundleMedium" : 200,
+			"DustBundleLarge" : 300
+		},		
+		"VENDOR_MEGA_BOX_BUNDLES" : {
+			"MegaBoxBundleSmall" : 1,
+			"MegaBoxBundleMedium" : 10,
+			"MegaBoxBundleLarge" : 25
+		},		
+		"VENDOR_PET_BUNDLES" : {
+			"PetBundleSmall" :     { "Min" : 1,  "Max" : 1 },
+			"PetBundleMedium" :    { "Min" : 3,  "Max" : 3 },
+			"PetBundleLarge" :     { "Min" : 10,  "Max" : 10 },
+			"PetBundleBossHunt" :  { "Min" : 3,  "Max" : 5 },
+		},			
+		"VENDOR_COIN_BUNDLES_ALWAYS_APPEAR" : false,		
+		"VENDOR_PRICE_DATA" : {
+			"AnyUnlockedSpecialChest" : { "Price" : 25, "NumAllowedPurchases" : 10, "MinimumStack" : 5, "StickerText" : "" },
+			"CoinBundleSmall" :         { "Price" : 10, "NumAllowedPurchases" : 10, "MinimumStack" : 5, "StickerText" : "" },
+			"CoinBundleMedium" :        { "Price" : 30, "NumAllowedPurchases" : 10, "MinimumStack" : 5, "StickerText" : "" },
+			"CoinBundleLarge" :         { "Price" : 80, "NumAllowedPurchases" : 10, "MinimumStack" : 5, "StickerText" : "" },
+			"CoinBundleLargeSale" :     { "Price" : 40, "NumAllowedPurchases" : 10, "MinimumStack" : 5, "StickerText" : "-50%" },			
+			"CoinBundlePetConversion" : { "Price" : 50, "NumAllowedPurchases" : 10, "MinimumStack" : 5, "StickerText" : "" },
+			"DustBundleSmall" :         { "Price" : 10, "NumAllowedPurchases" : 10, "MinimumStack" : 5, "StickerText" : "" },
+			"DustBundleMedium" :        { "Price" : 25, "NumAllowedPurchases" : 10, "MinimumStack" : 5, "StickerText" : "" },
+			"DustBundleLarge" :         { "Price" : 50, "NumAllowedPurchases" : 10, "MinimumStack" : 5, "StickerText" : "" },			
+			"FrenzyBundleSmall" :       { "Price" : 25, "NumAllowedPurchases" : 10, "MinimumStack" : 5, "StickerText" : "" },
+			"FrenzyBundleMedium" :      { "Price" : 25, "NumAllowedPurchases" : 10, "MinimumStack" : 5, "StickerText" : "" },
+			"FrenzyBundleLarge" :       { "Price" : 50, "NumAllowedPurchases" : 10, "MinimumStack" : 5, "StickerText" : "" },			
+			"MysteryItemArmor" :        { "Price" : 10, "NumAllowedPurchases" : 10, "MinimumStack" : 5, "StickerText" : "" },
+			"MysteryItemCloak" :        { "Price" : 10, "NumAllowedPurchases" : 10, "MinimumStack" : 5, "StickerText" : "" },
+			"MysteryItemWeapon" :       { "Price" : 10, "NumAllowedPurchases" : 10, "MinimumStack" : 5, "StickerText" : "" },
+			"ReviveBundleSmall" :       { "Price" : 10, "NumAllowedPurchases" : 10, "MinimumStack" : 5, "StickerText" : "" },
+			"ReviveBundleMedium" :      { "Price" : 25, "NumAllowedPurchases" : 10, "MinimumStack" : 5, "StickerText" : "" },
+			"ReviveBundleLarge" :       { "Price" : 50, "NumAllowedPurchases" : 10, "MinimumStack" : 5, "StickerText" : "" },			
+			"RewardBoxCommon" :         { "Price" : 10, "NumAllowedPurchases" : 5, "MinimumStack" : 3, "StickerText" : "" },
+			"RewardBoxRare" :           { "Price" : 25, "NumAllowedPurchases" : 3, "MinimumStack" : 2, "StickerText" : "" },
+			"RewardBoxEpic" :           { "Price" : 50, "NumAllowedPurchases" : 1, "MinimumStack" : 1, "StickerText" : "" },			
+			"RewardBoxMulti" :          { "Price" : 60, "NumAllowedPurchases" : 10, "MinimumStack" : 5, "StickerText" : "" },			
+			"TokenBundleSmall" :        { "Price" : 10, "NumAllowedPurchases" : 5, "MinimumStack" : 3, "StickerText" : "" },			
+			"TokenBundleMedium" :       { "Price" : 50, "NumAllowedPurchases" : 5, "MinimumStack" : 3, "StickerText" : "" },
+			"TokenBundleLarge" :        { "Price" : 250, "NumAllowedPurchases" : 5, "MinimumStack" : 3, "StickerText" : "" },
+			"TokenBundleLargeSale" :    { "Price" : 125, "NumAllowedPurchases" : 5, "MinimumStack" : 3, "StickerText" : "-50%" },			
+			"XpBundleSmall" :           { "Price" : 25, "NumAllowedPurchases" : 10, "MinimumStack" : 5, "StickerText" : "" },			
+			"BossBundleSmall" :         { "Price" : 20, "NumAllowedPurchases" : 10, "MinimumStack" : 5, "StickerText" : "" },
+			"PetBundleSmall" :          { "Price" : 10, "NumAllowedPurchases" : 10, "MinimumStack" : 5, "StickerText" : "" },
+			"PetBundleMedium" :         { "Price" : 50, "NumAllowedPurchases" : 10, "MinimumStack" : 5, "StickerText" : "" },
+			"PetBundleLarge" :          { "Price" : 100, "NumAllowedPurchases" : 10, "MinimumStack" : 5, "StickerText" : "" },
+			"PetBoxSmall" :             { "Price" : 10, "NumAllowedPurchases" : 10, "MinimumStack" : 5, "StickerText" : "" },
+			"MegaBoxBundleSmall" :      { "Price" : 200, "NumAllowedPurchases" : 10, "MinimumStack" : 5, "StickerText" : "" },
+			"MegaBoxBundleMedium" :     { "Price" : 1600, "NumAllowedPurchases" : 10, "MinimumStack" : 5, "StickerText" : "" },
+			"MegaBoxBundleLarge" :      { "Price" : 4000, "NumAllowedPurchases" : 10, "MinimumStack" : 5, "StickerText" : "" },
+		},			
+		"VENDOR_DIAMOND_BUNDLES" : {
+			"DiamondBundleAds" : 5,
+			"DiamondBundleBossHunt" : 5,
+		},				
+		"VENDOR_XP_BUNDLES" : {
+			"XpBundleSmall" : 1,
+		},			
+		"VENDOR_BOSS_BUNDLES" : {
+			"BossBundleSmall" : 1,
+		},			
+		"SELL_AUGMENTATIONS_IN_ADVENTURE_PANEL" : true,
+				
+		// --- XP		
+		"XP_GAIN_MINION" : 100,
+		"XP_GAIN_BOSS" : 24000,
+		"XP_RANK_BASE" : 46000,
+		"XP_RANK_INCREMENT" : 4000,
+		"XP_LEVEL_CAP" : 50,
+		"XP_EXP" : 1.1,
+		"XP_BOSS_FLOORBONUS" : 1000,
+		"XP_BOSS_OLDMULTIPLIER" : 0.2,
+		"XP_GAIN_PER_POTION" : 0.25,
+		
+		// --- UNLOCKS
+		"VENDOR_AND_SHOP_UNLOCK_FLOOR" : 5,
+		"MYSTERY_CHEST_DROP_UNLOCK_FLOOR" : 13,
+		"REVIVE_UNLOCK_FLOOR" : 5,
+        "CHEST_UNLOCK_FLOOR" : {
+            "Basic001" : 1,
+			"Basic002" : 12,
+			"Basic003" : 25,
+			"Special003" : 30,
+			"EventHalloween" : 40,
+            "Special002" : 55,
+            "Special007" : 85,
+            "Special001" : 150,
+            "Special004" : 200,
+            "Special008" : 250,
+            "Special005" : 290,
+            "Special009" : 400,
+            "Special006" : 470,
+        },
+        "CHEST_DROP_MAX_FLOOR" : {
+            "Basic001" : 50,
+			"Basic002" : 100,
+			"Basic003" : 150,
+			"Special003" : 10000,
+            "Special002" : 10000,
+            "Special007" : 10000,
+            "Special001" : 10000,
+            "Special004" : 10000,
+            "Special008" : 10000,
+            "Special005" : 10000,
+            "Special009" : 10000,
+            "Special006" : 10000,
+			"EventHalloween" : 10000,
+        },		
+		"SPECIAL_CHEST_DROP_MIN_FLOOR" : 20,
+		"ITEM_RARITY_BOSS_DROP_MIN_FLOOR" : {
+			"0" : 0,
+			"1" : 0,
+			"2" : 20,
+			"3" : 35
+		},
+		"ITEM_RARITY_BOSS_DROP_MAX_FLOOR" : {
+			"0" : 0,
+			"1" : 100,
+			"2" : 99999,
+			"3" : 99999
+		},	
+		
+		// --- ASCEND & TOKENS		
+		"RETIREMENT_MIN_FLOOR" : 20,
+		"RETIREMENT_FORCED_DURING_FTUE" : false,
+		"RETIREMENT_REWARD_BASE" : 10,
+		"RETIREMENT_REWARD_INCREMENT" : 0.4,
+		"ITEM_TOKEN_VALUE" : 100,
+		"VENDOR_TOKEN_BUNDLES" : {
+			"TokenBundleXSmall" : 0.004,
+			"TokenBundleSmall" : 0.20,
+			"TokenBundleMedium" : 1.20,
+			"TokenBundleLarge" : 7.0,
+			"TokenBundleLargeSale" : 7.0,
+			"TokenBundleDragon" : 2.0,
+			"TokenBundleBossHunt" : 0.20,
+		},		
+		"VENDOR_TOKEN_BUNDLE_MINIMUM_SIZE" : {
+			"TokenBundleXSmall" : 1,
+			"TokenBundleSmall" : 25,
+			"TokenBundleMedium" : 200,
+			"TokenBundleLarge" : 1000,
+			"TokenBundleLargeSale" : 1000,
+			"TokenBundleDragon" : 1000,
+			"TokenBundleBossHunt" : 25,
+		},			
+		"TOKEN_REWARD_FLOOR_MULTIPLIERS" : [
+			{"Key" : 0, "Value" : 1 },
+			{"Key" : 21, "Value" : 1 },
+			{"Key" : 30, "Value" : 1.5 },
+			{"Key" : 60, "Value" : 2.5 },
+			{"Key" : 90, "Value" : 3.5 },
+			{"Key" : 120, "Value" : 5 },
+			{"Key" : 150, "Value" : 7.5 },
+			{"Key" : 180, "Value" : 10 },
+			{"Key" : 210, "Value" : 12.5 },
+			{"Key" : 240, "Value" : 15 },
+			{"Key" : 270, "Value" : 17.5 },
+			{"Key" : 300, "Value" : 20 },
+			{"Key" : 330, "Value" : 22.5 },
+			{"Key" : 360, "Value" : 25 },
+			{"Key" : 390, "Value" : 30 },
+			{"Key" : 420, "Value" : 35 },
+			{"Key" : 450, "Value" : 40 },
+			{"Key" : 480, "Value" : 50 },
+			{"Key" : 510, "Value" : 60 },
+			{"Key" : 540, "Value" : 70 },
+			{"Key" : 570, "Value" : 80 },
+			{"Key" : 600, "Value" : 100 },
+			{"Key" : 630, "Value" : 120 },
+			{"Key" : 660, "Value" : 140 },
+			{"Key" : 690, "Value" : 160 },
+			{"Key" : 720, "Value" : 180 },
+			{"Key" : 750, "Value" : 200 },
+			{"Key" : 780, "Value" : 220 },
+			{"Key" : 810, "Value" : 240 },
+			{"Key" : 840, "Value" : 260 },
+			{"Key" : 870, "Value" : 275 },
+			{"Key" : 900, "Value" : 290 },
+			{"Key" : 930, "Value" : 305 },
+			{"Key" : 960, "Value" : 330 },
+			{"Key" : 990, "Value" : 350 },
+			{"Key" : 1020, "Value" : 370 },
+			{"Key" : 1050, "Value" : 390 },
+			{"Key" : 1080, "Value" : 410 },
+			{"Key" : 1110, "Value" : 430 },
+			{"Key" : 1140, "Value" : 450 },
+			{"Key" : 1170, "Value" : 470 },
+			{"Key" : 1200, "Value" : 1000 },
+			{"Key" : 1230, "Value" : 1050 },
+			{"Key" : 1260, "Value" : 1100 },
+			{"Key" : 1290, "Value" : 1150 },
+			{"Key" : 1320, "Value" : 1200 },
+			{"Key" : 1350, "Value" : 1250 },
+			{"Key" : 1380, "Value" : 1300 },
+			{"Key" : 1410, "Value" : 1350 },
+			{"Key" : 1440, "Value" : 1400 },
+			{"Key" : 1470, "Value" : 1450 },
+			{"Key" : 1500, "Value" : 2000 },
+			{"Key" : 1530, "Value" : 2050 },
+			{"Key" : 1560, "Value" : 2100 },
+			{"Key" : 1590, "Value" : 2150 },
+			{"Key" : 1620, "Value" : 2200 },
+			{"Key" : 1650, "Value" : 2250 },
+			{"Key" : 1680, "Value" : 2300 },
+			{"Key" : 1710, "Value" : 2350 },
+			{"Key" : 1740, "Value" : 2400 },
+			{"Key" : 1770, "Value" : 2450 },
+			{"Key" : 1800, "Value" : 2500 },
+			{"Key" : 1830, "Value" : 2550 },
+			{"Key" : 1860, "Value" : 2600 },
+			{"Key" : 1890, "Value" : 2650 },
+			{"Key" : 1920, "Value" : 2700 },
+			{"Key" : 1950, "Value" : 2750 },
+			{"Key" : 1980, "Value" : 2800 },
+			{"Key" : 2010, "Value" : 2850 },
+			{"Key" : 2040, "Value" : 2900 },
+			{"Key" : 2070, "Value" : 2950 },
+			{"Key" : 2100, "Value" : 3000 },
+			{"Key" : 2130, "Value" : 3050 },
+			{"Key" : 2160, "Value" : 3100 },
+			{"Key" : 2190, "Value" : 3150 },
+			{"Key" : 2220, "Value" : 3200 },
+			{"Key" : 2250, "Value" : 3250 },
+			{"Key" : 2280, "Value" : 3300 },
+			{"Key" : 2310, "Value" : 3350 },
+			{"Key" : 2340, "Value" : 3400 },
+			{"Key" : 2370, "Value" : 3450 },
+			{"Key" : 2400, "Value" : 3500 }
+        ],
+
+
+		"RETIREMENT_NOTIFICATION_ENABLED" : true,
+
+		// --- COIN REWARDS
+		"MINION_COINDROP_MULTIPLIER" : 1.0,
+		"BOSS_COINDROP_MULTIPLIER" : 20.0,
+		"BOSS_COINDROP_MULTIPLIER_BOSSTRAIN" : 40.0,
+		"VENDOR_COIN_BUNDLES" : {
+			"CoinBundleXSmall" : 0.9,
+			"CoinBundleSmall" : 6.0,
+			"CoinBundleMedium" : 20.0,
+			"CoinBundleLarge" : 41.0,
+			"CoinBundleLargeSale" : 41.0,
+			"CoinBundlePetConversion" : 4.0,
+			"CoinBundleDungeonBoostBox" : 4.0
+		},
+		"COIN_BUNDLE_MINIMUM_BASE_VALUE" : 50,
+		"LEADERBOARD_COINS_MULTIPLIER" : 4.0,
+		"HIGHEST_FLOOR_COINS_MULTIPLIER" : 4.0,
+		"ITEM_SELL_COIN_GAIN_OFFSET_BY_RARITY" : {
+			"0" : 0,
+			"1" : 0,
+			"2" : 1,
+			"3" : 3,
+		},
+		"VENDOR_COIN_BUNDLES_USING_ALTERNATIVE_SIZE":
+		[
+			"CoinBundleDungeonBoostBox"
+		],
+		
+		// --- DIAMOND REWARDS
+		"XP_RANK_REWARD_GEMS" : 2,
+		"ACHIEVEMENT_TIER_DIAMOND_REWARDS" : {
+			"1" : 2,
+			"2" : 5,
+			"3" : 10
+		},
+		"LEADERBOARD_RANK_REWARD_DIAMONDS" : 5,
+		
+		// --- REVIVE REWARDS
+		"VENDOR_REVIVE_BUNDLES" : {
+			"ReviveBundleSmall" : 1,
+			"ReviveBundleMedium" : 3,
+			"ReviveBundleLarge" : 10
+		},
+		
+		// --- REWARD BOXES
+		"REWARD_BOX_BONUS_FIRST_FLOOR" : 29,
+		"REWARD_BOX_BONUS_EVERY_X_FLOOR" : 60,		
+		
+		// --- STARTER BUNDLE
+		"STARTER_BUNDLE_SELLING_ENABLED" : true,		
+		"STARTER_BUNDLE_TASKPANEL_OFFER_FLOOR" : 15,
+        "STARTER_BUNDLE_DIAMOND_COUNT" : 275,
+        "STARTER_BUNDLE_TOKEN_MULTIPLIER" : 7.0,		
+		
+		// --- FRENZY
+		"FRENZY_BONUS_POTION_FIRST_FLOOR" : 59,
+		"FRENZY_BONUS_POTION_EVERY_X_FLOOR" : 60,
+		"FRENZY_TIMER_MAX_SECONDS" : 60.0,
+		"FRENZY_TIMER_ADD_SECONDS_PER_MINION_KILL" : 0.15,
+		"FRENZY_TIMER_ADD_SECONDS_PER_MULTIKILL" : 0.5,
+		"FRENZY_HERO_BUFF_ATK_SPEED_MODIFIER" : 0.75,
+		"FRENZY_HERO_BUFF_DPH_MODIFIER" : 1.0,
+		"FRENZY_HERO_BUFF_LIFE_MODIFIER" : 1.0,
+		"FRENZY_HERO_BUFF_SKILLDMG_MODIFIER" : 1.0,
+		"FRENZY_MOB_SPAWNCOUNT_PER_SPAWNPOINT_MIN" : 6,
+		"FRENZY_MOB_SPAWNCOUNT_PER_SPAWNPOINT_MAX" : 8,
+				
+		// --- CONTEXT TUTORIALS
+		"CTUT003_ENABLED" : true,		
+		"CTUT003_REQUIRED_MONSTER_KILLS" : 45,
+		"CTUT003_REQUIRED_UPGRADE_COUNT" : 3,       
+		"CTUT004_ENABLED" : true,
+		"CTUT004_REQUIRED_MONSTER_KILLS" : 65,
+		"CTUT005_ENABLED" : true,
+
+		// --- OPTIONS
+		"FACEBOOK_URL" : "http://bit.ly/1qqOBtX",
+		"FORUMS_URL" : "http://forums.flaregames.com/forum/78-nonstop-knight/",
+		"SNAPCHAT_URL" : "https://www.snapchat.com/add/nonstopknight",
+		"SUPPORT_URL" : "https://flaregames.zendesk.com/hc/categories/200855975-Nonstop-Knight",
+		"PRIVACY_URL" : "http://www.flaregames.com/privacy-policy",
+		"STORE_URL_ANDROID" : "market://details?id=com.koplagames.kopla01",
+		"STORE_URL_IOS" : "https://itunes.apple.com/app/nonstop-knight/id979151411?mt=8",
+		"TWITTER_URL" : "http://bit.ly/1TGc4is",
+		"TRACKING_URL" : "",
+		
+		// --- SERVER
+		"PLAYER_SYNC_TIMEOUT" : 60.0,
+		"SYNC_CHECK_INTERVAL" : 20.0,
+		"ENABLE_POST_SECURE" : true,		
+		"HIGH_FREQUENT_PROMOTION_UPDATES" : true,
+		"ANDROID_VIDEO_AD_SESSION_TIMEOUT_SECONDS" : 600,
+		"REWARD_ON_VIDEO_AD_TIMOUT" : true,
+		
+		// --- PETS
+		"PETS" : [
+			// the order of this list dictates the UI sorting order
+			{ "Id" : "Pet001", "Enabled" : true },		// dragon red
+			{ "Id" : "Pet002", "Enabled" : true },		// dragon blue
+			{ "Id" : "Pet009", "Enabled" : true },		// dog
+			{ "Id" : "Pet008", "Enabled" : true },		// sharks
+			{ "Id" : "Pet003", "Enabled" : true },		// stumpy
+			{ "Id" : "Pet004", "Enabled" : true },		// ghosty
+			{ "Id" : "Pet005", "Enabled" : true },		// crab
+			{ "Id" : "Pet011", "Enabled" : true },		// walrus
+			{ "Id" : "Pet006", "Enabled" : true },		// gordon
+			{ "Id" : "Pet010", "Enabled" : true },		// moose
+			{ "Id" : "Pet007", "Enabled" : true },		// Squid
+			{ "Id" : "Pet012", "Enabled" : true },		// Ram
+			{ "Id" : "Pet013", "Enabled" : true },		// Beaver
+			{ "Id" : "Pet014", "Enabled" : false },		// Chest
+			{ "Id" : "Pet015", "Enabled" : false }		// Panda
+		],
+		"PET_LEVELUP_DUPLICATE_REQUIREMENTS" : [
+			10,
+			20,
+			40,
+			80,
+			160,
+		],
+		"PET_POWER_INCREASE_PER_LEVEL" : 0.15,
+		
+		// --- MISSIONS
+		"MISSIONS_FTUE" : [
+			{ "Id" : "BeatBosses", "Difficulty" : [3] },
+			{ "Id" : "UpgradeItems",   "Difficulty" : [20] },
+			{ "Id" : "DestroyDungeonBoxes",  "Difficulty" : [50] }
+		],
+		"MISSIONS" : {
+			"CompleteFloors" :                    { "Difficulty" : [10, 20, 30],   "Enabled" : true },
+			"UpgradeItems" :                      { "Difficulty" : [20, 100, 200], "Enabled" : true },
+			"OpenMysteryChests" :                 { "Difficulty" : [5, 10, 20],    "Enabled" : true },
+			"DestroyDungeonBoxes" :               { "Difficulty" : [50, 100, 200], "Enabled" : true },
+			"DestroyDungeonBoxesUsingLeap" :      { "Difficulty" : [50, 100, 200], "Enabled" : true },
+			"DestroyDungeonBoxesUsingSlam" :      { "Difficulty" : [50, 100, 200], "Enabled" : true },
+			"DestroyDungeonBoxesUsingWhirlwind" : { "Difficulty" : [50, 100, 200], "Enabled" : true },
+			"BeatBosses" :                        { "Difficulty" : [3, 5, 10],     "Enabled" : true },
+			"BeatBossesDuringFrenzy" :            { "Difficulty" : [5, 10, 20],    "Enabled" : true },
+			"KillMinionsDuringFrenzy" :           { "Difficulty" : [50, 100, 250], "Enabled" : true },
+			"KillMinionsUsingLeap" :              { "Difficulty" : [25, 75, 150],  "Enabled" : true },
+			"KillMinionsUsingOmnislash" :         { "Difficulty" : [25, 75, 150],  "Enabled" : true },
+			"KillMinionsUsingSlam" :              { "Difficulty" : [25, 75, 150],  "Enabled" : true },
+			"KillMinionsUsingWhirlwind" :         { "Difficulty" : [25, 75, 150],  "Enabled" : true },
+			"FreezeEnemies" :                     { "Difficulty" : [25, 75, 150], "Enabled" : true },
+			"PoisonEnemies" :                     { "Difficulty" : [25, 75, 150], "Enabled" : true },
+			"StunEnemies" :                       { "Difficulty" : [25, 75, 150], "Enabled" : true },
+			"Multikill" :                         { "Difficulty" : [5, 10, 15],     "Enabled" : true },
+			"CompleteBossTicket" :                { "Difficulty" : [1],            "Enabled" : true }
+		},
+		"MISSION_BASE_COOLDOWN_SECONDS" : 43200,
+        "MISSION_BIG_PRIZE_CHEST_TYPE" : "RewardBoxMulti",
+		"MISSION_BIG_PRIZE_INSTANT_SHOP_AVAILABILITY" : false,
+        "NUM_COMPLETED_MISSIONS_REQUIRED_FOR_BIG_PRIZE_FTUE" : 3,
+        "NUM_COMPLETED_MISSIONS_REQUIRED_FOR_BIG_PRIZE" : 10,
+		"NOTIFY_NEW_MISSIONS_DURING_WELCOME_BACK" : true,
+		
+		// --- DUNGEON BOOSTS
+		"DUNGEON_BOOST_BOX_SPAWN_ENABLED_DURING_FRENZY": true,
+		"DUNGEON_BOOST_BOX_FIRST_RUN_MIN_SPAWN_COUNT_FLOOR": 10,
+		"DUNGEON_BOOST_BOX_FIRST_RUN_MAX_SPAWN_COUNT_FLOOR": 20,
+		"DUNGEON_BOOST_EMPTY_BOX_COIN_GAIN_CONTROLLER": 0.25,
+		
+		// --- GAMEPLAY
+		"BOSS_POTIONS_ENABLED" : true,
+		"BOSS_POTION_NUM_BOSSES" : 3,
+		"ELITE_BOSSES_ENABLED": true,
+		"WINTER_THEME_ENABLED" : true,
+		"BOSS_AUTO_SUMMON_ENABLED" : true,
+		"ALLOW_BOSS_AUTO_SUMMON_IN_NEW_FLOORS" : true,
+		
+		// --- UI
+		"COMBAT_STATS_ENABLED" : true,
+		"NUM_VISIBLE_MENU_MILESTONES" : 1,
+		"ALLOW_VENDOR_TASKPANEL_NOTIFIER" : true,
+		"SHOW_SHOP_BUTTON_IN_TOP" : true, 
+		"DISABLE_VENDOR_ADS_CONFIRMATION_POPUP" : false,
+		
+		// --- BALANCING
+		"COINBUNDLES_USE_COINBALANCE" : true,
+		"COINBUNDLES_USE_PREASCENSIONITEMS" : true,
+        "PREASCENSION_LEVELMULTIPLIER" : 0.5,
+        "MYSTERYCHEST_DIMINISHINGCOINS" : true,
+        "DIMINISHINGCOINS_MULTIPLIER" : 0.5,
+        "MYSTERYCHEST_COINBUNDLE_MINIMUM" : 1.5,
+        "THRESHHOLD_DONTOFFER_FRENZY" : 15,
+        "THRESHHOLD_DONTOFFER_REVIVEPOTION" : 15,
+        "THRESHHOLD_DONTOFFER_BOSSTICKET" : 15,
+        "VENDORSTACKSIZE_ALWAYS_USE_MAX" : false,		
+		
+		// --- NOTIFICATIONS
+		"BOSS_SUMMON_NOTIFICATION_TIMER_MIN_SECONDS" : 7200,
+		"MISSION_NOTIFICATIONS_ENABLED" : true,
+		
+		// --- TOURNAMENTS (BOSS HUNT)
+		"TOURNAMENT_UPGRADES" : {
+			"Tug001" : { "Weight" : 100, "PerkType" : "CoreBonusDamagePerHit",  "Modifier" :  0.15, "ModifierEpic" :  0.50, "MilestoneMultiplier" : 0.5 },
+			"Tug002" : { "Weight" : 100, "PerkType" : "CoreBonusSkillDamage",   "Modifier" :  0.15, "ModifierEpic" :  0.50, "MilestoneMultiplier" : 0.5 },
+			"Tug003" : { "Weight" : 100, "PerkType" : "CoreBonusLife",          "Modifier" :  0.15, "ModifierEpic" :  0.50, "MilestoneMultiplier" : 0.5 },
+			"Tug004" : { "Weight" : 100, "PerkType" : "CoreBonusCoins",         "Modifier" :  0.15, "ModifierEpic" :  0.50, "MilestoneMultiplier" : 0.5 },
+			"Tug005" : { "Weight" :  50, "PerkType" : "PetBonusDamage",         "Modifier" :  0.15, "ModifierEpic" :  0.50, "MilestoneMultiplier" : 0.5 },
+			"Tug006" : { "Weight" :   5, "PerkType" : "AtkBonusCritChance",     "Modifier" :  0.01, "ModifierEpic" :  0.03, "MilestoneMultiplier" : 0.0 },
+			"Tug007" : { "Weight" :  10, "PerkType" : "AtkBonusCritMultiplier", "Modifier" :  0.25, "ModifierEpic" :  0.75, "MilestoneMultiplier" : 0.0 },
+			"Tug008" : { "Weight" :  10, "PerkType" : "AtkBonusSpeed",          "Modifier" :  0.05, "ModifierEpic" :  0.15, "MilestoneMultiplier" : 0.0 },
+			"Tug009" : { "Weight" :  10, "PerkType" : "Lifesteal",              "Modifier" :  0.01, "ModifierEpic" :  0.03, "MilestoneMultiplier" : 0.0 },
+			"Tug010" : { "Weight" :  10, "PerkType" : "DamageDeflection",       "Modifier" :  0.02, "ModifierEpic" :  0.06, "MilestoneMultiplier" : 0.0 },
+			"Tug011" : { "Weight" :  10, "PerkType" : "ArmorBlockAll",          "Modifier" :  0.01, "ModifierEpic" :  0.03, "MilestoneMultiplier" : 0.0 },
+			"Tug012" : { "Weight" :  10, "PerkType" : "ManaBonusAll",           "Modifier" : -0.02, "ModifierEpic" : -0.06, "MilestoneMultiplier" : 0.0 },
+		},			
+		"TOURNAMENT_UPGRADE_EPIC_PROBABILITY" : 0.25,
+		"TOURNAMENT_MAX_DONATIONS_PER_PLAYER_PER_TOUNAMENT" : 3,
+		"TOURNAMENT_DONATION_PRICE" : 100,
+		"TOURNAMENT_WILD_BOSS_MIN_SUMMON_FLOOR" : 3,
+		"TOURNAMENT_CARD_PRICE_NORMAL" : 25,
+		"TOURNAMENT_CARD_PRICE_EPIC" : 50,
+		"TOURNAMENT_DIRECT_CARD_PURCHASING_ENABLED" : true,
+		
+		// --- EVENTS
+		"DUNGEON_EVENT_TYPE" : "None",
+		
+		// --- LEGACY
+		"PASSIVE_COIN_GAIN_MAX_TIMEOFF_SECONDS" : 0,
+		"VENDOR_SLOT1_PRICE_INCREMENT" : 0,
+		"VENDOR_SLOT2_PRICE_INCREMENT" : 0,
+		"VENDOR_SLOT3_PRICE_INCREMENT" : 0,
+		"ITEM_RARITY_UNLOCK_FLOOR" : {},
+		"RETIREMENT_GATE_FLOOR_OFFSET" : 0,
+		"COIN_UPGRADES_AFFECT_VENDOR_COIN_BUNDLES" : false,
+		"COIN_UPGRADES_AFFECT_MYSTERY_CHESTS" : false,
+		"CHEST_TOKEN_DROPS" : {},		
+		"CHEST_DIAMOND_DROPS" : {},		
+		"CHEST_COIN_MULTIPLIERS" : {},	
+		"REWARD_BOX_GUARANTEED_DROP_FLOORS" : [],
+		"BASIC001_CHEST_DROP_MAX_FLOOR" : 0,		
+		"DAILY_ADS_LIMIT" : 0,
+		"SHOW_SHOP_IN_SLIDING_MENU" : false,
+		
+	},
+		
+	// --- CONFIG LOOT TABLES ---
+	
+	"ConfigLootTables" : {
+	
+		// --- BOSS DROP TABLES	
+		"BossDropLootTable" : {
+			"Items" : [
+				{ "Id" : "Basic001",  "Weight" : 150 },
+				{ "Id" : "Basic002",  "Weight" : 150 },
+				{ "Id" : "Basic003",  "Weight" : 150 },
+				{ "Id" : "Special001", "Weight" : 100 },
+				{ "Id" : "Special002", "Weight" : 100 },
+				{ "Id" : "Special003", "Weight" : 100 },
+				{ "Id" : "Special004", "Weight" : 100 },
+				{ "Id" : "Special005", "Weight" : 100 },
+				{ "Id" : "Special006", "Weight" : 100 },
+				{ "Id" : "Special007", "Weight" : 100 },
+				{ "Id" : "Special008", "Weight" : 100 },
+				{ "Id" : "Special009", "Weight" : 100 },
+				{ "Id" : "EventHalloween", "Weight" : 100 },
+			]
+		},
+		"BossAdditionalDropLootTable" : {
+			"Items" : [
+				{ "Id" : "RewardBoxCommon", "Weight" : 100 },
+				{ "Id" : "RewardBoxRare",   "Weight" : 0 },
+				{ "Id" : "RewardBoxEpic",   "Weight" : 0 },
+				{ "Id" : "RewardBoxMulti",  "Weight" : 0 },
+			]
+		},
+		
+		// --- MINION DROP TABLES
+		"MinionDropLootTable" : {
+			"Items" : [
+				{ "Id" : "NO_DROP", "Weight" : 40 },
+				{ "Id" : "CHEST",   "Weight" : 1, "SubTable" : {
+					"Items" : [
+						{ "Id" : "MysteryStandard",     "Weight" : 50 },
+						{ "Id" : "MysterySpecialOffer", "Weight" : 50 }
+					] } }
+			]
+		},
+		
+		// --- CHEST TABLES
+		"UniversalItemRarityWeights" : {
+			"0" : 0,
+			"1" : 100,
+			"2" : 25,
+			"3" : 10,
+		},				
+		"ChestLootTables" : {
+			"MysteryStandard" : {
+				"Items" : [
+					{ "Id" : "CoinBundleXSmall",        "Weight" : 100 },
+				]
+			},
+			"MysterySpecialOffer" : {
+				"Items" : [
+					{ "Id" : "CoinBundleSmall",         "Weight" : 45 },
+					{ "Id" : "TokenBundleSmall",        "Weight" : 5 },
+					{ "Id" : "DiamondBundleAds",  		"Weight" : 5 },
+					{ "Id" : "MysteryItemWeapon",       "Weight" : 5 },
+					{ "Id" : "MysteryItemArmor",        "Weight" : 5 },
+					{ "Id" : "MysteryItemCloak",        "Weight" : 5 },
+					{ "Id" : "ReviveBundleSmall",       "Weight" : 10 },
+					{ "Id" : "FrenzyBundleSmall",  		"Weight" : 10 },	
+					{ "Id" : "XpBundleSmall",  		    "Weight" : 10 },
+				]
+			},
+            "MysterySpecialOffer_BossHunt" : {
+                "Items" : [
+                    { "Id" : "CoinBundleSmall",         "Weight" : 50 },
+                    { "Id" : "MysteryItemWeapon",       "Weight" : 5 },
+                    { "Id" : "MysteryItemArmor",        "Weight" : 5 },
+                    { "Id" : "MysteryItemCloak",        "Weight" : 5 },
+                    { "Id" : "ReviveBundleSmall",       "Weight" : 15 },
+                    { "Id" : "FrenzyBundleSmall",       "Weight" : 5 },
+                ]
+            },			
+			"RewardBoxCommon" : {
+				"Items" : [
+					{ "Id" : "CoinBundleSmall",         "Weight" : 20 },
+					{ "Id" : "TokenBundleSmall",        "Weight" : 5 },
+					{ "Id" : "DiamondBundleAds",  		"Weight" : 5 },
+					{ "Id" : "ReviveBundleSmall",       "Weight" : 10 },
+					{ "Id" : "FrenzyBundleSmall",  		"Weight" : 10 },	
+					{ "Id" : "XpBundleSmall",  		    "Weight" : 10 },
+					{ "Id" : "BossBundleSmall",         "Weight" : 20 },
+				]
+			},
+			"RewardBoxRare" : {
+				"Items" : [
+					{ "Id" : "TokenBundleMedium",       "Weight" : 10 },
+					{ "Id" : "XpBundleSmall",  		    "Weight" : 10 },
+				]
+			},
+			"RewardBoxEpic" : {
+				"Items" : [
+					{ "Id" : "TokenBundleMedium",       "Weight" : 10 },
+				    { "Id" : "FrenzyBundleSmall",       "Weight" : 20 },
+					{ "Id" : "XpBundleSmall",  	        "Weight" : 10 },
+                ]
+			},
+			"RewardBoxMulti" : {
+				// this chest uses special logic, see ConfigLootTables.MegaboxSlot1LootTable
+			},			
+			"PetBoxSmall" : {
+				"Items" : [
+					{ "Id" : "PetBundleSmall",       "Weight" : 1 },				
+					{ "Id" : "PetBundleMedium",      "Weight" : 0 },				
+					{ "Id" : "PetBundleLarge",       "Weight" : 0 },				
+				]
+			},			
+			"LootBoxBossHunt" : {
+				"Items" : [
+					{ "Id" : "TokenBundleBossHunt",     "Weight" : 3 },
+					{ "Id" : "DiamondBundleBossHunt",	"Weight" : 3 },					
+					{ "Id" : "PetBundleBossHunt",       "Weight" : 1 },  
+				]
+			},			
+		},
+		
+		// --- VENDOR
+		"VendorSlot1LootTable" : {
+			"Items" : [
+				{ "Id" : "CoinBundleSmall",         "Weight" : 30 },
+				{ "Id" : "TokenBundleSmall",        "Weight" : 5 },
+				{ "Id" : "MysteryItemWeapon",       "Weight" : 5 },
+				{ "Id" : "MysteryItemArmor",        "Weight" : 5 },
+				{ "Id" : "MysteryItemCloak",        "Weight" : 5 },
+				{ "Id" : "ReviveBundleSmall",       "Weight" : 10 },
+				{ "Id" : "XpBundleSmall",  	        "Weight" : 10 },				
+			]
+		},
+		"VendorSlot2LootTable" : {
+			"Items" : [
+				{ "Id" : "CoinBundleMedium",        "Weight" : 20 },
+				{ "Id" : "TokenBundleMedium",       "Weight" : 20 },
+				{ "Id" : "AnyUnlockedSpecialChest", "Weight" : 20 },
+				{ "Id" : "ReviveBundleMedium",      "Weight" : 10 },
+				{ "Id" : "FrenzyBundleSmall",       "Weight" : 10 },
+				{ "Id" : "BossBundleSmall",         "Weight" : 20 },		
+			]
+		},
+		"VendorSlot3LootTable" : {
+			"Items" : [
+				{ "Id" : "CoinBundleLarge",         "Weight" : 30 },
+				{ "Id" : "CoinBundleLargeSale",     "Weight" : 10 },
+				{ "Id" : "TokenBundleLarge",        "Weight" : 30 },
+				{ "Id" : "TokenBundleLargeSale",    "Weight" : 10 },
+				{ "Id" : "ReviveBundleLarge",       "Weight" : 10 },
+			]
+		},
+		
+		// --- MEGABOXES
+		"MegaboxSlot1LootTable" : {
+			"Items" : [
+				{ "Id" : "PetBundleSmall",          "Weight" : 1 },
+			]
+		},
+		"MegaboxSlot2LootTable" : {
+			"Items" : [
+				{ "Id" : "PetBundleMedium",         "Weight" : 1 },
+			]
+		},
+		"MegaboxSlot3LootTable" : {
+			"Items" : [
+				{ "Id" : "PetBundleLarge",          "Weight" : 1 },
+			]
+		},
+		
+		// --- PETS
+		"PetBundleLootTables" : {
+			"PetBundleSmall" : {
+				"Items" : [
+					{ "Id" : "Pet001", "Weight" : 1 },
+					{ "Id" : "Pet002", "Weight" : 10 },
+					{ "Id" : "Pet003", "Weight" : 5 },
+					{ "Id" : "Pet004", "Weight" : 3 },
+					{ "Id" : "Pet005", "Weight" : 10 },
+					{ "Id" : "Pet006", "Weight" : 10 },
+					{ "Id" : "Pet007", "Weight" : 10 },
+					{ "Id" : "Pet008", "Weight" : 10 },
+					{ "Id" : "Pet009", "Weight" : 10 },
+					{ "Id" : "Pet010", "Weight" : 10 },
+					{ "Id" : "Pet011", "Weight" : 10 },
+					{ "Id" : "Pet012", "Weight" : 10 },
+					{ "Id" : "Pet013", "Weight" : 10 },
+				]
+			}, 
+			"PetBundleMedium" : {
+				"Items" : [
+					{ "Id" : "Pet001", "Weight" : 2 },
+					{ "Id" : "Pet002", "Weight" : 10 },
+					{ "Id" : "Pet003", "Weight" : 5 },
+					{ "Id" : "Pet004", "Weight" : 3 },
+					{ "Id" : "Pet005", "Weight" : 10 },
+					{ "Id" : "Pet006", "Weight" : 10 },
+					{ "Id" : "Pet007", "Weight" : 10 },
+					{ "Id" : "Pet008", "Weight" : 10 },
+					{ "Id" : "Pet009", "Weight" : 10 },
+					{ "Id" : "Pet010", "Weight" : 10 },
+					{ "Id" : "Pet011", "Weight" : 10 },
+					{ "Id" : "Pet012", "Weight" : 10 },
+					{ "Id" : "Pet013", "Weight" : 10 },
+				]
+			}, 	
+			"PetBundleLarge" : {
+				"Items" : [
+					{ "Id" : "Pet001", "Weight" : 2 },
+					{ "Id" : "Pet002", "Weight" : 10 },
+					{ "Id" : "Pet003", "Weight" : 5 },
+					{ "Id" : "Pet004", "Weight" : 3 },
+					{ "Id" : "Pet005", "Weight" : 10 },
+					{ "Id" : "Pet006", "Weight" : 10 },
+					{ "Id" : "Pet007", "Weight" : 10 },
+					{ "Id" : "Pet008", "Weight" : 10 },
+					{ "Id" : "Pet009", "Weight" : 10 },
+					{ "Id" : "Pet010", "Weight" : 10 },
+					{ "Id" : "Pet011", "Weight" : 10 },
+					{ "Id" : "Pet012", "Weight" : 10 },
+					{ "Id" : "Pet013", "Weight" : 10 },
+				]
+			}, 	
+			"PetBundleBossHunt" : {
+				"Items" : [
+					{ "Id" : "Pet001", "Weight" : 3 },
+					{ "Id" : "Pet002", "Weight" : 1 },
+					{ "Id" : "Pet003", "Weight" : 2 },
+					{ "Id" : "Pet004", "Weight" : 3 },
+					{ "Id" : "Pet005", "Weight" : 1 },
+					{ "Id" : "Pet006", "Weight" : 1 },
+					{ "Id" : "Pet007", "Weight" : 1 },
+					{ "Id" : "Pet008", "Weight" : 1 },
+					{ "Id" : "Pet009", "Weight" : 1 },
+					{ "Id" : "Pet010", "Weight" : 1 },
+					{ "Id" : "Pet011", "Weight" : 1 },
+					{ "Id" : "Pet012", "Weight" : 1 },
+					{ "Id" : "Pet013", "Weight" : 1 },
+					{ "Id" : "Pet014", "Weight" : 3 },
+				]
+			}, 	
+		},
+		
+		// --- MISSIONS
+		"MissionRewardLootTable" : {
+			"Items" : [
+				{ "Id" : "DiamondBundleAds",  "Weight" : 0 },
+				{ "Id" : "TokenBundleSmall",  "Weight" : 0 },
+				{ "Id" : "BossBundleSmall",   "Weight" : 0 },
+				{ "Id" : "FrenzyBundleSmall", "Weight" : 0 },
+				{ "Id" : "ReviveBundleSmall", "Weight" : 0 },
+				{ "Id" : "XpBundleSmall",     "Weight" : 0 },
+				{ "Id" : "PetBoxSmall",       "Weight" : 10 }
+			]
+		},
+		
+		// --- DUNGEON BOOSTS
+		"DungeonBoostBoxTable" : {
+			"Items" : [
+				{ "Id" : "EmptyBox",     "Weight" : 85 },
+				{ "Id" : "BuffBox",      "Weight" : 3 },
+				{ "Id" : "ExplosiveBox", "Weight" : 3 },
+				{ "Id" : "ResourceBox",  "Weight" : 10 }
+			]
+		},
+		"DungeonBoostResourceBoxLootTable" : {
+			"Items" : [
+				{ "Id" : "CoinBundleDungeonBoostBox", "Weight" : 80 },
+				{ "Id" : "TokenBundleXSmall",         "Weight" : 20 }
+			]
+		},
+		
+	}
+}

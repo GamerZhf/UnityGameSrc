@@ -1,0 +1,25 @@
+{
+	"Id" : "Hero001",
+	"Name" : "HERO_KNIGHT",
+	"AvatarSpriteId" : "uiz_sprite_hero",	
+	"Prefab" : "KnightMale",
+	"Type" : "Player",
+	"CoreAiBehaviour" : "HeroMelee",
+	"RangedProjectileType" : "NONE",
+	"AttackContactTimeNormalized" : 0.3333,
+	"BaseStats" : {
+		"Life" : 0,
+		"AttacksPerSecond" : 3.0,
+		"AttackRange" : 1.85,
+		"DamagePerHit" : 0.0,
+		"CriticalHitChancePct" : 0.05,
+		"CriticalHitMultiplier" : 2.0,
+		"CleaveDamagePct" : 0.2,
+		"CleaveRange" : 3.0,
+		"MovementSpeed" : 9.0, 
+		"Threat" : 5.0,
+		"UniversalArmorBonus" : 0.0,
+		"SkillDamage" : 0.0,
+		"UniversalXpBonus" : 0.0
+	}	
+}

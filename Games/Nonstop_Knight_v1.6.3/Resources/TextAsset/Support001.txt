@@ -1,0 +1,26 @@
+{
+	"Id" : "Support001",
+	"Name" : "Clone",
+	"AvatarSpriteId" : "uiz_sprite_hero",	
+	"Prefab" : "KnightClone",
+	"Type" : "Player",
+	"CoreAiBehaviour" : "SupportClone",
+	"RangedProjectileType" : "NONE",
+	"AttackContactTimeNormalized" : 0.3333,
+	"LimitedLifetimeSeconds" : 12.0,	
+	"BaseStats" : {
+		"Life" : 0,
+		"AttacksPerSecond" : 2.0,
+		"AttackRange" : 1.5,
+		"DamagePerHit" : 0.0,
+		"CriticalHitChancePct" : 0.0,
+		"CriticalHitMultiplier" : 2.0,
+		"CleaveDamagePct" : 0.0,
+		"CleaveRange" : 0.0,
+		"MovementSpeed" : 9.0, 
+		"Threat" : 0.0,
+		"UniversalArmorBonus" : 0.0,
+		"SkillDamage" : 0.0,
+		"UniversalXpBonus" : 0.0
+	}	
+}

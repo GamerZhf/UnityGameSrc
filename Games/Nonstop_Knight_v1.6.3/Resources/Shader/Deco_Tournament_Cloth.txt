@@ -1,0 +1,412 @@
+Shader "CUSTOM/Deco_Tournament_Cloth" {
+Properties {
+ _MainTex ("Diffuse (RGB)", 2D) = "white" { }
+ _WaveDensity ("Wave density", Range(0,5)) = 0
+ _WaveHeight ("Wave height", Range(0,1)) = 0
+ _WaveSpeed ("Wave speed", Range(0,10)) = 0
+}
+SubShader { 
+ LOD 100
+ Tags { "LIGHTMODE"="ForwardBase" "QUEUE"="Geometry" "IGNOREPROJECTOR"="true" "RenderType"="Opaque" }
+ Pass {
+  Tags { "LIGHTMODE"="ForwardBase" "QUEUE"="Geometry" "IGNOREPROJECTOR"="true" "RenderType"="Opaque" }
+  Cull Off
+  GpuProgramID 22787
+Program "vp" {
+SubProgram "gles " {
+"!!GLES
+#version 100
+
+#ifdef VERTEX
+attribute vec4 _glesVertex;
+attribute vec4 _glesColor;
+attribute vec4 _glesMultiTexCoord0;
+uniform highp vec4 _Time;
+uniform highp vec3 _WorldSpaceCameraPos;
+uniform highp mat4 _Object2World;
+uniform highp mat4 _World2Object;
+uniform lowp vec4 glstate_lightmodel_ambient;
+uniform highp mat4 unity_MatrixVP;
+uniform highp float _CustomFogTerm1;
+uniform highp float _CustomFogTerm2;
+uniform mediump float _WaveDensity;
+uniform mediump float _WaveHeight;
+uniform mediump float _WaveSpeed;
+uniform highp vec4 _MainTex_ST;
+varying lowp vec3 xlv_COLOR;
+varying highp vec2 xlv_TEXCOORD0;
+varying lowp float xlv_TEXCOORD1;
+void main ()
+{
+  highp vec4 tmpvar_1;
+  lowp float tmpvar_2;
+  tmpvar_1 = (_Object2World * _glesVertex);
+  highp float tmpvar_3;
+  tmpvar_3 = (_Time.y * _WaveSpeed);
+  highp float tmpvar_4;
+  tmpvar_4 = (tmpvar_3 + ((tmpvar_1.x + 
+    (tmpvar_1.y * 0.5)
+  ) * _WaveDensity));
+  tmpvar_1.x = (tmpvar_1.x + ((
+    sin((tmpvar_3 + ((tmpvar_1.z + 
+      (tmpvar_1.y * 0.5)
+    ) * _WaveDensity)))
+   * _WaveHeight) * _glesColor.x));
+  tmpvar_1.z = (tmpvar_1.z + ((
+    sin(tmpvar_4)
+   * _WaveHeight) * _glesColor.x));
+  tmpvar_1 = (unity_MatrixVP * tmpvar_1);
+  highp vec4 tmpvar_5;
+  tmpvar_5.w = 1.0;
+  tmpvar_5.xyz = _WorldSpaceCameraPos;
+  highp vec3 x_6;
+  x_6 = (_glesVertex.xyz - (_World2Object * tmpvar_5).xyz);
+  highp float tmpvar_7;
+  tmpvar_7 = clamp (((
+    sqrt(dot (x_6, x_6))
+   * _CustomFogTerm1) + _CustomFogTerm2), 0.0, 1.0);
+  tmpvar_2 = (1.0 - tmpvar_7);
+  gl_Position = tmpvar_1;
+  xlv_COLOR = (glstate_lightmodel_ambient * 2.0).xyz;
+  xlv_TEXCOORD0 = ((_glesMultiTexCoord0.xy * _MainTex_ST.xy) + _MainTex_ST.zw);
+  xlv_TEXCOORD1 = tmpvar_2;
+}
+
+
+#endif
+#ifdef FRAGMENT
+uniform lowp vec4 unity_FogColor;
+uniform sampler2D _MainTex;
+varying lowp vec3 xlv_COLOR;
+varying highp vec2 xlv_TEXCOORD0;
+varying lowp float xlv_TEXCOORD1;
+void main ()
+{
+  lowp vec4 color_1;
+  lowp vec4 tmpvar_2;
+  tmpvar_2 = texture2D (_MainTex, xlv_TEXCOORD0);
+  color_1.w = tmpvar_2.w;
+  color_1.xyz = mix (tmpvar_2.xyz, (tmpvar_2.xyz * xlv_COLOR), vec3(0.25, 0.25, 0.25));
+  color_1.xyz = mix (color_1.xyz, unity_FogColor.xyz, vec3((xlv_TEXCOORD1 * xlv_TEXCOORD1)));
+  gl_FragData[0] = color_1;
+}
+
+
+#endif
+"
+}
+SubProgram "gles3 " {
+"!!GLES3
+#ifdef VERTEX
+#version 300 es
+precision highp float;
+precision highp int;
+uniform 	vec4 _Time;
+uniform 	vec4 _SinTime;
+uniform 	vec4 _CosTime;
+uniform 	vec4 unity_DeltaTime;
+uniform 	vec3 _WorldSpaceCameraPos;
+uniform 	vec4 _ProjectionParams;
+uniform 	vec4 _ScreenParams;
+uniform 	vec4 _ZBufferParams;
+uniform 	vec4 unity_OrthoParams;
+uniform 	vec4 unity_CameraWorldClipPlanes[6];
+uniform 	mat4 unity_CameraProjection;
+uniform 	mat4 unity_CameraInvProjection;
+uniform 	vec4 _WorldSpaceLightPos0;
+uniform 	vec4 _LightPositionRange;
+uniform 	vec4 unity_4LightPosX0;
+uniform 	vec4 unity_4LightPosY0;
+uniform 	vec4 unity_4LightPosZ0;
+uniform 	mediump vec4 unity_4LightAtten0;
+uniform 	mediump vec4 unity_LightColor[8];
+uniform 	vec4 unity_LightPosition[8];
+uniform 	mediump vec4 unity_LightAtten[8];
+uniform 	vec4 unity_SpotDirection[8];
+uniform 	mediump vec4 unity_SHAr;
+uniform 	mediump vec4 unity_SHAg;
+uniform 	mediump vec4 unity_SHAb;
+uniform 	mediump vec4 unity_SHBr;
+uniform 	mediump vec4 unity_SHBg;
+uniform 	mediump vec4 unity_SHBb;
+uniform 	mediump vec4 unity_SHC;
+uniform 	mediump vec3 unity_LightColor0;
+uniform 	mediump vec3 unity_LightColor1;
+uniform 	mediump vec3 unity_LightColor2;
+uniform 	mediump vec3 unity_LightColor3;
+uniform 	vec4 unity_ShadowSplitSpheres[4];
+uniform 	vec4 unity_ShadowSplitSqRadii;
+uniform 	vec4 unity_LightShadowBias;
+uniform 	vec4 _LightSplitsNear;
+uniform 	vec4 _LightSplitsFar;
+uniform 	mat4 unity_World2Shadow[4];
+uniform 	mediump vec4 _LightShadowData;
+uniform 	vec4 unity_ShadowFadeCenterAndType;
+uniform 	mat4 glstate_matrix_mvp;
+uniform 	mat4 glstate_matrix_modelview0;
+uniform 	mat4 glstate_matrix_invtrans_modelview0;
+uniform 	mat4 _Object2World;
+uniform 	mat4 _World2Object;
+uniform 	vec4 unity_LODFade;
+uniform 	mat4 glstate_matrix_transpose_modelview0;
+uniform 	mat4 glstate_matrix_projection;
+uniform 	lowp vec4 glstate_lightmodel_ambient;
+uniform 	mat4 unity_MatrixV;
+uniform 	mat4 unity_MatrixVP;
+uniform 	lowp vec4 unity_AmbientSky;
+uniform 	lowp vec4 unity_AmbientEquator;
+uniform 	lowp vec4 unity_AmbientGround;
+uniform 	lowp vec4 unity_FogColor;
+uniform 	vec4 unity_FogParams;
+uniform 	vec4 unity_LightmapST;
+uniform 	vec4 unity_DynamicLightmapST;
+uniform 	vec4 unity_SpecCube0_BoxMax;
+uniform 	vec4 unity_SpecCube0_BoxMin;
+uniform 	vec4 unity_SpecCube0_ProbePosition;
+uniform 	mediump vec4 unity_SpecCube0_HDR;
+uniform 	vec4 unity_SpecCube1_BoxMax;
+uniform 	vec4 unity_SpecCube1_BoxMin;
+uniform 	vec4 unity_SpecCube1_ProbePosition;
+uniform 	mediump vec4 unity_SpecCube1_HDR;
+uniform 	lowp vec4 unity_ColorSpaceGrey;
+uniform 	lowp vec4 unity_ColorSpaceDouble;
+uniform 	mediump vec4 unity_ColorSpaceDielectricSpec;
+uniform 	mediump vec4 unity_ColorSpaceLuminance;
+uniform 	mediump vec4 unity_Lightmap_HDR;
+uniform 	mediump vec4 unity_DynamicLightmap_HDR;
+uniform 	float _CustomFogTerm1;
+uniform 	float _CustomFogTerm2;
+uniform 	mediump float _WaveDensity;
+uniform 	mediump float _WaveHeight;
+uniform 	mediump float _WaveSpeed;
+uniform 	vec4 _MainTex_ST;
+in highp vec4 in_POSITION0;
+in highp vec2 in_TEXCOORD0;
+in lowp vec3 in_COLOR0;
+out lowp vec3 vs_COLOR0;
+out highp vec2 vs_TEXCOORD0;
+out lowp float vs_TEXCOORD1;
+highp vec4 t0;
+highp vec4 t1;
+void main()
+{
+    //Instruction 257
+    //MUL
+    t0 = in_POSITION0.yyyy * _Object2World[1];
+    //Instruction 258
+    //MAD
+    t0 = _Object2World[0] * in_POSITION0.xxxx + t0;
+    //Instruction 259
+    //MAD
+    t0 = _Object2World[2] * in_POSITION0.zzzz + t0;
+    //Instruction 260
+    //MAD
+    t0 = _Object2World[3] * in_POSITION0.wwww + t0;
+    //Instruction 261
+    //MAD
+    t1.xy = t0.yy * vec2(0.5, 0.5) + t0.zx;
+    //Instruction 262
+    //MUL
+    t1.xy = t1.xy * vec2(_WaveDensity);
+    //Instruction 263
+    //MAD
+    t1.xy = _Time.yy * vec2(vec2(_WaveSpeed, _WaveSpeed)) + t1.xy;
+    //Instruction 264
+    //SINCOS
+    t1.xy = sin(t1.xy);
+    //Instruction 265
+    //MUL
+    t1.xy = t1.xy * vec2(vec2(_WaveHeight, _WaveHeight));
+    //Instruction 266
+    //MAD
+    t0.xz = t1.xy * in_COLOR0.xx + t0.xz;
+    //Instruction 267
+    //MUL
+    t1 = t0.yyyy * unity_MatrixVP[1];
+    //Instruction 268
+    //MAD
+    t1 = unity_MatrixVP[0] * t0.xxxx + t1;
+    //Instruction 269
+    //MAD
+    t1 = unity_MatrixVP[2] * t0.zzzz + t1;
+    //Instruction 270
+    //MAD
+    gl_Position = unity_MatrixVP[3] * t0.wwww + t1;
+    //Instruction 271
+    //MUL
+    vs_COLOR0.xyz = glstate_lightmodel_ambient.xyz * vec3(2.0, 2.0, 2.0);
+    //Instruction 272
+    //MAD
+    vs_TEXCOORD0.xy = in_TEXCOORD0.xy * _MainTex_ST.xy + _MainTex_ST.zw;
+    //Instruction 273
+    //MUL
+    t0.xyz = _WorldSpaceCameraPos.xyzx.yyy * _World2Object[1].xyz;
+    //Instruction 274
+    //MAD
+    t0.xyz = _World2Object[0].xyz * _WorldSpaceCameraPos.xyzx.xxx + t0.xyz;
+    //Instruction 275
+    //MAD
+    t0.xyz = _World2Object[2].xyz * _WorldSpaceCameraPos.xyzx.zzz + t0.xyz;
+    //Instruction 276
+    //ADD
+    t0.xyz = t0.xyz + _World2Object[3].xyz;
+    //Instruction 277
+    //ADD
+    t0.xyz = (-t0.xyz) + in_POSITION0.xyz;
+    //Instruction 278
+    //DP3
+    t0.x = dot(t0.xyz, t0.xyz);
+    //Instruction 279
+    //SQRT
+    t0.x = sqrt(t0.x);
+    //Instruction 280
+    //MAD
+    t0.x = t0.x * _CustomFogTerm1 + _CustomFogTerm2;
+    t0.x = clamp(t0.x, 0.0, 1.0);
+    //Instruction 281
+    //ADD
+    t0.x = (-t0.x) + 1.0;
+    //Instruction 282
+    //MOV
+    vs_TEXCOORD1 = t0.x;
+    //Instruction 283
+    //RET
+    return;
+}
+
+#endif
+#ifdef FRAGMENT
+#version 300 es
+precision highp float;
+precision highp int;
+uniform 	vec4 _Time;
+uniform 	vec4 _SinTime;
+uniform 	vec4 _CosTime;
+uniform 	vec4 unity_DeltaTime;
+uniform 	vec3 _WorldSpaceCameraPos;
+uniform 	vec4 _ProjectionParams;
+uniform 	vec4 _ScreenParams;
+uniform 	vec4 _ZBufferParams;
+uniform 	vec4 unity_OrthoParams;
+uniform 	vec4 unity_CameraWorldClipPlanes[6];
+uniform 	mat4 unity_CameraProjection;
+uniform 	mat4 unity_CameraInvProjection;
+uniform 	vec4 _WorldSpaceLightPos0;
+uniform 	vec4 _LightPositionRange;
+uniform 	vec4 unity_4LightPosX0;
+uniform 	vec4 unity_4LightPosY0;
+uniform 	vec4 unity_4LightPosZ0;
+uniform 	mediump vec4 unity_4LightAtten0;
+uniform 	mediump vec4 unity_LightColor[8];
+uniform 	vec4 unity_LightPosition[8];
+uniform 	mediump vec4 unity_LightAtten[8];
+uniform 	vec4 unity_SpotDirection[8];
+uniform 	mediump vec4 unity_SHAr;
+uniform 	mediump vec4 unity_SHAg;
+uniform 	mediump vec4 unity_SHAb;
+uniform 	mediump vec4 unity_SHBr;
+uniform 	mediump vec4 unity_SHBg;
+uniform 	mediump vec4 unity_SHBb;
+uniform 	mediump vec4 unity_SHC;
+uniform 	mediump vec3 unity_LightColor0;
+uniform 	mediump vec3 unity_LightColor1;
+uniform 	mediump vec3 unity_LightColor2;
+uniform 	mediump vec3 unity_LightColor3;
+uniform 	vec4 unity_ShadowSplitSpheres[4];
+uniform 	vec4 unity_ShadowSplitSqRadii;
+uniform 	vec4 unity_LightShadowBias;
+uniform 	vec4 _LightSplitsNear;
+uniform 	vec4 _LightSplitsFar;
+uniform 	mat4 unity_World2Shadow[4];
+uniform 	mediump vec4 _LightShadowData;
+uniform 	vec4 unity_ShadowFadeCenterAndType;
+uniform 	mat4 glstate_matrix_mvp;
+uniform 	mat4 glstate_matrix_modelview0;
+uniform 	mat4 glstate_matrix_invtrans_modelview0;
+uniform 	mat4 _Object2World;
+uniform 	mat4 _World2Object;
+uniform 	vec4 unity_LODFade;
+uniform 	mat4 glstate_matrix_transpose_modelview0;
+uniform 	mat4 glstate_matrix_projection;
+uniform 	lowp vec4 glstate_lightmodel_ambient;
+uniform 	mat4 unity_MatrixV;
+uniform 	mat4 unity_MatrixVP;
+uniform 	lowp vec4 unity_AmbientSky;
+uniform 	lowp vec4 unity_AmbientEquator;
+uniform 	lowp vec4 unity_AmbientGround;
+uniform 	lowp vec4 unity_FogColor;
+uniform 	vec4 unity_FogParams;
+uniform 	vec4 unity_LightmapST;
+uniform 	vec4 unity_DynamicLightmapST;
+uniform 	vec4 unity_SpecCube0_BoxMax;
+uniform 	vec4 unity_SpecCube0_BoxMin;
+uniform 	vec4 unity_SpecCube0_ProbePosition;
+uniform 	mediump vec4 unity_SpecCube0_HDR;
+uniform 	vec4 unity_SpecCube1_BoxMax;
+uniform 	vec4 unity_SpecCube1_BoxMin;
+uniform 	vec4 unity_SpecCube1_ProbePosition;
+uniform 	mediump vec4 unity_SpecCube1_HDR;
+uniform 	lowp vec4 unity_ColorSpaceGrey;
+uniform 	lowp vec4 unity_ColorSpaceDouble;
+uniform 	mediump vec4 unity_ColorSpaceDielectricSpec;
+uniform 	mediump vec4 unity_ColorSpaceLuminance;
+uniform 	mediump vec4 unity_Lightmap_HDR;
+uniform 	mediump vec4 unity_DynamicLightmap_HDR;
+uniform 	float _CustomFogTerm1;
+uniform 	float _CustomFogTerm2;
+uniform 	mediump float _WaveDensity;
+uniform 	mediump float _WaveHeight;
+uniform 	mediump float _WaveSpeed;
+uniform 	vec4 _MainTex_ST;
+uniform lowp sampler2D _MainTex;
+in lowp vec3 vs_COLOR0;
+in highp vec2 vs_TEXCOORD0;
+in lowp float vs_TEXCOORD1;
+layout(location = 0) out lowp vec4 SV_Target0;
+lowp float t10_0;
+lowp vec4 t10_1;
+lowp vec3 t10_2;
+lowp vec3 t10_3;
+void main()
+{
+    //Instruction 249
+    //MUL
+    t10_0 = vs_TEXCOORD1 * vs_TEXCOORD1;
+    //Instruction 250
+    //SAMPLE
+    t10_1 = texture(_MainTex, vs_TEXCOORD0.xy);
+    //Instruction 251
+    //MAD
+    t10_3.xyz = t10_1.xyz * vs_COLOR0.xyz + (-t10_1.xyz);
+    //Instruction 252
+    //MAD
+    t10_3.xyz = t10_3.xyz * vec3(0.25, 0.25, 0.25) + t10_1.xyz;
+    //Instruction 253
+    //MOV
+    SV_Target0.w = t10_1.w;
+    //Instruction 254
+    //ADD
+    t10_2.xyz = (-t10_3.xyz) + unity_FogColor.xyz;
+    //Instruction 255
+    //MAD
+    SV_Target0.xyz = vec3(t10_0) * t10_2.xyz + t10_3.xyz;
+    //Instruction 256
+    //RET
+    return;
+}
+
+#endif
+"
+}
+}
+Program "fp" {
+SubProgram "gles " {
+"!!GLES"
+}
+SubProgram "gles3 " {
+"!!GLES3"
+}
+}
+ }
+}
+}

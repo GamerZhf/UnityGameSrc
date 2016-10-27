@@ -1,0 +1,126 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
+  <PropertyGroup>
+    <ProjectType>local</ProjectType>
+    <ProjectVersion>7.10.377</ProjectVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{B13B29CF-8D6C-4863-ACAD-596A2FAFDB57}</ProjectGuid>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <AssemblyName>Assembly-CSharp-firstpass</AssemblyName>
+    <OutputType>Library</OutputType>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <Reference Include="UnityEngine">
+      <HintPath>..\library\UnityEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="P31RestKit" />
+    <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="Global.cs" />
+    <Compile Include="Android\AndroidApplication.cs" />
+    <Compile Include="Android\AndroidDeviceClassification.cs" />
+    <Compile Include="Android\AndroidDevice.cs" />
+    <Compile Include="Android\AndroidLocalNotification.cs" />
+    <Compile Include="Android\AndroidNotificationServices.cs" />
+    <Compile Include="Android\AndroidNotificationType.cs" />
+    <Compile Include="Area730\Notifications\AndroidNotifications.cs" />
+    <Compile Include="Area730\Notifications\ColorUtils.cs" />
+    <Compile Include="Area730\Notifications\DataHolder.cs" />
+    <Compile Include="Area730\Notifications\Notification.cs" />
+    <Compile Include="Area730\Notifications\NotificationBuilder.cs" />
+    <Compile Include="Area730\Notifications\NotificationInstance.cs" />
+    <Compile Include="Area730\Notifications\NotificationTracker.cs" />
+    <Compile Include="GooglePlayGamesConstants.cs" />
+    <Compile Include="Appboy\AppboyBinding.cs" />
+    <Compile Include="Appboy\AppboyBindingTester.cs" />
+    <Compile Include="ApplePushNotificationTester.cs" />
+    <Compile Include="Appboy\Utilities\CollectionUtils.cs" />
+    <Compile Include="Appboy\Utilities\ColorUtils.cs" />
+    <Compile Include="Appboy\Utilities\EnumUtils.cs" />
+    <Compile Include="Appboy\Utilities\JsonUtils.cs" />
+    <Compile Include="Appboy\Utilities\JSONBinaryTag.cs" />
+    <Compile Include="Appboy\Utilities\JSONNode.cs" />
+    <Compile Include="Appboy\Utilities\JSONArray.cs" />
+    <Compile Include="Appboy\Utilities\JSONClass.cs" />
+    <Compile Include="Appboy\Utilities\JSONData.cs" />
+    <Compile Include="Appboy\Utilities\JSONLazyCreator.cs" />
+    <Compile Include="Appboy\Utilities\JSON.cs" />
+    <Compile Include="Appboy\Models\AppboyNotificationSubscriptionType.cs" />
+    <Compile Include="Appboy\Models\ApplePushNotification.cs" />
+    <Compile Include="Appboy\Models\ApplePushNotificationAlert.cs" />
+    <Compile Include="Appboy\Models\CardCategory.cs" />
+    <Compile Include="Appboy\Models\Cards\BannerCard.cs" />
+    <Compile Include="Appboy\Models\Cards\CaptionedImageCard.cs" />
+    <Compile Include="Appboy\Models\Cards\Card.cs" />
+    <Compile Include="Appboy\Models\Cards\ClassicCard.cs" />
+    <Compile Include="Appboy\Models\Cards\CrossPromotionSmallCard.cs" />
+    <Compile Include="Appboy\Models\Cards\TextAnnouncementCard.cs" />
+    <Compile Include="Appboy\Models\ClickAction.cs" />
+    <Compile Include="Appboy\Models\DismissType.cs" />
+    <Compile Include="Appboy\Models\Feed.cs" />
+    <Compile Include="Appboy\Models\Gender.cs" />
+    <Compile Include="Appboy\Models\InAppMessage\IInAppMessage.cs" />
+    <Compile Include="Appboy\Models\InAppMessage\IInAppMessageImmersive.cs" />
+    <Compile Include="Appboy\Models\InAppMessage\InAppMessageBase.cs" />
+    <Compile Include="Appboy\Models\InAppMessage\InAppMessageButton.cs" />
+    <Compile Include="Appboy\Models\InAppMessage\InAppMessageConstants.cs" />
+    <Compile Include="Appboy\Models\InAppMessage\InAppMessageFactory.cs" />
+    <Compile Include="Appboy\Models\InAppMessage\InAppMessageFull.cs" />
+    <Compile Include="Appboy\Models\InAppMessage\InAppMessageImmersiveBase.cs" />
+    <Compile Include="Appboy\Models\InAppMessage\InAppMessageModal.cs" />
+    <Compile Include="Appboy\Models\InAppMessage\InAppMessageSlideup.cs" />
+    <Compile Include="Appboy\Models\InAppMessage\InAppMessageType.cs" />
+    <Compile Include="Appboy\Models\PushNotification.cs" />
+    <Compile Include="Appboy\Models\SlideFrom.cs" />
+    <Compile Include="AppsFlyer.cs" />
+    <Compile Include="MATSDK\MATAdMetadata.cs" />
+    <Compile Include="MATAdSample.cs" />
+    <Compile Include="MATSDK\MATAndroid.cs" />
+    <Compile Include="MATSDK\MATBinding.cs" />
+    <Compile Include="MATSDK\MATDelegate.cs" />
+    <Compile Include="MATSDK\MATExterns.cs" />
+    <Compile Include="MATSample.cs" />
+    <Compile Include="MATSDK\MATAdGender.cs" />
+    <Compile Include="MATSDK\MATBannerPosition.cs" />
+    <Compile Include="MATSDK\MATEvent.cs" />
+    <Compile Include="MATSDK\MATEventIos.cs" />
+    <Compile Include="MATSDK\MATItem.cs" />
+    <Compile Include="MATSDK\MATItemIos.cs" />
+    <Compile Include="MATSDK\MATPreloadData.cs" />
+    <Compile Include="Prime31\GoogleIAB.cs" />
+    <Compile Include="Prime31\GoogleIABManager.cs" />
+    <Compile Include="Prime31\GooglePurchase.cs" />
+    <Compile Include="Prime31\GoogleSkuInfo.cs" />
+    <Reference Include="UnityEngine.Analytics">
+      <HintPath>..\library\UnityEngine.Analytics.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.Networking">
+      <HintPath>..\library\UnityEngine.Networking.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UI">
+      <HintPath>..\library\UnityEngine.UI.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+</Project>

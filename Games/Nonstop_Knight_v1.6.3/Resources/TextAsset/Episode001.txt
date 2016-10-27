@@ -1,0 +1,10 @@
+{
+	"Name" : "Cave of Trials",
+	"DungeonIds": [
+		"1",
+		"2",
+		"3",
+		"4",
+		"5",
+	],
+}

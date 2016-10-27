@@ -1,0 +1,2047 @@
+Shader "Skybox/Procedural" {
+Properties {
+ _SunSize ("Sun size", Range(0,1)) = 0.04
+ _AtmosphereThickness ("Atmoshpere Thickness", Range(0,5)) = 1
+ _SkyTint ("Sky Tint", Color) = (0.5,0.5,0.5,1)
+ _GroundColor ("Ground", Color) = (0.369,0.349,0.341,1)
+ _Exposure ("Exposure", Range(0,8)) = 1.3
+}
+SubShader { 
+ Tags { "QUEUE"="Background" "RenderType"="Background" "PreviewType"="Skybox" }
+ Pass {
+  Tags { "QUEUE"="Background" "RenderType"="Background" "PreviewType"="Skybox" }
+  ZWrite Off
+  Cull Off
+  GpuProgramID 40715
+Program "vp" {
+SubProgram "gles " {
+"!!GLES
+#version 100
+
+#ifdef VERTEX
+attribute vec4 _glesVertex;
+uniform highp vec4 _WorldSpaceLightPos0;
+uniform highp mat4 glstate_matrix_mvp;
+uniform highp mat4 _Object2World;
+uniform lowp vec4 unity_ColorSpaceDouble;
+uniform mediump vec3 _SkyTint;
+uniform mediump float _AtmosphereThickness;
+varying mediump vec3 xlv_TEXCOORD0;
+varying mediump vec3 xlv_TEXCOORD1;
+varying mediump vec3 xlv_TEXCOORD2;
+void main ()
+{
+  highp float far_1;
+  highp float kKr4PI_2;
+  highp float kKrESun_3;
+  highp vec3 kSkyTintInGammaSpace_4;
+  highp vec4 tmpvar_5;
+  mediump vec3 tmpvar_6;
+  mediump vec3 tmpvar_7;
+  mediump vec3 tmpvar_8;
+  tmpvar_5 = (glstate_matrix_mvp * _glesVertex);
+  mediump vec3 tmpvar_9;
+  if ((unity_ColorSpaceDouble.x > 2.0)) {
+    tmpvar_9 = pow (_SkyTint, vec3(0.4545454, 0.4545454, 0.4545454));
+  } else {
+    tmpvar_9 = _SkyTint;
+  };
+  kSkyTintInGammaSpace_4 = tmpvar_9;
+  highp vec3 tmpvar_10;
+  tmpvar_10 = (1.0/(pow (mix (vec3(0.5, 0.42, 0.325), vec3(0.8, 0.72, 0.625), 
+    (vec3(1.0, 1.0, 1.0) - kSkyTintInGammaSpace_4)
+  ), vec3(4.0, 4.0, 4.0))));
+  mediump float tmpvar_11;
+  mediump float tmpvar_12;
+  tmpvar_12 = pow (_AtmosphereThickness, 2.5);
+  tmpvar_11 = (0.05 * tmpvar_12);
+  kKrESun_3 = tmpvar_11;
+  mediump float tmpvar_13;
+  tmpvar_13 = (0.03141593 * tmpvar_12);
+  kKr4PI_2 = tmpvar_13;
+  highp mat3 tmpvar_14;
+  tmpvar_14[0] = _Object2World[0].xyz;
+  tmpvar_14[1] = _Object2World[1].xyz;
+  tmpvar_14[2] = _Object2World[2].xyz;
+  highp vec3 tmpvar_15;
+  tmpvar_15 = normalize((tmpvar_14 * _glesVertex.xyz));
+  tmpvar_6 = -(tmpvar_15);
+  far_1 = 0.0;
+  if ((tmpvar_15.y >= 0.0)) {
+    highp vec3 frontColor_16;
+    highp vec3 samplePoint_17;
+    far_1 = (sqrt((
+      (1.050625 + (tmpvar_15.y * tmpvar_15.y))
+     - 1.0)) - tmpvar_15.y);
+    highp float tmpvar_18;
+    tmpvar_18 = (1.0 - (dot (tmpvar_15, vec3(0.0, 1.0001, 0.0)) / 1.0001));
+    highp float tmpvar_19;
+    tmpvar_19 = (exp((-0.00287 + 
+      (tmpvar_18 * (0.459 + (tmpvar_18 * (3.83 + 
+        (tmpvar_18 * (-6.8 + (tmpvar_18 * 5.25)))
+      ))))
+    )) * 0.2460318);
+    highp float tmpvar_20;
+    tmpvar_20 = (far_1 / 2.0);
+    highp float tmpvar_21;
+    tmpvar_21 = (tmpvar_20 * 40.00004);
+    highp vec3 tmpvar_22;
+    tmpvar_22 = (tmpvar_15 * tmpvar_20);
+    highp vec3 tmpvar_23;
+    tmpvar_23 = (vec3(0.0, 1.0001, 0.0) + (tmpvar_22 * 0.5));
+    highp float tmpvar_24;
+    tmpvar_24 = sqrt(dot (tmpvar_23, tmpvar_23));
+    highp float tmpvar_25;
+    tmpvar_25 = exp((160.0002 * (1.0 - tmpvar_24)));
+    highp float tmpvar_26;
+    tmpvar_26 = (1.0 - (dot (_WorldSpaceLightPos0.xyz, tmpvar_23) / tmpvar_24));
+    highp float tmpvar_27;
+    tmpvar_27 = (1.0 - (dot (tmpvar_15, tmpvar_23) / tmpvar_24));
+    frontColor_16 = (exp((
+      -(clamp ((tmpvar_19 + (tmpvar_25 * 
+        ((0.25 * exp((-0.00287 + 
+          (tmpvar_26 * (0.459 + (tmpvar_26 * (3.83 + 
+            (tmpvar_26 * (-6.8 + (tmpvar_26 * 5.25)))
+          ))))
+        ))) - (0.25 * exp((-0.00287 + 
+          (tmpvar_27 * (0.459 + (tmpvar_27 * (3.83 + 
+            (tmpvar_27 * (-6.8 + (tmpvar_27 * 5.25)))
+          ))))
+        ))))
+      )), 0.0, 50.0))
+     * 
+      ((tmpvar_10 * kKr4PI_2) + 0.01256637)
+    )) * (tmpvar_25 * tmpvar_21));
+    samplePoint_17 = (tmpvar_23 + tmpvar_22);
+    highp float tmpvar_28;
+    tmpvar_28 = sqrt(dot (samplePoint_17, samplePoint_17));
+    highp float tmpvar_29;
+    tmpvar_29 = exp((160.0002 * (1.0 - tmpvar_28)));
+    highp float tmpvar_30;
+    tmpvar_30 = (1.0 - (dot (_WorldSpaceLightPos0.xyz, samplePoint_17) / tmpvar_28));
+    highp float tmpvar_31;
+    tmpvar_31 = (1.0 - (dot (tmpvar_15, samplePoint_17) / tmpvar_28));
+    frontColor_16 = (frontColor_16 + (exp(
+      (-(clamp ((tmpvar_19 + 
+        (tmpvar_29 * ((0.25 * exp(
+          (-0.00287 + (tmpvar_30 * (0.459 + (tmpvar_30 * 
+            (3.83 + (tmpvar_30 * (-6.8 + (tmpvar_30 * 5.25))))
+          ))))
+        )) - (0.25 * exp(
+          (-0.00287 + (tmpvar_31 * (0.459 + (tmpvar_31 * 
+            (3.83 + (tmpvar_31 * (-6.8 + (tmpvar_31 * 5.25))))
+          ))))
+        ))))
+      ), 0.0, 50.0)) * ((tmpvar_10 * kKr4PI_2) + 0.01256637))
+    ) * (tmpvar_29 * tmpvar_21)));
+    samplePoint_17 = (samplePoint_17 + tmpvar_22);
+    tmpvar_7 = (frontColor_16 * (tmpvar_10 * kKrESun_3));
+    tmpvar_8 = (frontColor_16 * 0.02);
+  } else {
+    highp vec3 frontColor_1_32;
+    far_1 = (-0.0001 / min (-0.001, tmpvar_15.y));
+    highp vec3 tmpvar_33;
+    tmpvar_33 = (vec3(0.0, 1.0001, 0.0) + (far_1 * tmpvar_15));
+    highp float tmpvar_34;
+    highp float tmpvar_35;
+    tmpvar_35 = (1.0 - dot (-(tmpvar_15), tmpvar_33));
+    tmpvar_34 = (0.25 * exp((-0.00287 + 
+      (tmpvar_35 * (0.459 + (tmpvar_35 * (3.83 + 
+        (tmpvar_35 * (-6.8 + (tmpvar_35 * 5.25)))
+      ))))
+    )));
+    highp float tmpvar_36;
+    tmpvar_36 = (1.0 - dot (_WorldSpaceLightPos0.xyz, tmpvar_33));
+    highp float tmpvar_37;
+    tmpvar_37 = (far_1 / 2.0);
+    highp vec3 tmpvar_38;
+    tmpvar_38 = (vec3(0.0, 1.0001, 0.0) + ((tmpvar_15 * tmpvar_37) * 0.5));
+    highp float tmpvar_39;
+    tmpvar_39 = exp((160.0002 * (1.0 - 
+      sqrt(dot (tmpvar_38, tmpvar_38))
+    )));
+    highp vec3 tmpvar_40;
+    tmpvar_40 = exp((-(
+      clamp (((tmpvar_39 * (
+        (0.25 * exp((-0.00287 + (tmpvar_36 * 
+          (0.459 + (tmpvar_36 * (3.83 + (tmpvar_36 * 
+            (-6.8 + (tmpvar_36 * 5.25))
+          ))))
+        ))))
+       + tmpvar_34)) - (0.9996001 * tmpvar_34)), 0.0, 50.0)
+    ) * (
+      (tmpvar_10 * kKr4PI_2)
+     + 0.01256637)));
+    frontColor_1_32 = (tmpvar_40 * (tmpvar_39 * (tmpvar_37 * 40.00004)));
+    tmpvar_7 = (frontColor_1_32 * ((tmpvar_10 * kKrESun_3) + 0.02));
+    highp vec3 tmpvar_41;
+    tmpvar_41 = clamp (tmpvar_40, vec3(0.0, 0.0, 0.0), vec3(1.0, 1.0, 1.0));
+    tmpvar_8 = tmpvar_41;
+  };
+  gl_Position = tmpvar_5;
+  xlv_TEXCOORD0 = tmpvar_6;
+  xlv_TEXCOORD1 = tmpvar_7;
+  xlv_TEXCOORD2 = tmpvar_8;
+}
+
+
+#endif
+#ifdef FRAGMENT
+uniform highp vec4 _WorldSpaceLightPos0;
+uniform lowp vec4 _LightColor0;
+uniform mediump float _Exposure;
+uniform mediump vec3 _GroundColor;
+uniform mediump float _SunSize;
+varying mediump vec3 xlv_TEXCOORD0;
+varying mediump vec3 xlv_TEXCOORD1;
+varying mediump vec3 xlv_TEXCOORD2;
+void main ()
+{
+  mediump vec3 col_1;
+  col_1 = vec3(0.0, 0.0, 0.0);
+  if ((xlv_TEXCOORD0.y < 0.02)) {
+    mediump float eyeCos_2;
+    mediump vec3 tmpvar_3;
+    tmpvar_3 = normalize(xlv_TEXCOORD0);
+    highp float tmpvar_4;
+    tmpvar_4 = dot (_WorldSpaceLightPos0.xyz, tmpvar_3);
+    eyeCos_2 = tmpvar_4;
+    mediump float tmpvar_5;
+    mediump vec3 vec1_6;
+    vec1_6 = _WorldSpaceLightPos0.xyz;
+    mediump vec3 tmpvar_7;
+    tmpvar_7 = (vec1_6 - -(tmpvar_3));
+    mediump float tmpvar_8;
+    tmpvar_8 = clamp ((sqrt(
+      dot (tmpvar_7, tmpvar_7)
+    ) / _SunSize), 0.0, 1.0);
+    mediump float tmpvar_9;
+    tmpvar_9 = (1.0 - (tmpvar_8 * (tmpvar_8 * 
+      (3.0 - (2.0 * tmpvar_8))
+    )));
+    tmpvar_5 = ((8000.0 * tmpvar_9) * tmpvar_9);
+    col_1 = ((0.75 + (0.75 * 
+      (eyeCos_2 * eyeCos_2)
+    )) * xlv_TEXCOORD1);
+    if ((xlv_TEXCOORD0.y < 0.0)) {
+      col_1 = (col_1 + ((tmpvar_5 * xlv_TEXCOORD2) * _LightColor0.xyz));
+    } else {
+      col_1 = mix (col_1, (xlv_TEXCOORD1 + (_GroundColor * xlv_TEXCOORD2)), vec3((xlv_TEXCOORD0.y / 0.02)));
+    };
+  } else {
+    col_1 = (xlv_TEXCOORD1 + (_GroundColor * xlv_TEXCOORD2));
+  };
+  col_1 = (col_1 * _Exposure);
+  mediump vec4 tmpvar_10;
+  tmpvar_10.w = 1.0;
+  tmpvar_10.xyz = col_1;
+  gl_FragData[0] = tmpvar_10;
+}
+
+
+#endif
+"
+}
+SubProgram "gles3 " {
+"!!GLES3
+#ifdef VERTEX
+#version 300 es
+precision highp float;
+precision highp int;
+uniform 	vec4 _Time;
+uniform 	vec4 _SinTime;
+uniform 	vec4 _CosTime;
+uniform 	vec4 unity_DeltaTime;
+uniform 	vec3 _WorldSpaceCameraPos;
+uniform 	vec4 _ProjectionParams;
+uniform 	vec4 _ScreenParams;
+uniform 	vec4 _ZBufferParams;
+uniform 	vec4 unity_OrthoParams;
+uniform 	vec4 unity_CameraWorldClipPlanes[6];
+uniform 	mat4 unity_CameraProjection;
+uniform 	mat4 unity_CameraInvProjection;
+uniform 	vec4 _WorldSpaceLightPos0;
+uniform 	vec4 _LightPositionRange;
+uniform 	vec4 unity_4LightPosX0;
+uniform 	vec4 unity_4LightPosY0;
+uniform 	vec4 unity_4LightPosZ0;
+uniform 	mediump vec4 unity_4LightAtten0;
+uniform 	mediump vec4 unity_LightColor[8];
+uniform 	vec4 unity_LightPosition[8];
+uniform 	mediump vec4 unity_LightAtten[8];
+uniform 	vec4 unity_SpotDirection[8];
+uniform 	mediump vec4 unity_SHAr;
+uniform 	mediump vec4 unity_SHAg;
+uniform 	mediump vec4 unity_SHAb;
+uniform 	mediump vec4 unity_SHBr;
+uniform 	mediump vec4 unity_SHBg;
+uniform 	mediump vec4 unity_SHBb;
+uniform 	mediump vec4 unity_SHC;
+uniform 	mediump vec3 unity_LightColor0;
+uniform 	mediump vec3 unity_LightColor1;
+uniform 	mediump vec3 unity_LightColor2;
+uniform 	mediump vec3 unity_LightColor3;
+uniform 	vec4 unity_ShadowSplitSpheres[4];
+uniform 	vec4 unity_ShadowSplitSqRadii;
+uniform 	vec4 unity_LightShadowBias;
+uniform 	vec4 _LightSplitsNear;
+uniform 	vec4 _LightSplitsFar;
+uniform 	mat4 unity_World2Shadow[4];
+uniform 	mediump vec4 _LightShadowData;
+uniform 	vec4 unity_ShadowFadeCenterAndType;
+uniform 	mat4 glstate_matrix_mvp;
+uniform 	mat4 glstate_matrix_modelview0;
+uniform 	mat4 glstate_matrix_invtrans_modelview0;
+uniform 	mat4 _Object2World;
+uniform 	mat4 _World2Object;
+uniform 	vec4 unity_LODFade;
+uniform 	mat4 glstate_matrix_transpose_modelview0;
+uniform 	mat4 glstate_matrix_projection;
+uniform 	lowp vec4 glstate_lightmodel_ambient;
+uniform 	mat4 unity_MatrixV;
+uniform 	mat4 unity_MatrixVP;
+uniform 	lowp vec4 unity_AmbientSky;
+uniform 	lowp vec4 unity_AmbientEquator;
+uniform 	lowp vec4 unity_AmbientGround;
+uniform 	lowp vec4 unity_FogColor;
+uniform 	vec4 unity_FogParams;
+uniform 	vec4 unity_LightmapST;
+uniform 	vec4 unity_DynamicLightmapST;
+uniform 	vec4 unity_SpecCube0_BoxMax;
+uniform 	vec4 unity_SpecCube0_BoxMin;
+uniform 	vec4 unity_SpecCube0_ProbePosition;
+uniform 	mediump vec4 unity_SpecCube0_HDR;
+uniform 	vec4 unity_SpecCube1_BoxMax;
+uniform 	vec4 unity_SpecCube1_BoxMin;
+uniform 	vec4 unity_SpecCube1_ProbePosition;
+uniform 	mediump vec4 unity_SpecCube1_HDR;
+uniform 	lowp vec4 unity_ColorSpaceGrey;
+uniform 	lowp vec4 unity_ColorSpaceDouble;
+uniform 	mediump vec4 unity_ColorSpaceDielectricSpec;
+uniform 	mediump vec4 unity_ColorSpaceLuminance;
+uniform 	mediump vec4 unity_Lightmap_HDR;
+uniform 	mediump vec4 unity_DynamicLightmap_HDR;
+uniform 	lowp vec4 _LightColor0;
+uniform 	lowp vec4 _SpecColor;
+uniform 	mediump vec4 unity_LightGammaCorrectionConsts;
+uniform 	mediump float _Exposure;
+uniform 	mediump vec3 _GroundColor;
+uniform 	mediump float _SunSize;
+uniform 	mediump vec3 _SkyTint;
+uniform 	mediump float _AtmosphereThickness;
+in highp vec4 in_POSITION0;
+out mediump vec3 vs_TEXCOORD0;
+out mediump vec3 vs_TEXCOORD1;
+out mediump vec3 vs_TEXCOORD2;
+highp vec4 t0;
+bool tb0;
+mediump vec3 t16_1;
+highp vec4 t2;
+highp vec4 t3;
+bool tb3;
+highp vec3 t4;
+highp vec3 t5;
+highp vec3 t6;
+highp float t9;
+highp vec2 t10;
+highp float t11;
+highp float t17;
+highp float t18;
+highp float t21;
+highp float t24;
+highp float t25;
+void main()
+{
+    //Instruction 2592
+    //MUL
+    t0 = in_POSITION0.yyyy * glstate_matrix_mvp[1];
+    //Instruction 2593
+    //MAD
+    t0 = glstate_matrix_mvp[0] * in_POSITION0.xxxx + t0;
+    //Instruction 2594
+    //MAD
+    t0 = glstate_matrix_mvp[2] * in_POSITION0.zzzz + t0;
+    //Instruction 2595
+    //MAD
+    gl_Position = glstate_matrix_mvp[3] * in_POSITION0.wwww + t0;
+    //Instruction 2596
+    //LT
+    tb0 = 2.0<unity_ColorSpaceDouble.x;
+    //Instruction 2597
+    //LOG
+    t16_1.xyz = log2(vec3(_SkyTint.x, _SkyTint.y, _SkyTint.z));
+    //Instruction 2598
+    //MUL
+    t16_1.xyz = t16_1.xyz * vec3(0.454545468, 0.454545468, 0.454545468);
+    //Instruction 2599
+    //EXP
+    t16_1.xyz = exp2(t16_1.xyz);
+    //Instruction 2600
+    //MOVC
+    t16_1.xyz = (bool(tb0)) ? t16_1.xyz : vec3(_SkyTint.x, _SkyTint.y, _SkyTint.z);
+    //Instruction 2601
+    //ADD
+    t0.xyz = (-t16_1.xyz) + vec3(1.0, 1.0, 1.0);
+    //Instruction 2602
+    //MAD
+    t0.xyz = t0.xyz * vec3(0.300000012, 0.300000042, 0.300000012) + vec3(0.5, 0.419999987, 0.324999988);
+    //Instruction 2603
+    //MUL
+    t0.xyz = t0.xyz * t0.xyz;
+    //Instruction 2604
+    //MUL
+    t0.xyz = t0.xyz * t0.xyz;
+    //Instruction 2605
+    //DIV
+    t0.xyz = vec3(1.0, 1.0, 1.0) / t0.xyz;
+    //Instruction 2606
+    //LOG
+    t16_1.x = log2(_AtmosphereThickness);
+    //Instruction 2607
+    //MUL
+    t16_1.x = t16_1.x * 2.5;
+    //Instruction 2608
+    //EXP
+    t16_1.x = exp2(t16_1.x);
+    //Instruction 2609
+    //MUL
+    t16_1.xy = t16_1.xx * vec2(0.049999997, 0.0314159282);
+    //Instruction 2610
+    //MUL
+    t2.xyz = in_POSITION0.yyy * _Object2World[1].xyz;
+    //Instruction 2611
+    //MAD
+    t2.xyz = _Object2World[0].xyz * in_POSITION0.xxx + t2.xyz;
+    //Instruction 2612
+    //MAD
+    t2.xyz = _Object2World[2].xyz * in_POSITION0.zzz + t2.xyz;
+    //Instruction 2613
+    //DP3
+    t21 = dot(t2.xyz, t2.xyz);
+    //Instruction 2614
+    //RSQ
+    t21 = inversesqrt(t21);
+    //Instruction 2615
+    //MUL
+    t2.xzw = vec3(t21) * t2.xyz;
+    //Instruction 2616
+    //GE
+    tb3 = t2.z>=0.0;
+    //Instruction 2617
+    //IF
+    if(tb3){
+        //Instruction 2618
+        //MAD
+        t3.x = t2.z * t2.z + 0.0506249666;
+        //Instruction 2619
+        //SQRT
+        t3.x = sqrt(t3.x);
+        //Instruction 2620
+        //MAD
+        t3.x = (-t2.y) * t21 + t3.x;
+        //Instruction 2621
+        //MAD
+        t21 = (-t2.y) * t21 + 1.0;
+        //Instruction 2622
+        //MAD
+        t9 = t21 * 5.25 + -6.80000019;
+        //Instruction 2623
+        //MAD
+        t9 = t21 * t9 + 3.82999992;
+        //Instruction 2624
+        //MAD
+        t9 = t21 * t9 + 0.458999991;
+        //Instruction 2625
+        //MAD
+        t21 = t21 * t9 + -0.00286999997;
+        //Instruction 2626
+        //MUL
+        t21 = t21 * 1.44269502;
+        //Instruction 2627
+        //EXP
+        t21 = exp2(t21);
+        //Instruction 2628
+        //MUL
+        t21 = t21 * 0.246031836;
+        //Instruction 2629
+        //MUL
+        t3.xy = t3.xx * vec2(0.5, 20.0);
+        //Instruction 2630
+        //MUL
+        t4.xyz = t2.xzw * t3.xxx;
+        //Instruction 2631
+        //MAD
+        t4.xyz = t4.xyz * vec3(0.5, 0.5, 0.5) + vec3(0.0, 1.00010002, 0.0);
+        //Instruction 2632
+        //DP3
+        t9 = dot(t4.xyz, t4.xyz);
+        //Instruction 2633
+        //SQRT
+        t9 = sqrt(t9);
+        //Instruction 2634
+        //ADD
+        t17 = (-t9) + 1.0;
+        //Instruction 2635
+        //MUL
+        t17 = t17 * 230.831207;
+        //Instruction 2636
+        //EXP
+        t17 = exp2(t17);
+        //Instruction 2637
+        //DP3
+        t24 = dot(_WorldSpaceLightPos0.xyz, t4.xyz);
+        //Instruction 2638
+        //DIV
+        t24 = t24 / t9;
+        //Instruction 2639
+        //DP3
+        t25 = dot(t2.xzw, t4.xyz);
+        //Instruction 2640
+        //DIV
+        t9 = t25 / t9;
+        //Instruction 2641
+        //ADD
+        t24 = (-t24) + 1.0;
+        //Instruction 2642
+        //MAD
+        t25 = t24 * 5.25 + -6.80000019;
+        //Instruction 2643
+        //MAD
+        t25 = t24 * t25 + 3.82999992;
+        //Instruction 2644
+        //MAD
+        t25 = t24 * t25 + 0.458999991;
+        //Instruction 2645
+        //MAD
+        t24 = t24 * t25 + -0.00286999997;
+        //Instruction 2646
+        //MUL
+        t24 = t24 * 1.44269502;
+        //Instruction 2647
+        //EXP
+        t24 = exp2(t24);
+        //Instruction 2648
+        //ADD
+        t9 = (-t9) + 1.0;
+        //Instruction 2649
+        //MAD
+        t25 = t9 * 5.25 + -6.80000019;
+        //Instruction 2650
+        //MAD
+        t25 = t9 * t25 + 3.82999992;
+        //Instruction 2651
+        //MAD
+        t25 = t9 * t25 + 0.458999991;
+        //Instruction 2652
+        //MAD
+        t9 = t9 * t25 + -0.00286999997;
+        //Instruction 2653
+        //MUL
+        t9 = t9 * 1.44269502;
+        //Instruction 2654
+        //EXP
+        t9 = exp2(t9);
+        //Instruction 2655
+        //MUL
+        t9 = t9 * 0.25;
+        //Instruction 2656
+        //MAD
+        t9 = t24 * 0.25 + (-t9);
+        //Instruction 2657
+        //MAD
+        t9 = t17 * t9 + t21;
+        //Instruction 2658
+        //MAX
+        t9 = max(t9, 0.0);
+        //Instruction 2659
+        //MIN
+        t9 = min(t9, 50.0);
+        //Instruction 2660
+        //MAD
+        t5.xyz = t0.xyz * t16_1.yyy + vec3(0.0125663709, 0.0125663709, 0.0125663709);
+        //Instruction 2661
+        //MUL
+        t6.xyz = (-vec3(t9)) * t5.xyz;
+        //Instruction 2662
+        //MUL
+        t6.xyz = t6.xyz * vec3(1.44269502, 1.44269502, 1.44269502);
+        //Instruction 2663
+        //EXP
+        t6.xyz = exp2(t6.xyz);
+        //Instruction 2664
+        //MUL
+        t9 = t3.y * t17;
+        //Instruction 2665
+        //MAD
+        t3.xzw = t2.xzw * t3.xxx + t4.xyz;
+        //Instruction 2666
+        //DP3
+        t4.x = dot(t3.xzw, t3.xzw);
+        //Instruction 2667
+        //SQRT
+        t4.x = sqrt(t4.x);
+        //Instruction 2668
+        //ADD
+        t11 = (-t4.x) + 1.0;
+        //Instruction 2669
+        //MUL
+        t11 = t11 * 230.831207;
+        //Instruction 2670
+        //EXP
+        t11 = exp2(t11);
+        //Instruction 2671
+        //DP3
+        t18 = dot(_WorldSpaceLightPos0.xyz, t3.xzw);
+        //Instruction 2672
+        //DIV
+        t18 = t18 / t4.x;
+        //Instruction 2673
+        //DP3
+        t3.x = dot(t2.xzw, t3.xzw);
+        //Instruction 2674
+        //DIV
+        t3.x = t3.x / t4.x;
+        //Instruction 2675
+        //ADD
+        t17 = (-t18) + 1.0;
+        //Instruction 2676
+        //MAD
+        t24 = t17 * 5.25 + -6.80000019;
+        //Instruction 2677
+        //MAD
+        t24 = t17 * t24 + 3.82999992;
+        //Instruction 2678
+        //MAD
+        t24 = t17 * t24 + 0.458999991;
+        //Instruction 2679
+        //MAD
+        t17 = t17 * t24 + -0.00286999997;
+        //Instruction 2680
+        //MUL
+        t17 = t17 * 1.44269502;
+        //Instruction 2681
+        //EXP
+        t17 = exp2(t17);
+        //Instruction 2682
+        //ADD
+        t3.x = (-t3.x) + 1.0;
+        //Instruction 2683
+        //MAD
+        t24 = t3.x * 5.25 + -6.80000019;
+        //Instruction 2684
+        //MAD
+        t24 = t3.x * t24 + 3.82999992;
+        //Instruction 2685
+        //MAD
+        t24 = t3.x * t24 + 0.458999991;
+        //Instruction 2686
+        //MAD
+        t3.x = t3.x * t24 + -0.00286999997;
+        //Instruction 2687
+        //MUL
+        t3.x = t3.x * 1.44269502;
+        //Instruction 2688
+        //EXP
+        t3.x = exp2(t3.x);
+        //Instruction 2689
+        //MUL
+        t3.x = t3.x * 0.25;
+        //Instruction 2690
+        //MAD
+        t3.x = t17 * 0.25 + (-t3.x);
+        //Instruction 2691
+        //MAD
+        t21 = t11 * t3.x + t21;
+        //Instruction 2692
+        //MAX
+        t21 = max(t21, 0.0);
+        //Instruction 2693
+        //MIN
+        t21 = min(t21, 50.0);
+        //Instruction 2694
+        //MUL
+        t3.xzw = t5.xyz * (-vec3(t21));
+        //Instruction 2695
+        //MUL
+        t3.xzw = t3.xzw * vec3(1.44269502, 1.44269502, 1.44269502);
+        //Instruction 2696
+        //EXP
+        t3.xzw = exp2(t3.xzw);
+        //Instruction 2697
+        //MUL
+        t21 = t3.y * t11;
+        //Instruction 2698
+        //MUL
+        t3.xyz = vec3(t21) * t3.xzw;
+        //Instruction 2699
+        //MAD
+        t3.xyz = t6.xyz * vec3(t9) + t3.xyz;
+        //Instruction 2700
+        //MUL
+        t4.xyz = t0.xyz * t16_1.xxx;
+        //Instruction 2701
+        //MUL
+        t4.xyz = t3.xyz * t4.xyz;
+        //Instruction 2702
+        //MUL
+        t3.xyz = t3.xyz * vec3(0.0199999996, 0.0199999996, 0.0199999996);
+        //Instruction 2703
+        //MOV
+        vs_TEXCOORD1.xyz = t4.xyz;
+        //Instruction 2704
+        //MOV
+        vs_TEXCOORD2.xyz = t3.xyz;
+        //Instruction 2705
+    //ELSE
+    } else {
+        //Instruction 2706
+        //MIN
+        t21 = min(t2.z, -0.00100000005);
+        //Instruction 2707
+        //DIV
+        t21 = -9.99999975e-05 / t21;
+        //Instruction 2708
+        //MAD
+        t3.xyz = vec3(t21) * t2.xzw + vec3(0.0, 1.00010002, 0.0);
+        //Instruction 2709
+        //DP3
+        t9 = dot((-t2.xzw), t3.xyz);
+        //Instruction 2710
+        //DP3
+        t3.x = dot(_WorldSpaceLightPos0.xyz, t3.xyz);
+        //Instruction 2711
+        //ADD
+        t9 = (-t9) + 1.0;
+        //Instruction 2712
+        //MAD
+        t10.x = t9 * 5.25 + -6.80000019;
+        //Instruction 2713
+        //MAD
+        t10.x = t9 * t10.x + 3.82999992;
+        //Instruction 2714
+        //MAD
+        t10.x = t9 * t10.x + 0.458999991;
+        //Instruction 2715
+        //MAD
+        t9 = t9 * t10.x + -0.00286999997;
+        //Instruction 2716
+        //MUL
+        t9 = t9 * 1.44269502;
+        //Instruction 2717
+        //EXP
+        t9 = exp2(t9);
+        //Instruction 2718
+        //ADD
+        t3.x = (-t3.x) + 1.0;
+        //Instruction 2719
+        //MAD
+        t10.x = t3.x * 5.25 + -6.80000019;
+        //Instruction 2720
+        //MAD
+        t10.x = t3.x * t10.x + 3.82999992;
+        //Instruction 2721
+        //MAD
+        t10.x = t3.x * t10.x + 0.458999991;
+        //Instruction 2722
+        //MAD
+        t3.x = t3.x * t10.x + -0.00286999997;
+        //Instruction 2723
+        //MUL
+        t3.x = t3.x * 1.44269502;
+        //Instruction 2724
+        //EXP
+        t3.x = exp2(t3.x);
+        //Instruction 2725
+        //MUL
+        t10.xy = vec2(t9) * vec2(0.25, 0.249900013);
+        //Instruction 2726
+        //MAD
+        t9 = t3.x * 0.25 + t10.x;
+        //Instruction 2727
+        //MUL
+        t3.xy = vec2(t21) * vec2(0.5, 20.0);
+        //Instruction 2728
+        //MUL
+        t4.xyz = t2.xzw * t3.xxx;
+        //Instruction 2729
+        //MAD
+        t4.xyz = t4.xyz * vec3(0.5, 0.5, 0.5) + vec3(0.0, 1.00010002, 0.0);
+        //Instruction 2730
+        //DP3
+        t21 = dot(t4.xyz, t4.xyz);
+        //Instruction 2731
+        //SQRT
+        t21 = sqrt(t21);
+        //Instruction 2732
+        //ADD
+        t21 = (-t21) + 1.0;
+        //Instruction 2733
+        //MUL
+        t21 = t21 * 230.831207;
+        //Instruction 2734
+        //EXP
+        t21 = exp2(t21);
+        //Instruction 2735
+        //MAD
+        t9 = t21 * t9 + (-t10.y);
+        //Instruction 2736
+        //MAX
+        t9 = max(t9, 0.0);
+        //Instruction 2737
+        //MIN
+        t9 = min(t9, 50.0);
+        //Instruction 2738
+        //MAD
+        t3.xzw = t0.xyz * t16_1.yyy + vec3(0.0125663709, 0.0125663709, 0.0125663709);
+        //Instruction 2739
+        //MUL
+        t3.xzw = (-vec3(t9)) * t3.xzw;
+        //Instruction 2740
+        //MUL
+        t3.xzw = t3.xzw * vec3(1.44269502, 1.44269502, 1.44269502);
+        //Instruction 2741
+        //EXP
+        t3.xzw = exp2(t3.xzw);
+        //Instruction 2742
+        //MUL
+        t21 = t3.y * t21;
+        //Instruction 2743
+        //MUL
+        t4.xyz = vec3(t21) * t3.xzw;
+        //Instruction 2744
+        //MAD
+        t0.xyz = t0.xyz * t16_1.xxx + vec3(0.0199999996, 0.0199999996, 0.0199999996);
+        //Instruction 2745
+        //MUL
+        t0.xyz = t0.xyz * t4.xyz;
+        //Instruction 2746
+        //MOV
+        vs_TEXCOORD1.xyz = t0.xyz;
+        //Instruction 2747
+        //MOV
+        vs_TEXCOORD2.xyz = t3.xzw;
+        //Instruction 2748
+    //ENDIF
+    }
+    //Instruction 2749
+    //MOV
+    vs_TEXCOORD0.xyz = (-t2.xzw);
+    //Instruction 2750
+    //RET
+    return;
+}
+
+#endif
+#ifdef FRAGMENT
+#version 300 es
+precision highp float;
+precision highp int;
+uniform 	vec4 _Time;
+uniform 	vec4 _SinTime;
+uniform 	vec4 _CosTime;
+uniform 	vec4 unity_DeltaTime;
+uniform 	vec3 _WorldSpaceCameraPos;
+uniform 	vec4 _ProjectionParams;
+uniform 	vec4 _ScreenParams;
+uniform 	vec4 _ZBufferParams;
+uniform 	vec4 unity_OrthoParams;
+uniform 	vec4 unity_CameraWorldClipPlanes[6];
+uniform 	mat4 unity_CameraProjection;
+uniform 	mat4 unity_CameraInvProjection;
+uniform 	vec4 _WorldSpaceLightPos0;
+uniform 	vec4 _LightPositionRange;
+uniform 	vec4 unity_4LightPosX0;
+uniform 	vec4 unity_4LightPosY0;
+uniform 	vec4 unity_4LightPosZ0;
+uniform 	mediump vec4 unity_4LightAtten0;
+uniform 	mediump vec4 unity_LightColor[8];
+uniform 	vec4 unity_LightPosition[8];
+uniform 	mediump vec4 unity_LightAtten[8];
+uniform 	vec4 unity_SpotDirection[8];
+uniform 	mediump vec4 unity_SHAr;
+uniform 	mediump vec4 unity_SHAg;
+uniform 	mediump vec4 unity_SHAb;
+uniform 	mediump vec4 unity_SHBr;
+uniform 	mediump vec4 unity_SHBg;
+uniform 	mediump vec4 unity_SHBb;
+uniform 	mediump vec4 unity_SHC;
+uniform 	mediump vec3 unity_LightColor0;
+uniform 	mediump vec3 unity_LightColor1;
+uniform 	mediump vec3 unity_LightColor2;
+uniform 	mediump vec3 unity_LightColor3;
+uniform 	vec4 unity_ShadowSplitSpheres[4];
+uniform 	vec4 unity_ShadowSplitSqRadii;
+uniform 	vec4 unity_LightShadowBias;
+uniform 	vec4 _LightSplitsNear;
+uniform 	vec4 _LightSplitsFar;
+uniform 	mat4 unity_World2Shadow[4];
+uniform 	mediump vec4 _LightShadowData;
+uniform 	vec4 unity_ShadowFadeCenterAndType;
+uniform 	mat4 glstate_matrix_mvp;
+uniform 	mat4 glstate_matrix_modelview0;
+uniform 	mat4 glstate_matrix_invtrans_modelview0;
+uniform 	mat4 _Object2World;
+uniform 	mat4 _World2Object;
+uniform 	vec4 unity_LODFade;
+uniform 	mat4 glstate_matrix_transpose_modelview0;
+uniform 	mat4 glstate_matrix_projection;
+uniform 	lowp vec4 glstate_lightmodel_ambient;
+uniform 	mat4 unity_MatrixV;
+uniform 	mat4 unity_MatrixVP;
+uniform 	lowp vec4 unity_AmbientSky;
+uniform 	lowp vec4 unity_AmbientEquator;
+uniform 	lowp vec4 unity_AmbientGround;
+uniform 	lowp vec4 unity_FogColor;
+uniform 	vec4 unity_FogParams;
+uniform 	vec4 unity_LightmapST;
+uniform 	vec4 unity_DynamicLightmapST;
+uniform 	vec4 unity_SpecCube0_BoxMax;
+uniform 	vec4 unity_SpecCube0_BoxMin;
+uniform 	vec4 unity_SpecCube0_ProbePosition;
+uniform 	mediump vec4 unity_SpecCube0_HDR;
+uniform 	vec4 unity_SpecCube1_BoxMax;
+uniform 	vec4 unity_SpecCube1_BoxMin;
+uniform 	vec4 unity_SpecCube1_ProbePosition;
+uniform 	mediump vec4 unity_SpecCube1_HDR;
+uniform 	lowp vec4 unity_ColorSpaceGrey;
+uniform 	lowp vec4 unity_ColorSpaceDouble;
+uniform 	mediump vec4 unity_ColorSpaceDielectricSpec;
+uniform 	mediump vec4 unity_ColorSpaceLuminance;
+uniform 	mediump vec4 unity_Lightmap_HDR;
+uniform 	mediump vec4 unity_DynamicLightmap_HDR;
+uniform 	lowp vec4 _LightColor0;
+uniform 	lowp vec4 _SpecColor;
+uniform 	mediump vec4 unity_LightGammaCorrectionConsts;
+uniform 	mediump float _Exposure;
+uniform 	mediump vec3 _GroundColor;
+uniform 	mediump float _SunSize;
+uniform 	mediump vec3 _SkyTint;
+uniform 	mediump float _AtmosphereThickness;
+in mediump vec3 vs_TEXCOORD0;
+in mediump vec3 vs_TEXCOORD1;
+in mediump vec3 vs_TEXCOORD2;
+layout(location = 0) out mediump vec4 SV_Target0;
+mediump vec3 t16_0;
+mediump vec3 t16_1;
+highp float t2;
+bvec2 tb2;
+mediump vec3 t16_3;
+mediump vec3 t16_4;
+mediump vec3 t16_5;
+mediump float t16_10;
+void main()
+{
+    //Instruction 2563
+    //DP3
+    t16_0.x = dot(vs_TEXCOORD0.xyz, vs_TEXCOORD0.xyz);
+    //Instruction 2564
+    //RSQ
+    t16_0.x = inversesqrt(t16_0.x);
+    //Instruction 2565
+    //MAD
+    t16_5.xyz = vs_TEXCOORD0.xyz * t16_0.xxx + _WorldSpaceLightPos0.xyz;
+    //Instruction 2566
+    //MUL
+    t16_1.xyz = t16_0.xxx * vs_TEXCOORD0.xyz;
+    //Instruction 2567
+    //DP3
+    t2 = dot(_WorldSpaceLightPos0.xyz, t16_1.xyz);
+    //Instruction 2568
+    //MUL
+    t16_0.x = t2 * t2;
+    //Instruction 2569
+    //MAD
+    t16_0.x = t16_0.x * 0.75 + 0.75;
+    //Instruction 2570
+    //DP3
+    t16_5.x = dot(t16_5.xyz, t16_5.xyz);
+    //Instruction 2571
+    //SQRT
+    t16_5.x = sqrt(t16_5.x);
+    //Instruction 2572
+    //DIV
+    t16_10 = float(1.0) / _SunSize;
+    //Instruction 2573
+    //MUL
+    t16_5.x = t16_10 * t16_5.x;
+    t16_5.x = clamp(t16_5.x, 0.0, 1.0);
+    //Instruction 2574
+    //MAD
+    t16_10 = t16_5.x * -2.0 + 3.0;
+    //Instruction 2575
+    //MUL
+    t16_5.x = t16_5.x * t16_5.x;
+    //Instruction 2576
+    //MAD
+    t16_5.x = (-t16_10) * t16_5.x + 1.0;
+    //Instruction 2577
+    //MUL
+    t16_5.x = t16_5.x * t16_5.x;
+    //Instruction 2578
+    //MUL
+    t16_5.x = t16_5.x * 8000.0;
+    //Instruction 2579
+    //MUL
+    t16_5.xyz = t16_5.xxx * vs_TEXCOORD2.xyz;
+    //Instruction 2580
+    //MUL
+    t16_1.xyz = t16_0.xxx * vs_TEXCOORD1.xyz;
+    //Instruction 2581
+    //MAD
+    t16_5.xyz = t16_5.xyz * _LightColor0.xyz + t16_1.xyz;
+    //Instruction 2582
+    //MAD
+    t16_3.xyz = vec3(_GroundColor.x, _GroundColor.y, _GroundColor.z) * vs_TEXCOORD2.xyz + vs_TEXCOORD1.xyz;
+    //Instruction 2583
+    //MAD
+    t16_4.xyz = (-t16_0.xxx) * vs_TEXCOORD1.xyz + t16_3.xyz;
+    //Instruction 2584
+    //MUL
+    t16_0.x = vs_TEXCOORD0.y * 50.0;
+    //Instruction 2585
+    //MAD
+    t16_1.xyz = t16_0.xxx * t16_4.xyz + t16_1.xyz;
+    //Instruction 2586
+    //LT
+    tb2.xy = lessThan(vs_TEXCOORD0.yyyy, vec4(0.0199999996, 0.0, 0.0, 0.0)).xy;
+    //Instruction 2587
+    //MOVC
+    t16_0.xyz = (tb2.y) ? t16_5.xyz : t16_1.xyz;
+    //Instruction 2588
+    //MOVC
+    t16_0.xyz = (tb2.x) ? t16_0.xyz : t16_3.xyz;
+    //Instruction 2589
+    //MUL
+    SV_Target0.xyz = t16_0.xyz * vec3(_Exposure);
+    //Instruction 2590
+    //MOV
+    SV_Target0.w = 1.0;
+    //Instruction 2591
+    //RET
+    return;
+}
+
+#endif
+"
+}
+SubProgram "gles " {
+Keywords { "UNITY_COLORSPACE_GAMMA" }
+"!!GLES
+#version 100
+
+#ifdef VERTEX
+attribute vec4 _glesVertex;
+uniform highp vec4 _WorldSpaceLightPos0;
+uniform highp mat4 glstate_matrix_mvp;
+uniform highp mat4 _Object2World;
+uniform mediump vec3 _SkyTint;
+uniform mediump float _AtmosphereThickness;
+varying mediump vec3 xlv_TEXCOORD0;
+varying mediump vec3 xlv_TEXCOORD1;
+varying mediump vec3 xlv_TEXCOORD2;
+void main ()
+{
+  highp float far_1;
+  highp float kKr4PI_2;
+  highp float kKrESun_3;
+  highp vec3 kSkyTintInGammaSpace_4;
+  highp vec4 tmpvar_5;
+  mediump vec3 tmpvar_6;
+  mediump vec3 tmpvar_7;
+  mediump vec3 tmpvar_8;
+  tmpvar_5 = (glstate_matrix_mvp * _glesVertex);
+  kSkyTintInGammaSpace_4 = _SkyTint;
+  highp vec3 tmpvar_9;
+  tmpvar_9 = (1.0/(pow (mix (vec3(0.5, 0.42, 0.325), vec3(0.8, 0.72, 0.625), 
+    (vec3(1.0, 1.0, 1.0) - kSkyTintInGammaSpace_4)
+  ), vec3(4.0, 4.0, 4.0))));
+  mediump float tmpvar_10;
+  mediump float tmpvar_11;
+  tmpvar_11 = pow (_AtmosphereThickness, 2.5);
+  tmpvar_10 = (0.05 * tmpvar_11);
+  kKrESun_3 = tmpvar_10;
+  mediump float tmpvar_12;
+  tmpvar_12 = (0.03141593 * tmpvar_11);
+  kKr4PI_2 = tmpvar_12;
+  highp mat3 tmpvar_13;
+  tmpvar_13[0] = _Object2World[0].xyz;
+  tmpvar_13[1] = _Object2World[1].xyz;
+  tmpvar_13[2] = _Object2World[2].xyz;
+  highp vec3 tmpvar_14;
+  tmpvar_14 = normalize((tmpvar_13 * _glesVertex.xyz));
+  tmpvar_6 = -(tmpvar_14);
+  far_1 = 0.0;
+  if ((tmpvar_14.y >= 0.0)) {
+    highp vec3 frontColor_15;
+    highp vec3 samplePoint_16;
+    far_1 = (sqrt((
+      (1.050625 + (tmpvar_14.y * tmpvar_14.y))
+     - 1.0)) - tmpvar_14.y);
+    highp float tmpvar_17;
+    tmpvar_17 = (1.0 - (dot (tmpvar_14, vec3(0.0, 1.0001, 0.0)) / 1.0001));
+    highp float tmpvar_18;
+    tmpvar_18 = (exp((-0.00287 + 
+      (tmpvar_17 * (0.459 + (tmpvar_17 * (3.83 + 
+        (tmpvar_17 * (-6.8 + (tmpvar_17 * 5.25)))
+      ))))
+    )) * 0.2460318);
+    highp float tmpvar_19;
+    tmpvar_19 = (far_1 / 2.0);
+    highp float tmpvar_20;
+    tmpvar_20 = (tmpvar_19 * 40.00004);
+    highp vec3 tmpvar_21;
+    tmpvar_21 = (tmpvar_14 * tmpvar_19);
+    highp vec3 tmpvar_22;
+    tmpvar_22 = (vec3(0.0, 1.0001, 0.0) + (tmpvar_21 * 0.5));
+    highp float tmpvar_23;
+    tmpvar_23 = sqrt(dot (tmpvar_22, tmpvar_22));
+    highp float tmpvar_24;
+    tmpvar_24 = exp((160.0002 * (1.0 - tmpvar_23)));
+    highp float tmpvar_25;
+    tmpvar_25 = (1.0 - (dot (_WorldSpaceLightPos0.xyz, tmpvar_22) / tmpvar_23));
+    highp float tmpvar_26;
+    tmpvar_26 = (1.0 - (dot (tmpvar_14, tmpvar_22) / tmpvar_23));
+    frontColor_15 = (exp((
+      -(clamp ((tmpvar_18 + (tmpvar_24 * 
+        ((0.25 * exp((-0.00287 + 
+          (tmpvar_25 * (0.459 + (tmpvar_25 * (3.83 + 
+            (tmpvar_25 * (-6.8 + (tmpvar_25 * 5.25)))
+          ))))
+        ))) - (0.25 * exp((-0.00287 + 
+          (tmpvar_26 * (0.459 + (tmpvar_26 * (3.83 + 
+            (tmpvar_26 * (-6.8 + (tmpvar_26 * 5.25)))
+          ))))
+        ))))
+      )), 0.0, 50.0))
+     * 
+      ((tmpvar_9 * kKr4PI_2) + 0.01256637)
+    )) * (tmpvar_24 * tmpvar_20));
+    samplePoint_16 = (tmpvar_22 + tmpvar_21);
+    highp float tmpvar_27;
+    tmpvar_27 = sqrt(dot (samplePoint_16, samplePoint_16));
+    highp float tmpvar_28;
+    tmpvar_28 = exp((160.0002 * (1.0 - tmpvar_27)));
+    highp float tmpvar_29;
+    tmpvar_29 = (1.0 - (dot (_WorldSpaceLightPos0.xyz, samplePoint_16) / tmpvar_27));
+    highp float tmpvar_30;
+    tmpvar_30 = (1.0 - (dot (tmpvar_14, samplePoint_16) / tmpvar_27));
+    frontColor_15 = (frontColor_15 + (exp(
+      (-(clamp ((tmpvar_18 + 
+        (tmpvar_28 * ((0.25 * exp(
+          (-0.00287 + (tmpvar_29 * (0.459 + (tmpvar_29 * 
+            (3.83 + (tmpvar_29 * (-6.8 + (tmpvar_29 * 5.25))))
+          ))))
+        )) - (0.25 * exp(
+          (-0.00287 + (tmpvar_30 * (0.459 + (tmpvar_30 * 
+            (3.83 + (tmpvar_30 * (-6.8 + (tmpvar_30 * 5.25))))
+          ))))
+        ))))
+      ), 0.0, 50.0)) * ((tmpvar_9 * kKr4PI_2) + 0.01256637))
+    ) * (tmpvar_28 * tmpvar_20)));
+    samplePoint_16 = (samplePoint_16 + tmpvar_21);
+    tmpvar_7 = (frontColor_15 * (tmpvar_9 * kKrESun_3));
+    tmpvar_8 = (frontColor_15 * 0.02);
+  } else {
+    highp vec3 frontColor_1_31;
+    far_1 = (-0.0001 / min (-0.001, tmpvar_14.y));
+    highp vec3 tmpvar_32;
+    tmpvar_32 = (vec3(0.0, 1.0001, 0.0) + (far_1 * tmpvar_14));
+    highp float tmpvar_33;
+    highp float tmpvar_34;
+    tmpvar_34 = (1.0 - dot (-(tmpvar_14), tmpvar_32));
+    tmpvar_33 = (0.25 * exp((-0.00287 + 
+      (tmpvar_34 * (0.459 + (tmpvar_34 * (3.83 + 
+        (tmpvar_34 * (-6.8 + (tmpvar_34 * 5.25)))
+      ))))
+    )));
+    highp float tmpvar_35;
+    tmpvar_35 = (1.0 - dot (_WorldSpaceLightPos0.xyz, tmpvar_32));
+    highp float tmpvar_36;
+    tmpvar_36 = (far_1 / 2.0);
+    highp vec3 tmpvar_37;
+    tmpvar_37 = (vec3(0.0, 1.0001, 0.0) + ((tmpvar_14 * tmpvar_36) * 0.5));
+    highp float tmpvar_38;
+    tmpvar_38 = exp((160.0002 * (1.0 - 
+      sqrt(dot (tmpvar_37, tmpvar_37))
+    )));
+    highp vec3 tmpvar_39;
+    tmpvar_39 = exp((-(
+      clamp (((tmpvar_38 * (
+        (0.25 * exp((-0.00287 + (tmpvar_35 * 
+          (0.459 + (tmpvar_35 * (3.83 + (tmpvar_35 * 
+            (-6.8 + (tmpvar_35 * 5.25))
+          ))))
+        ))))
+       + tmpvar_33)) - (0.9996001 * tmpvar_33)), 0.0, 50.0)
+    ) * (
+      (tmpvar_9 * kKr4PI_2)
+     + 0.01256637)));
+    frontColor_1_31 = (tmpvar_39 * (tmpvar_38 * (tmpvar_36 * 40.00004)));
+    tmpvar_7 = (frontColor_1_31 * ((tmpvar_9 * kKrESun_3) + 0.02));
+    highp vec3 tmpvar_40;
+    tmpvar_40 = clamp (tmpvar_39, vec3(0.0, 0.0, 0.0), vec3(1.0, 1.0, 1.0));
+    tmpvar_8 = tmpvar_40;
+  };
+  gl_Position = tmpvar_5;
+  xlv_TEXCOORD0 = tmpvar_6;
+  xlv_TEXCOORD1 = tmpvar_7;
+  xlv_TEXCOORD2 = tmpvar_8;
+}
+
+
+#endif
+#ifdef FRAGMENT
+uniform highp vec4 _WorldSpaceLightPos0;
+uniform lowp vec4 _LightColor0;
+uniform mediump float _Exposure;
+uniform mediump vec3 _GroundColor;
+uniform mediump float _SunSize;
+varying mediump vec3 xlv_TEXCOORD0;
+varying mediump vec3 xlv_TEXCOORD1;
+varying mediump vec3 xlv_TEXCOORD2;
+void main ()
+{
+  mediump vec3 col_1;
+  col_1 = vec3(0.0, 0.0, 0.0);
+  if ((xlv_TEXCOORD0.y < 0.02)) {
+    mediump float eyeCos_2;
+    mediump vec3 tmpvar_3;
+    tmpvar_3 = normalize(xlv_TEXCOORD0);
+    highp float tmpvar_4;
+    tmpvar_4 = dot (_WorldSpaceLightPos0.xyz, tmpvar_3);
+    eyeCos_2 = tmpvar_4;
+    mediump float tmpvar_5;
+    mediump vec3 vec1_6;
+    vec1_6 = _WorldSpaceLightPos0.xyz;
+    mediump vec3 tmpvar_7;
+    tmpvar_7 = (vec1_6 - -(tmpvar_3));
+    mediump float tmpvar_8;
+    tmpvar_8 = clamp ((sqrt(
+      dot (tmpvar_7, tmpvar_7)
+    ) / _SunSize), 0.0, 1.0);
+    mediump float tmpvar_9;
+    tmpvar_9 = (1.0 - (tmpvar_8 * (tmpvar_8 * 
+      (3.0 - (2.0 * tmpvar_8))
+    )));
+    tmpvar_5 = ((8000.0 * tmpvar_9) * tmpvar_9);
+    col_1 = ((0.75 + (0.75 * 
+      (eyeCos_2 * eyeCos_2)
+    )) * xlv_TEXCOORD1);
+    if ((xlv_TEXCOORD0.y < 0.0)) {
+      col_1 = (col_1 + ((tmpvar_5 * xlv_TEXCOORD2) * _LightColor0.xyz));
+    } else {
+      col_1 = mix (col_1, (xlv_TEXCOORD1 + (
+        (_GroundColor * _GroundColor)
+       * xlv_TEXCOORD2)), vec3((xlv_TEXCOORD0.y / 0.02)));
+    };
+  } else {
+    col_1 = (xlv_TEXCOORD1 + ((_GroundColor * _GroundColor) * xlv_TEXCOORD2));
+  };
+  col_1 = (col_1 * _Exposure);
+  mediump vec3 tmpvar_10;
+  tmpvar_10 = sqrt(col_1);
+  col_1 = tmpvar_10;
+  mediump vec4 tmpvar_11;
+  tmpvar_11.w = 1.0;
+  tmpvar_11.xyz = tmpvar_10;
+  gl_FragData[0] = tmpvar_11;
+}
+
+
+#endif
+"
+}
+SubProgram "gles3 " {
+Keywords { "UNITY_COLORSPACE_GAMMA" }
+"!!GLES3
+#ifdef VERTEX
+#version 300 es
+precision highp float;
+precision highp int;
+uniform 	vec4 _Time;
+uniform 	vec4 _SinTime;
+uniform 	vec4 _CosTime;
+uniform 	vec4 unity_DeltaTime;
+uniform 	vec3 _WorldSpaceCameraPos;
+uniform 	vec4 _ProjectionParams;
+uniform 	vec4 _ScreenParams;
+uniform 	vec4 _ZBufferParams;
+uniform 	vec4 unity_OrthoParams;
+uniform 	vec4 unity_CameraWorldClipPlanes[6];
+uniform 	mat4 unity_CameraProjection;
+uniform 	mat4 unity_CameraInvProjection;
+uniform 	vec4 _WorldSpaceLightPos0;
+uniform 	vec4 _LightPositionRange;
+uniform 	vec4 unity_4LightPosX0;
+uniform 	vec4 unity_4LightPosY0;
+uniform 	vec4 unity_4LightPosZ0;
+uniform 	mediump vec4 unity_4LightAtten0;
+uniform 	mediump vec4 unity_LightColor[8];
+uniform 	vec4 unity_LightPosition[8];
+uniform 	mediump vec4 unity_LightAtten[8];
+uniform 	vec4 unity_SpotDirection[8];
+uniform 	mediump vec4 unity_SHAr;
+uniform 	mediump vec4 unity_SHAg;
+uniform 	mediump vec4 unity_SHAb;
+uniform 	mediump vec4 unity_SHBr;
+uniform 	mediump vec4 unity_SHBg;
+uniform 	mediump vec4 unity_SHBb;
+uniform 	mediump vec4 unity_SHC;
+uniform 	mediump vec3 unity_LightColor0;
+uniform 	mediump vec3 unity_LightColor1;
+uniform 	mediump vec3 unity_LightColor2;
+uniform 	mediump vec3 unity_LightColor3;
+uniform 	vec4 unity_ShadowSplitSpheres[4];
+uniform 	vec4 unity_ShadowSplitSqRadii;
+uniform 	vec4 unity_LightShadowBias;
+uniform 	vec4 _LightSplitsNear;
+uniform 	vec4 _LightSplitsFar;
+uniform 	mat4 unity_World2Shadow[4];
+uniform 	mediump vec4 _LightShadowData;
+uniform 	vec4 unity_ShadowFadeCenterAndType;
+uniform 	mat4 glstate_matrix_mvp;
+uniform 	mat4 glstate_matrix_modelview0;
+uniform 	mat4 glstate_matrix_invtrans_modelview0;
+uniform 	mat4 _Object2World;
+uniform 	mat4 _World2Object;
+uniform 	vec4 unity_LODFade;
+uniform 	mat4 glstate_matrix_transpose_modelview0;
+uniform 	mat4 glstate_matrix_projection;
+uniform 	lowp vec4 glstate_lightmodel_ambient;
+uniform 	mat4 unity_MatrixV;
+uniform 	mat4 unity_MatrixVP;
+uniform 	lowp vec4 unity_AmbientSky;
+uniform 	lowp vec4 unity_AmbientEquator;
+uniform 	lowp vec4 unity_AmbientGround;
+uniform 	lowp vec4 unity_FogColor;
+uniform 	vec4 unity_FogParams;
+uniform 	vec4 unity_LightmapST;
+uniform 	vec4 unity_DynamicLightmapST;
+uniform 	vec4 unity_SpecCube0_BoxMax;
+uniform 	vec4 unity_SpecCube0_BoxMin;
+uniform 	vec4 unity_SpecCube0_ProbePosition;
+uniform 	mediump vec4 unity_SpecCube0_HDR;
+uniform 	vec4 unity_SpecCube1_BoxMax;
+uniform 	vec4 unity_SpecCube1_BoxMin;
+uniform 	vec4 unity_SpecCube1_ProbePosition;
+uniform 	mediump vec4 unity_SpecCube1_HDR;
+uniform 	lowp vec4 unity_ColorSpaceGrey;
+uniform 	lowp vec4 unity_ColorSpaceDouble;
+uniform 	mediump vec4 unity_ColorSpaceDielectricSpec;
+uniform 	mediump vec4 unity_ColorSpaceLuminance;
+uniform 	mediump vec4 unity_Lightmap_HDR;
+uniform 	mediump vec4 unity_DynamicLightmap_HDR;
+uniform 	lowp vec4 _LightColor0;
+uniform 	lowp vec4 _SpecColor;
+uniform 	mediump vec4 unity_LightGammaCorrectionConsts;
+uniform 	mediump float _Exposure;
+uniform 	mediump vec3 _GroundColor;
+uniform 	mediump float _SunSize;
+uniform 	mediump vec3 _SkyTint;
+uniform 	mediump float _AtmosphereThickness;
+in highp vec4 in_POSITION0;
+out mediump vec3 vs_TEXCOORD0;
+out mediump vec3 vs_TEXCOORD1;
+out mediump vec3 vs_TEXCOORD2;
+highp vec4 t0;
+mediump vec2 t16_1;
+highp vec4 t2;
+highp vec4 t3;
+bool tb3;
+highp vec3 t4;
+highp vec3 t5;
+highp vec3 t6;
+highp float t9;
+highp vec2 t10;
+highp float t11;
+highp float t17;
+highp float t18;
+highp float t21;
+highp float t24;
+highp float t25;
+void main()
+{
+    //Instruction 2134
+    //MUL
+    t0 = in_POSITION0.yyyy * glstate_matrix_mvp[1];
+    //Instruction 2135
+    //MAD
+    t0 = glstate_matrix_mvp[0] * in_POSITION0.xxxx + t0;
+    //Instruction 2136
+    //MAD
+    t0 = glstate_matrix_mvp[2] * in_POSITION0.zzzz + t0;
+    //Instruction 2137
+    //MAD
+    gl_Position = glstate_matrix_mvp[3] * in_POSITION0.wwww + t0;
+    //Instruction 2138
+    //ADD
+    t0.xyz = vec3((-_SkyTint.xxyz.y) + float(1.0), (-_SkyTint.xxyz.z) + float(1.0), (-float(_SkyTint.z)) + float(1.0));
+    //Instruction 2139
+    //MAD
+    t0.xyz = t0.xyz * vec3(0.300000012, 0.300000042, 0.300000012) + vec3(0.5, 0.419999987, 0.324999988);
+    //Instruction 2140
+    //MUL
+    t0.xyz = t0.xyz * t0.xyz;
+    //Instruction 2141
+    //MUL
+    t0.xyz = t0.xyz * t0.xyz;
+    //Instruction 2142
+    //DIV
+    t0.xyz = vec3(1.0, 1.0, 1.0) / t0.xyz;
+    //Instruction 2143
+    //LOG
+    t16_1.x = log2(_AtmosphereThickness);
+    //Instruction 2144
+    //MUL
+    t16_1.x = t16_1.x * 2.5;
+    //Instruction 2145
+    //EXP
+    t16_1.x = exp2(t16_1.x);
+    //Instruction 2146
+    //MUL
+    t16_1.xy = t16_1.xx * vec2(0.049999997, 0.0314159282);
+    //Instruction 2147
+    //MUL
+    t2.xyz = in_POSITION0.yyy * _Object2World[1].xyz;
+    //Instruction 2148
+    //MAD
+    t2.xyz = _Object2World[0].xyz * in_POSITION0.xxx + t2.xyz;
+    //Instruction 2149
+    //MAD
+    t2.xyz = _Object2World[2].xyz * in_POSITION0.zzz + t2.xyz;
+    //Instruction 2150
+    //DP3
+    t21 = dot(t2.xyz, t2.xyz);
+    //Instruction 2151
+    //RSQ
+    t21 = inversesqrt(t21);
+    //Instruction 2152
+    //MUL
+    t2.xzw = vec3(t21) * t2.xyz;
+    //Instruction 2153
+    //GE
+    tb3 = t2.z>=0.0;
+    //Instruction 2154
+    //IF
+    if(tb3){
+        //Instruction 2155
+        //MAD
+        t3.x = t2.z * t2.z + 0.0506249666;
+        //Instruction 2156
+        //SQRT
+        t3.x = sqrt(t3.x);
+        //Instruction 2157
+        //MAD
+        t3.x = (-t2.y) * t21 + t3.x;
+        //Instruction 2158
+        //MAD
+        t21 = (-t2.y) * t21 + 1.0;
+        //Instruction 2159
+        //MAD
+        t9 = t21 * 5.25 + -6.80000019;
+        //Instruction 2160
+        //MAD
+        t9 = t21 * t9 + 3.82999992;
+        //Instruction 2161
+        //MAD
+        t9 = t21 * t9 + 0.458999991;
+        //Instruction 2162
+        //MAD
+        t21 = t21 * t9 + -0.00286999997;
+        //Instruction 2163
+        //MUL
+        t21 = t21 * 1.44269502;
+        //Instruction 2164
+        //EXP
+        t21 = exp2(t21);
+        //Instruction 2165
+        //MUL
+        t21 = t21 * 0.246031836;
+        //Instruction 2166
+        //MUL
+        t3.xy = t3.xx * vec2(0.5, 20.0);
+        //Instruction 2167
+        //MUL
+        t4.xyz = t2.xzw * t3.xxx;
+        //Instruction 2168
+        //MAD
+        t4.xyz = t4.xyz * vec3(0.5, 0.5, 0.5) + vec3(0.0, 1.00010002, 0.0);
+        //Instruction 2169
+        //DP3
+        t9 = dot(t4.xyz, t4.xyz);
+        //Instruction 2170
+        //SQRT
+        t9 = sqrt(t9);
+        //Instruction 2171
+        //ADD
+        t17 = (-t9) + 1.0;
+        //Instruction 2172
+        //MUL
+        t17 = t17 * 230.831207;
+        //Instruction 2173
+        //EXP
+        t17 = exp2(t17);
+        //Instruction 2174
+        //DP3
+        t24 = dot(_WorldSpaceLightPos0.xyz, t4.xyz);
+        //Instruction 2175
+        //DIV
+        t24 = t24 / t9;
+        //Instruction 2176
+        //DP3
+        t25 = dot(t2.xzw, t4.xyz);
+        //Instruction 2177
+        //DIV
+        t9 = t25 / t9;
+        //Instruction 2178
+        //ADD
+        t24 = (-t24) + 1.0;
+        //Instruction 2179
+        //MAD
+        t25 = t24 * 5.25 + -6.80000019;
+        //Instruction 2180
+        //MAD
+        t25 = t24 * t25 + 3.82999992;
+        //Instruction 2181
+        //MAD
+        t25 = t24 * t25 + 0.458999991;
+        //Instruction 2182
+        //MAD
+        t24 = t24 * t25 + -0.00286999997;
+        //Instruction 2183
+        //MUL
+        t24 = t24 * 1.44269502;
+        //Instruction 2184
+        //EXP
+        t24 = exp2(t24);
+        //Instruction 2185
+        //ADD
+        t9 = (-t9) + 1.0;
+        //Instruction 2186
+        //MAD
+        t25 = t9 * 5.25 + -6.80000019;
+        //Instruction 2187
+        //MAD
+        t25 = t9 * t25 + 3.82999992;
+        //Instruction 2188
+        //MAD
+        t25 = t9 * t25 + 0.458999991;
+        //Instruction 2189
+        //MAD
+        t9 = t9 * t25 + -0.00286999997;
+        //Instruction 2190
+        //MUL
+        t9 = t9 * 1.44269502;
+        //Instruction 2191
+        //EXP
+        t9 = exp2(t9);
+        //Instruction 2192
+        //MUL
+        t9 = t9 * 0.25;
+        //Instruction 2193
+        //MAD
+        t9 = t24 * 0.25 + (-t9);
+        //Instruction 2194
+        //MAD
+        t9 = t17 * t9 + t21;
+        //Instruction 2195
+        //MAX
+        t9 = max(t9, 0.0);
+        //Instruction 2196
+        //MIN
+        t9 = min(t9, 50.0);
+        //Instruction 2197
+        //MAD
+        t5.xyz = t0.xyz * t16_1.yyy + vec3(0.0125663709, 0.0125663709, 0.0125663709);
+        //Instruction 2198
+        //MUL
+        t6.xyz = (-vec3(t9)) * t5.xyz;
+        //Instruction 2199
+        //MUL
+        t6.xyz = t6.xyz * vec3(1.44269502, 1.44269502, 1.44269502);
+        //Instruction 2200
+        //EXP
+        t6.xyz = exp2(t6.xyz);
+        //Instruction 2201
+        //MUL
+        t9 = t3.y * t17;
+        //Instruction 2202
+        //MAD
+        t3.xzw = t2.xzw * t3.xxx + t4.xyz;
+        //Instruction 2203
+        //DP3
+        t4.x = dot(t3.xzw, t3.xzw);
+        //Instruction 2204
+        //SQRT
+        t4.x = sqrt(t4.x);
+        //Instruction 2205
+        //ADD
+        t11 = (-t4.x) + 1.0;
+        //Instruction 2206
+        //MUL
+        t11 = t11 * 230.831207;
+        //Instruction 2207
+        //EXP
+        t11 = exp2(t11);
+        //Instruction 2208
+        //DP3
+        t18 = dot(_WorldSpaceLightPos0.xyz, t3.xzw);
+        //Instruction 2209
+        //DIV
+        t18 = t18 / t4.x;
+        //Instruction 2210
+        //DP3
+        t3.x = dot(t2.xzw, t3.xzw);
+        //Instruction 2211
+        //DIV
+        t3.x = t3.x / t4.x;
+        //Instruction 2212
+        //ADD
+        t17 = (-t18) + 1.0;
+        //Instruction 2213
+        //MAD
+        t24 = t17 * 5.25 + -6.80000019;
+        //Instruction 2214
+        //MAD
+        t24 = t17 * t24 + 3.82999992;
+        //Instruction 2215
+        //MAD
+        t24 = t17 * t24 + 0.458999991;
+        //Instruction 2216
+        //MAD
+        t17 = t17 * t24 + -0.00286999997;
+        //Instruction 2217
+        //MUL
+        t17 = t17 * 1.44269502;
+        //Instruction 2218
+        //EXP
+        t17 = exp2(t17);
+        //Instruction 2219
+        //ADD
+        t3.x = (-t3.x) + 1.0;
+        //Instruction 2220
+        //MAD
+        t24 = t3.x * 5.25 + -6.80000019;
+        //Instruction 2221
+        //MAD
+        t24 = t3.x * t24 + 3.82999992;
+        //Instruction 2222
+        //MAD
+        t24 = t3.x * t24 + 0.458999991;
+        //Instruction 2223
+        //MAD
+        t3.x = t3.x * t24 + -0.00286999997;
+        //Instruction 2224
+        //MUL
+        t3.x = t3.x * 1.44269502;
+        //Instruction 2225
+        //EXP
+        t3.x = exp2(t3.x);
+        //Instruction 2226
+        //MUL
+        t3.x = t3.x * 0.25;
+        //Instruction 2227
+        //MAD
+        t3.x = t17 * 0.25 + (-t3.x);
+        //Instruction 2228
+        //MAD
+        t21 = t11 * t3.x + t21;
+        //Instruction 2229
+        //MAX
+        t21 = max(t21, 0.0);
+        //Instruction 2230
+        //MIN
+        t21 = min(t21, 50.0);
+        //Instruction 2231
+        //MUL
+        t3.xzw = t5.xyz * (-vec3(t21));
+        //Instruction 2232
+        //MUL
+        t3.xzw = t3.xzw * vec3(1.44269502, 1.44269502, 1.44269502);
+        //Instruction 2233
+        //EXP
+        t3.xzw = exp2(t3.xzw);
+        //Instruction 2234
+        //MUL
+        t21 = t3.y * t11;
+        //Instruction 2235
+        //MUL
+        t3.xyz = vec3(t21) * t3.xzw;
+        //Instruction 2236
+        //MAD
+        t3.xyz = t6.xyz * vec3(t9) + t3.xyz;
+        //Instruction 2237
+        //MUL
+        t4.xyz = t0.xyz * t16_1.xxx;
+        //Instruction 2238
+        //MUL
+        t4.xyz = t3.xyz * t4.xyz;
+        //Instruction 2239
+        //MUL
+        t3.xyz = t3.xyz * vec3(0.0199999996, 0.0199999996, 0.0199999996);
+        //Instruction 2240
+        //MOV
+        vs_TEXCOORD1.xyz = t4.xyz;
+        //Instruction 2241
+        //MOV
+        vs_TEXCOORD2.xyz = t3.xyz;
+        //Instruction 2242
+    //ELSE
+    } else {
+        //Instruction 2243
+        //MIN
+        t21 = min(t2.z, -0.00100000005);
+        //Instruction 2244
+        //DIV
+        t21 = -9.99999975e-05 / t21;
+        //Instruction 2245
+        //MAD
+        t3.xyz = vec3(t21) * t2.xzw + vec3(0.0, 1.00010002, 0.0);
+        //Instruction 2246
+        //DP3
+        t9 = dot((-t2.xzw), t3.xyz);
+        //Instruction 2247
+        //DP3
+        t3.x = dot(_WorldSpaceLightPos0.xyz, t3.xyz);
+        //Instruction 2248
+        //ADD
+        t9 = (-t9) + 1.0;
+        //Instruction 2249
+        //MAD
+        t10.x = t9 * 5.25 + -6.80000019;
+        //Instruction 2250
+        //MAD
+        t10.x = t9 * t10.x + 3.82999992;
+        //Instruction 2251
+        //MAD
+        t10.x = t9 * t10.x + 0.458999991;
+        //Instruction 2252
+        //MAD
+        t9 = t9 * t10.x + -0.00286999997;
+        //Instruction 2253
+        //MUL
+        t9 = t9 * 1.44269502;
+        //Instruction 2254
+        //EXP
+        t9 = exp2(t9);
+        //Instruction 2255
+        //ADD
+        t3.x = (-t3.x) + 1.0;
+        //Instruction 2256
+        //MAD
+        t10.x = t3.x * 5.25 + -6.80000019;
+        //Instruction 2257
+        //MAD
+        t10.x = t3.x * t10.x + 3.82999992;
+        //Instruction 2258
+        //MAD
+        t10.x = t3.x * t10.x + 0.458999991;
+        //Instruction 2259
+        //MAD
+        t3.x = t3.x * t10.x + -0.00286999997;
+        //Instruction 2260
+        //MUL
+        t3.x = t3.x * 1.44269502;
+        //Instruction 2261
+        //EXP
+        t3.x = exp2(t3.x);
+        //Instruction 2262
+        //MUL
+        t10.xy = vec2(t9) * vec2(0.25, 0.249900013);
+        //Instruction 2263
+        //MAD
+        t9 = t3.x * 0.25 + t10.x;
+        //Instruction 2264
+        //MUL
+        t3.xy = vec2(t21) * vec2(0.5, 20.0);
+        //Instruction 2265
+        //MUL
+        t4.xyz = t2.xzw * t3.xxx;
+        //Instruction 2266
+        //MAD
+        t4.xyz = t4.xyz * vec3(0.5, 0.5, 0.5) + vec3(0.0, 1.00010002, 0.0);
+        //Instruction 2267
+        //DP3
+        t21 = dot(t4.xyz, t4.xyz);
+        //Instruction 2268
+        //SQRT
+        t21 = sqrt(t21);
+        //Instruction 2269
+        //ADD
+        t21 = (-t21) + 1.0;
+        //Instruction 2270
+        //MUL
+        t21 = t21 * 230.831207;
+        //Instruction 2271
+        //EXP
+        t21 = exp2(t21);
+        //Instruction 2272
+        //MAD
+        t9 = t21 * t9 + (-t10.y);
+        //Instruction 2273
+        //MAX
+        t9 = max(t9, 0.0);
+        //Instruction 2274
+        //MIN
+        t9 = min(t9, 50.0);
+        //Instruction 2275
+        //MAD
+        t3.xzw = t0.xyz * t16_1.yyy + vec3(0.0125663709, 0.0125663709, 0.0125663709);
+        //Instruction 2276
+        //MUL
+        t3.xzw = (-vec3(t9)) * t3.xzw;
+        //Instruction 2277
+        //MUL
+        t3.xzw = t3.xzw * vec3(1.44269502, 1.44269502, 1.44269502);
+        //Instruction 2278
+        //EXP
+        t3.xzw = exp2(t3.xzw);
+        //Instruction 2279
+        //MUL
+        t21 = t3.y * t21;
+        //Instruction 2280
+        //MUL
+        t4.xyz = vec3(t21) * t3.xzw;
+        //Instruction 2281
+        //MAD
+        t0.xyz = t0.xyz * t16_1.xxx + vec3(0.0199999996, 0.0199999996, 0.0199999996);
+        //Instruction 2282
+        //MUL
+        t0.xyz = t0.xyz * t4.xyz;
+        //Instruction 2283
+        //MOV
+        vs_TEXCOORD1.xyz = t0.xyz;
+        //Instruction 2284
+        //MOV
+        vs_TEXCOORD2.xyz = t3.xzw;
+        //Instruction 2285
+    //ENDIF
+    }
+    //Instruction 2286
+    //MOV
+    vs_TEXCOORD0.xyz = (-t2.xzw);
+    //Instruction 2287
+    //RET
+    return;
+}
+
+#endif
+#ifdef FRAGMENT
+#version 300 es
+precision highp float;
+precision highp int;
+uniform 	vec4 _Time;
+uniform 	vec4 _SinTime;
+uniform 	vec4 _CosTime;
+uniform 	vec4 unity_DeltaTime;
+uniform 	vec3 _WorldSpaceCameraPos;
+uniform 	vec4 _ProjectionParams;
+uniform 	vec4 _ScreenParams;
+uniform 	vec4 _ZBufferParams;
+uniform 	vec4 unity_OrthoParams;
+uniform 	vec4 unity_CameraWorldClipPlanes[6];
+uniform 	mat4 unity_CameraProjection;
+uniform 	mat4 unity_CameraInvProjection;
+uniform 	vec4 _WorldSpaceLightPos0;
+uniform 	vec4 _LightPositionRange;
+uniform 	vec4 unity_4LightPosX0;
+uniform 	vec4 unity_4LightPosY0;
+uniform 	vec4 unity_4LightPosZ0;
+uniform 	mediump vec4 unity_4LightAtten0;
+uniform 	mediump vec4 unity_LightColor[8];
+uniform 	vec4 unity_LightPosition[8];
+uniform 	mediump vec4 unity_LightAtten[8];
+uniform 	vec4 unity_SpotDirection[8];
+uniform 	mediump vec4 unity_SHAr;
+uniform 	mediump vec4 unity_SHAg;
+uniform 	mediump vec4 unity_SHAb;
+uniform 	mediump vec4 unity_SHBr;
+uniform 	mediump vec4 unity_SHBg;
+uniform 	mediump vec4 unity_SHBb;
+uniform 	mediump vec4 unity_SHC;
+uniform 	mediump vec3 unity_LightColor0;
+uniform 	mediump vec3 unity_LightColor1;
+uniform 	mediump vec3 unity_LightColor2;
+uniform 	mediump vec3 unity_LightColor3;
+uniform 	vec4 unity_ShadowSplitSpheres[4];
+uniform 	vec4 unity_ShadowSplitSqRadii;
+uniform 	vec4 unity_LightShadowBias;
+uniform 	vec4 _LightSplitsNear;
+uniform 	vec4 _LightSplitsFar;
+uniform 	mat4 unity_World2Shadow[4];
+uniform 	mediump vec4 _LightShadowData;
+uniform 	vec4 unity_ShadowFadeCenterAndType;
+uniform 	mat4 glstate_matrix_mvp;
+uniform 	mat4 glstate_matrix_modelview0;
+uniform 	mat4 glstate_matrix_invtrans_modelview0;
+uniform 	mat4 _Object2World;
+uniform 	mat4 _World2Object;
+uniform 	vec4 unity_LODFade;
+uniform 	mat4 glstate_matrix_transpose_modelview0;
+uniform 	mat4 glstate_matrix_projection;
+uniform 	lowp vec4 glstate_lightmodel_ambient;
+uniform 	mat4 unity_MatrixV;
+uniform 	mat4 unity_MatrixVP;
+uniform 	lowp vec4 unity_AmbientSky;
+uniform 	lowp vec4 unity_AmbientEquator;
+uniform 	lowp vec4 unity_AmbientGround;
+uniform 	lowp vec4 unity_FogColor;
+uniform 	vec4 unity_FogParams;
+uniform 	vec4 unity_LightmapST;
+uniform 	vec4 unity_DynamicLightmapST;
+uniform 	vec4 unity_SpecCube0_BoxMax;
+uniform 	vec4 unity_SpecCube0_BoxMin;
+uniform 	vec4 unity_SpecCube0_ProbePosition;
+uniform 	mediump vec4 unity_SpecCube0_HDR;
+uniform 	vec4 unity_SpecCube1_BoxMax;
+uniform 	vec4 unity_SpecCube1_BoxMin;
+uniform 	vec4 unity_SpecCube1_ProbePosition;
+uniform 	mediump vec4 unity_SpecCube1_HDR;
+uniform 	lowp vec4 unity_ColorSpaceGrey;
+uniform 	lowp vec4 unity_ColorSpaceDouble;
+uniform 	mediump vec4 unity_ColorSpaceDielectricSpec;
+uniform 	mediump vec4 unity_ColorSpaceLuminance;
+uniform 	mediump vec4 unity_Lightmap_HDR;
+uniform 	mediump vec4 unity_DynamicLightmap_HDR;
+uniform 	lowp vec4 _LightColor0;
+uniform 	lowp vec4 _SpecColor;
+uniform 	mediump vec4 unity_LightGammaCorrectionConsts;
+uniform 	mediump float _Exposure;
+uniform 	mediump vec3 _GroundColor;
+uniform 	mediump float _SunSize;
+uniform 	mediump vec3 _SkyTint;
+uniform 	mediump float _AtmosphereThickness;
+in mediump vec3 vs_TEXCOORD0;
+in mediump vec3 vs_TEXCOORD1;
+in mediump vec3 vs_TEXCOORD2;
+layout(location = 0) out mediump vec4 SV_Target0;
+mediump vec3 t16_0;
+mediump vec3 t16_1;
+highp float t2;
+bvec2 tb2;
+mediump vec3 t16_3;
+mediump vec3 t16_4;
+mediump vec3 t16_5;
+mediump float t16_10;
+void main()
+{
+    //Instruction 2103
+    //DP3
+    t16_0.x = dot(vs_TEXCOORD0.xyz, vs_TEXCOORD0.xyz);
+    //Instruction 2104
+    //RSQ
+    t16_0.x = inversesqrt(t16_0.x);
+    //Instruction 2105
+    //MAD
+    t16_5.xyz = vs_TEXCOORD0.xyz * t16_0.xxx + _WorldSpaceLightPos0.xyz;
+    //Instruction 2106
+    //MUL
+    t16_1.xyz = t16_0.xxx * vs_TEXCOORD0.xyz;
+    //Instruction 2107
+    //DP3
+    t2 = dot(_WorldSpaceLightPos0.xyz, t16_1.xyz);
+    //Instruction 2108
+    //MUL
+    t16_0.x = t2 * t2;
+    //Instruction 2109
+    //MAD
+    t16_0.x = t16_0.x * 0.75 + 0.75;
+    //Instruction 2110
+    //DP3
+    t16_5.x = dot(t16_5.xyz, t16_5.xyz);
+    //Instruction 2111
+    //SQRT
+    t16_5.x = sqrt(t16_5.x);
+    //Instruction 2112
+    //DIV
+    t16_10 = float(1.0) / _SunSize;
+    //Instruction 2113
+    //MUL
+    t16_5.x = t16_10 * t16_5.x;
+    t16_5.x = clamp(t16_5.x, 0.0, 1.0);
+    //Instruction 2114
+    //MAD
+    t16_10 = t16_5.x * -2.0 + 3.0;
+    //Instruction 2115
+    //MUL
+    t16_5.x = t16_5.x * t16_5.x;
+    //Instruction 2116
+    //MAD
+    t16_5.x = (-t16_10) * t16_5.x + 1.0;
+    //Instruction 2117
+    //MUL
+    t16_5.x = t16_5.x * t16_5.x;
+    //Instruction 2118
+    //MUL
+    t16_5.x = t16_5.x * 8000.0;
+    //Instruction 2119
+    //MUL
+    t16_5.xyz = t16_5.xxx * vs_TEXCOORD2.xyz;
+    //Instruction 2120
+    //MUL
+    t16_1.xyz = t16_0.xxx * vs_TEXCOORD1.xyz;
+    //Instruction 2121
+    //MAD
+    t16_5.xyz = t16_5.xyz * _LightColor0.xyz + t16_1.xyz;
+    //Instruction 2122
+    //MUL
+    t16_3.xyz = vec3(_GroundColor.xxyz.y * _GroundColor.xxyz.y, _GroundColor.xxyz.z * _GroundColor.xxyz.z, float(_GroundColor.z) * float(_GroundColor.z));
+    //Instruction 2123
+    //MAD
+    t16_3.xyz = t16_3.xyz * vs_TEXCOORD2.xyz + vs_TEXCOORD1.xyz;
+    //Instruction 2124
+    //MAD
+    t16_4.xyz = (-t16_0.xxx) * vs_TEXCOORD1.xyz + t16_3.xyz;
+    //Instruction 2125
+    //MUL
+    t16_0.x = vs_TEXCOORD0.y * 50.0;
+    //Instruction 2126
+    //MAD
+    t16_1.xyz = t16_0.xxx * t16_4.xyz + t16_1.xyz;
+    //Instruction 2127
+    //LT
+    tb2.xy = lessThan(vs_TEXCOORD0.yyyy, vec4(0.0199999996, 0.0, 0.0, 0.0)).xy;
+    //Instruction 2128
+    //MOVC
+    t16_0.xyz = (tb2.y) ? t16_5.xyz : t16_1.xyz;
+    //Instruction 2129
+    //MOVC
+    t16_0.xyz = (tb2.x) ? t16_0.xyz : t16_3.xyz;
+    //Instruction 2130
+    //MUL
+    t16_0.xyz = t16_0.xyz * vec3(_Exposure);
+    //Instruction 2131
+    //SQRT
+    SV_Target0.xyz = sqrt(t16_0.xyz);
+    //Instruction 2132
+    //MOV
+    SV_Target0.w = 1.0;
+    //Instruction 2133
+    //RET
+    return;
+}
+
+#endif
+"
+}
+}
+Program "fp" {
+SubProgram "gles " {
+"!!GLES"
+}
+SubProgram "gles3 " {
+"!!GLES3"
+}
+SubProgram "gles " {
+Keywords { "UNITY_COLORSPACE_GAMMA" }
+"!!GLES"
+}
+SubProgram "gles3 " {
+Keywords { "UNITY_COLORSPACE_GAMMA" }
+"!!GLES3"
+}
+}
+ }
+}
+Fallback Off
+}

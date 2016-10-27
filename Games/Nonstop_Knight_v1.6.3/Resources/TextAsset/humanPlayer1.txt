@@ -1,0 +1,70 @@
+{
+	"AiControlled" : false,
+	"Rank" : 1,	
+	"Resources" : {
+		"Energy" : 20,
+		"Coin" : 0,
+		"Diamond" : 0,		
+		"Xp" : 0,
+		"Token" : 0,
+		"Crown" : 0,
+		"Dust"  : 0
+	},
+	"ActiveCharacterIndex" : 0,
+	"CharacterInstances" : [
+		{
+			"CharacterId" : "Hero001",
+			"SkillInstances" : [
+				{
+					"SkillType" : "Whirlwind",
+					"Rank" : 1,
+					"InspectedByPlayer" : true
+				},
+				{
+					"SkillType" : "Leap",
+					"Rank" : 1,
+					"InspectedByPlayer" : true
+				}
+			],		
+			"ActiveSkillTypes" : ["Whirlwind", "Leap"],
+			"Inventory" : {
+				"RevivePotions" : 2,
+			},
+			"ItemSlots" : [
+				{
+					"CompatibleItemType" : "Weapon",
+					"ItemInstance" : 				
+					{
+						"ItemId" : "Weapon001",
+						"Level" : 1,
+						"Rank" : 0,
+						"Unlocked" : true,
+						"InspectedByPlayer" : true
+					}			
+				},
+				{
+					"CompatibleItemType" : "Armor",
+					"ItemInstance" : 				
+					{
+						"ItemId" : "Armor001",
+						"Level" : 1,
+						"Rank" : 0,
+						"Unlocked" : true,
+						"InspectedByPlayer" : true
+					}		
+				},				
+				{
+					"CompatibleItemType" : "Cloak",
+					"ItemInstance" : 
+					{
+						"ItemId" : "Cloak001",
+						"Level" : 1,
+						"Rank" : 0,
+						"Unlocked" : true,
+						"InspectedByPlayer" : true
+					}						
+				}		
+			]
+		}
+	]
+}

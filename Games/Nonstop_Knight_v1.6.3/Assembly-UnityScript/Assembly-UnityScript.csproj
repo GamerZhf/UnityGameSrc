@@ -1,0 +1,92 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
+  <PropertyGroup>
+    <ProjectType>local</ProjectType>
+    <ProjectVersion>7.10.377</ProjectVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{1896DEF9-A47F-446A-8D54-B5CB75B0DAA8}</ProjectGuid>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <AssemblyName>Assembly-UnityScript</AssemblyName>
+    <OutputType>Library</OutputType>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <Reference Include="UnityEngine">
+      <HintPath>..\library\UnityEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="Boo.Lang" />
+    <Reference Include="UnityEngine.Analytics">
+      <HintPath>..\library\UnityEngine.Analytics.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.Networking">
+      <HintPath>..\library\UnityEngine.Networking.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UI">
+      <HintPath>..\library\UnityEngine.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityScript.Lang" />
+    <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="Global.cs" />
+    <Compile Include="ExplosionPart.cs" />
+    <Compile Include="EffectSequencer.cs" />
+    <Compile Include="MuzzleFlashAnimate.cs" />
+    <Compile Include="AI.cs" />
+    <Compile Include="DisableOutsideRadius.cs" />
+    <Compile Include="PatrolPoint.cs" />
+    <Compile Include="SpiderAttackMoveController.cs" />
+    <Compile Include="SpiderReturnMoveController.cs" />
+    <Compile Include="FanRotate.cs" />
+    <Compile Include="FootType.cs" />
+    <Compile Include="FootstepHandler.cs" />
+    <Compile Include="MechAnimation.cs" />
+    <Compile Include="MechAnimationTest.cs" />
+    <Compile Include="MoveAnimation.cs" />
+    <Compile Include="PlayerAnimation.cs" />
+    <Compile Include="SpiderAnimation.cs" />
+    <Compile Include="SpiderAnimationTest.cs" />
+    <Compile Include="conveyorBelt.cs" />
+    <Compile Include="GlowPlane.cs" />
+    <Compile Include="GlowPlaneAngleFade.cs" />
+    <Compile Include="LaserScope.cs" />
+    <Compile Include="SelfIlluminationBlink.cs" />
+    <Compile Include="ObjectCache.cs" />
+    <Compile Include="Spawner.cs" />
+    <Compile Include="DestroyObject.cs" />
+    <Compile Include="PlaySound.cs" />
+    <Compile Include="ReceiverItem.cs" />
+    <Compile Include="SignalSender.cs" />
+    <Compile Include="SpawnAtCheckpoint.cs" />
+    <Compile Include="SpawnObject.cs" />
+    <Compile Include="TriggerOnMouseOrJoystick.cs" />
+    <Compile Include="FreeMovementMotor.cs" />
+    <Compile Include="Boundary.cs" />
+    <Compile Include="Joystick.cs" />
+    <Compile Include="MovementMotor.cs" />
+    <Compile Include="PlayerMoveController.cs" />
+    <Compile Include="AutoFire.cs" />
+    <Compile Include="Health.cs" />
+    <Compile Include="HealthFlash.cs" />
+    <Compile Include="PerFrameRaycast.cs" />
+    <Compile Include="SimpleBullet.cs" />
+  </ItemGroup>
+</Project>

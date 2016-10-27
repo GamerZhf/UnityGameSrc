@@ -1,0 +1,11 @@
+{
+	"CharacterIds" : [	
+		"SkeletonMob001",
+		"SkeletonMob001",
+		"SkeletonMob001",
+		"SkeletonMob001",
+		"SkeletonMob002",
+		"SkeletonMob002",
+		"SkeletonMob002",
+	]
+}

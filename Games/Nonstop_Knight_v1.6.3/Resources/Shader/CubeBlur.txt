@@ -1,0 +1,2039 @@
+Shader "Hidden/CubeBlur" {
+Properties {
+ _MainTex ("Main", CUBE) = "" { }
+ _Texel ("Texel", Float) = 0.0078125
+ _Level ("Level", Float) = 0
+ _Scale ("Scale", Float) = 1
+}
+SubShader { 
+ LOD 200
+ Tags { "RenderType"="Opaque" }
+ Pass {
+  Tags { "RenderType"="Opaque" }
+  ZTest Always
+  ZWrite Off
+  Cull Off
+  Fog { Mode Off }
+  GpuProgramID 8315
+Program "vp" {
+SubProgram "gles " {
+"!!GLES
+#version 100
+
+#ifdef VERTEX
+attribute vec4 _glesVertex;
+attribute vec4 _glesMultiTexCoord0;
+uniform highp mat4 glstate_matrix_mvp;
+varying mediump vec4 xlv_TEXCOORD0;
+void main ()
+{
+  highp vec4 tmpvar_1;
+  tmpvar_1 = _glesMultiTexCoord0;
+  mediump vec4 tmpvar_2;
+  tmpvar_2 = tmpvar_1;
+  gl_Position = (glstate_matrix_mvp * _glesVertex);
+  xlv_TEXCOORD0 = tmpvar_2;
+}
+
+
+#endif
+#ifdef FRAGMENT
+#extension GL_EXT_shader_texture_lod : enable
+lowp vec4 impl_low_textureCubeLodEXT(lowp samplerCube sampler, highp vec3 coord, mediump float lod)
+{
+#if defined(GL_EXT_shader_texture_lod)
+	return textureCubeLodEXT(sampler, coord, lod);
+#else
+	return textureCube(sampler, coord, lod);
+#endif
+}
+
+uniform lowp samplerCube _MainTex;
+uniform mediump float _Texel;
+uniform mediump float _Level;
+uniform mediump float _Scale;
+varying mediump vec4 xlv_TEXCOORD0;
+void main ()
+{
+  mediump vec3 c_1;
+  mediump vec4 s3_2;
+  mediump vec4 s2_3;
+  mediump vec4 s1_4;
+  mediump float w_5;
+  mediump vec4 s_6;
+  mediump vec3 st_7;
+  mediump vec3 tmpvar_8;
+  tmpvar_8 = abs(xlv_TEXCOORD0.xyz);
+  bvec3 tmpvar_9;
+  tmpvar_9 = equal (tmpvar_8, vec3(1.0, 1.0, 1.0));
+  lowp vec3 tmpvar_10;
+  tmpvar_10 = vec3(tmpvar_9);
+  mediump vec3 tmpvar_11;
+  tmpvar_11 = (xlv_TEXCOORD0.xyz * tmpvar_10);
+  mediump vec3 tmpvar_12;
+  tmpvar_12 = (tmpvar_11.zxy * _Texel);
+  mediump vec3 tmpvar_13;
+  tmpvar_13 = (tmpvar_11.yzx * _Texel);
+  mediump vec4 tmpvar_14;
+  tmpvar_14.w = 0.0;
+  tmpvar_14.xyz = (xlv_TEXCOORD0.xyz * (vec3(1.0, 1.0, 1.0) - abs(tmpvar_11)));
+  mediump float tmpvar_15;
+  tmpvar_15 = inversesqrt((1.0 + dot (tmpvar_14.xyz, tmpvar_14.xyz)));
+  mediump float d_16;
+  d_16 = ((tmpvar_15 * tmpvar_15) * tmpvar_15);
+  mediump vec3 tmpvar_17;
+  tmpvar_17.x = d_16;
+  tmpvar_17.y = (3.0 * d_16);
+  tmpvar_17.z = (5.0 * d_16);
+  mediump vec3 tmpvar_18;
+  tmpvar_18 = (tmpvar_17 * _Scale);
+  mediump vec3 tmpvar_19;
+  tmpvar_19 = exp((-(tmpvar_18) * tmpvar_18));
+  mediump vec3 tmpvar_20;
+  mediump vec3 st_21;
+  st_21 = (xlv_TEXCOORD0.xyz + (1.5 * tmpvar_12));
+  mediump vec3 tmpvar_22;
+  tmpvar_22 = min (max (st_21, vec3(-1.0, -1.0, -1.0)), vec3(1.0, 1.0, 1.0));
+  mediump vec3 tmpvar_23;
+  tmpvar_23 = abs((st_21 - tmpvar_22));
+  tmpvar_20 = (tmpvar_22 - (max (
+    max (tmpvar_23.x, tmpvar_23.y)
+  , tmpvar_23.z) * tmpvar_11));
+  mediump vec3 tmpvar_24;
+  mediump vec3 st_25;
+  st_25 = (xlv_TEXCOORD0.xyz - (1.5 * tmpvar_12));
+  mediump vec3 tmpvar_26;
+  tmpvar_26 = min (max (st_25, vec3(-1.0, -1.0, -1.0)), vec3(1.0, 1.0, 1.0));
+  mediump vec3 tmpvar_27;
+  tmpvar_27 = abs((st_25 - tmpvar_26));
+  tmpvar_24 = (tmpvar_26 - (max (
+    max (tmpvar_27.x, tmpvar_27.y)
+  , tmpvar_27.z) * tmpvar_11));
+  mediump vec3 tmpvar_28;
+  mediump vec3 st_29;
+  st_29 = (xlv_TEXCOORD0.xyz + (2.5 * tmpvar_12));
+  mediump vec3 tmpvar_30;
+  tmpvar_30 = min (max (st_29, vec3(-1.0, -1.0, -1.0)), vec3(1.0, 1.0, 1.0));
+  mediump vec3 tmpvar_31;
+  tmpvar_31 = abs((st_29 - tmpvar_30));
+  tmpvar_28 = (tmpvar_30 - (max (
+    max (tmpvar_31.x, tmpvar_31.y)
+  , tmpvar_31.z) * tmpvar_11));
+  mediump vec3 tmpvar_32;
+  mediump vec3 st_33;
+  st_33 = (xlv_TEXCOORD0.xyz - (2.5 * tmpvar_12));
+  mediump vec3 tmpvar_34;
+  tmpvar_34 = min (max (st_33, vec3(-1.0, -1.0, -1.0)), vec3(1.0, 1.0, 1.0));
+  mediump vec3 tmpvar_35;
+  tmpvar_35 = abs((st_33 - tmpvar_34));
+  tmpvar_32 = (tmpvar_34 - (max (
+    max (tmpvar_35.x, tmpvar_35.y)
+  , tmpvar_35.z) * tmpvar_11));
+  mediump vec3 tmpvar_36;
+  mediump vec3 st_37;
+  st_37 = (xlv_TEXCOORD0.xyz + (1.5 * tmpvar_13));
+  mediump vec3 tmpvar_38;
+  tmpvar_38 = min (max (st_37, vec3(-1.0, -1.0, -1.0)), vec3(1.0, 1.0, 1.0));
+  mediump vec3 tmpvar_39;
+  tmpvar_39 = abs((st_37 - tmpvar_38));
+  tmpvar_36 = (tmpvar_38 - (max (
+    max (tmpvar_39.x, tmpvar_39.y)
+  , tmpvar_39.z) * tmpvar_11));
+  mediump vec3 tmpvar_40;
+  mediump vec3 st_41;
+  st_41 = (xlv_TEXCOORD0.xyz - (1.5 * tmpvar_13));
+  mediump vec3 tmpvar_42;
+  tmpvar_42 = min (max (st_41, vec3(-1.0, -1.0, -1.0)), vec3(1.0, 1.0, 1.0));
+  mediump vec3 tmpvar_43;
+  tmpvar_43 = abs((st_41 - tmpvar_42));
+  tmpvar_40 = (tmpvar_42 - (max (
+    max (tmpvar_43.x, tmpvar_43.y)
+  , tmpvar_43.z) * tmpvar_11));
+  mediump vec3 tmpvar_44;
+  mediump vec3 st_45;
+  st_45 = (xlv_TEXCOORD0.xyz + (2.5 * tmpvar_13));
+  mediump vec3 tmpvar_46;
+  tmpvar_46 = min (max (st_45, vec3(-1.0, -1.0, -1.0)), vec3(1.0, 1.0, 1.0));
+  mediump vec3 tmpvar_47;
+  tmpvar_47 = abs((st_45 - tmpvar_46));
+  tmpvar_44 = (tmpvar_46 - (max (
+    max (tmpvar_47.x, tmpvar_47.y)
+  , tmpvar_47.z) * tmpvar_11));
+  mediump vec3 tmpvar_48;
+  mediump vec3 st_49;
+  st_49 = (xlv_TEXCOORD0.xyz - (2.5 * tmpvar_13));
+  mediump vec3 tmpvar_50;
+  tmpvar_50 = min (max (st_49, vec3(-1.0, -1.0, -1.0)), vec3(1.0, 1.0, 1.0));
+  mediump vec3 tmpvar_51;
+  tmpvar_51 = abs((st_49 - tmpvar_50));
+  tmpvar_48 = (tmpvar_50 - (max (
+    max (tmpvar_51.x, tmpvar_51.y)
+  , tmpvar_51.z) * tmpvar_11));
+  c_1 = (tmpvar_19 * tmpvar_19.zzz);
+  st_7 = ((xlv_TEXCOORD0.xyz - (2.5 * tmpvar_12)) - (2.5 * tmpvar_13));
+  mediump vec3 tmpvar_52;
+  tmpvar_52 = min (max (st_7, vec3(-1.0, -1.0, -1.0)), vec3(1.0, 1.0, 1.0));
+  mediump vec3 tmpvar_53;
+  tmpvar_53 = abs((st_7 - tmpvar_52));
+  mediump vec4 tmpvar_54;
+  tmpvar_54.xyz = (tmpvar_52 - (max (
+    max (tmpvar_53.x, tmpvar_53.y)
+  , tmpvar_53.z) * tmpvar_11));
+  tmpvar_54.w = _Level;
+  lowp vec4 tmpvar_55;
+  tmpvar_55 = impl_low_textureCubeLodEXT (_MainTex, tmpvar_54.xyz, _Level);
+  mediump vec4 tmpvar_56;
+  tmpvar_56 = max (vec4(0.0, 0.0, 0.0, 0.0), tmpvar_55);
+  st_7 = ((xlv_TEXCOORD0.xyz - (1.5 * tmpvar_12)) - (2.5 * tmpvar_13));
+  mediump vec3 tmpvar_57;
+  tmpvar_57 = min (max (st_7, vec3(-1.0, -1.0, -1.0)), vec3(1.0, 1.0, 1.0));
+  mediump vec3 tmpvar_58;
+  tmpvar_58 = abs((st_7 - tmpvar_57));
+  mediump vec4 tmpvar_59;
+  tmpvar_59.xyz = (tmpvar_57 - (max (
+    max (tmpvar_58.x, tmpvar_58.y)
+  , tmpvar_58.z) * tmpvar_11));
+  tmpvar_59.w = _Level;
+  lowp vec4 tmpvar_60;
+  tmpvar_60 = impl_low_textureCubeLodEXT (_MainTex, tmpvar_59.xyz, _Level);
+  mediump vec4 tmpvar_61;
+  tmpvar_61 = max (vec4(0.0, 0.0, 0.0, 0.0), tmpvar_60);
+  st_7 = (tmpvar_48 - (0.5 * tmpvar_12));
+  lowp vec4 tmpvar_62;
+  tmpvar_62 = impl_low_textureCubeLodEXT (_MainTex, st_7, _Level);
+  mediump vec4 tmpvar_63;
+  tmpvar_63 = max (vec4(0.0, 0.0, 0.0, 0.0), tmpvar_62);
+  st_7 = (tmpvar_48 + (0.5 * tmpvar_12));
+  lowp vec4 tmpvar_64;
+  tmpvar_64 = max (vec4(0.0, 0.0, 0.0, 0.0), impl_low_textureCubeLodEXT (_MainTex, st_7, _Level));
+  s1_4 = (tmpvar_63 + tmpvar_64);
+  st_7 = ((xlv_TEXCOORD0.xyz + (1.5 * tmpvar_12)) - (2.5 * tmpvar_13));
+  mediump vec3 tmpvar_65;
+  tmpvar_65 = min (max (st_7, vec3(-1.0, -1.0, -1.0)), vec3(1.0, 1.0, 1.0));
+  mediump vec3 tmpvar_66;
+  tmpvar_66 = abs((st_7 - tmpvar_65));
+  mediump vec4 tmpvar_67;
+  tmpvar_67.xyz = (tmpvar_65 - (max (
+    max (tmpvar_66.x, tmpvar_66.y)
+  , tmpvar_66.z) * tmpvar_11));
+  tmpvar_67.w = _Level;
+  lowp vec4 tmpvar_68;
+  tmpvar_68 = max (vec4(0.0, 0.0, 0.0, 0.0), impl_low_textureCubeLodEXT (_MainTex, tmpvar_67.xyz, _Level));
+  s2_3 = (tmpvar_61 + tmpvar_68);
+  st_7 = ((xlv_TEXCOORD0.xyz + (2.5 * tmpvar_12)) - (2.5 * tmpvar_13));
+  mediump vec3 tmpvar_69;
+  tmpvar_69 = min (max (st_7, vec3(-1.0, -1.0, -1.0)), vec3(1.0, 1.0, 1.0));
+  mediump vec3 tmpvar_70;
+  tmpvar_70 = abs((st_7 - tmpvar_69));
+  mediump vec4 tmpvar_71;
+  tmpvar_71.xyz = (tmpvar_69 - (max (
+    max (tmpvar_70.x, tmpvar_70.y)
+  , tmpvar_70.z) * tmpvar_11));
+  tmpvar_71.w = _Level;
+  lowp vec4 tmpvar_72;
+  tmpvar_72 = max (vec4(0.0, 0.0, 0.0, 0.0), impl_low_textureCubeLodEXT (_MainTex, tmpvar_71.xyz, _Level));
+  s3_2 = (tmpvar_56 + tmpvar_72);
+  w_5 = dot (c_1, vec3(2.0, 2.0, 2.0));
+  s1_4 = ((c_1.x * s1_4) + (c_1.y * s2_3));
+  s_6 = (c_1.z * s3_2);
+  s_6 = (s_6 + s1_4);
+  c_1 = (tmpvar_19 * tmpvar_19.yyy);
+  st_7 = ((xlv_TEXCOORD0.xyz + (2.5 * tmpvar_12)) - (1.5 * tmpvar_13));
+  mediump vec3 tmpvar_73;
+  tmpvar_73 = min (max (st_7, vec3(-1.0, -1.0, -1.0)), vec3(1.0, 1.0, 1.0));
+  mediump vec3 tmpvar_74;
+  tmpvar_74 = abs((st_7 - tmpvar_73));
+  mediump vec4 tmpvar_75;
+  tmpvar_75.xyz = (tmpvar_73 - (max (
+    max (tmpvar_74.x, tmpvar_74.y)
+  , tmpvar_74.z) * tmpvar_11));
+  tmpvar_75.w = _Level;
+  lowp vec4 tmpvar_76;
+  tmpvar_76 = impl_low_textureCubeLodEXT (_MainTex, tmpvar_75.xyz, _Level);
+  mediump vec4 tmpvar_77;
+  tmpvar_77 = max (vec4(0.0, 0.0, 0.0, 0.0), tmpvar_76);
+  st_7 = ((xlv_TEXCOORD0.xyz + (1.5 * tmpvar_12)) - (1.5 * tmpvar_13));
+  mediump vec3 tmpvar_78;
+  tmpvar_78 = min (max (st_7, vec3(-1.0, -1.0, -1.0)), vec3(1.0, 1.0, 1.0));
+  mediump vec3 tmpvar_79;
+  tmpvar_79 = abs((st_7 - tmpvar_78));
+  mediump vec4 tmpvar_80;
+  tmpvar_80.xyz = (tmpvar_78 - (max (
+    max (tmpvar_79.x, tmpvar_79.y)
+  , tmpvar_79.z) * tmpvar_11));
+  tmpvar_80.w = _Level;
+  lowp vec4 tmpvar_81;
+  tmpvar_81 = impl_low_textureCubeLodEXT (_MainTex, tmpvar_80.xyz, _Level);
+  mediump vec4 tmpvar_82;
+  tmpvar_82 = max (vec4(0.0, 0.0, 0.0, 0.0), tmpvar_81);
+  st_7 = (tmpvar_40 + (0.5 * tmpvar_12));
+  lowp vec4 tmpvar_83;
+  tmpvar_83 = impl_low_textureCubeLodEXT (_MainTex, st_7, _Level);
+  mediump vec4 tmpvar_84;
+  tmpvar_84 = max (vec4(0.0, 0.0, 0.0, 0.0), tmpvar_83);
+  st_7 = (tmpvar_40 - (0.5 * tmpvar_12));
+  lowp vec4 tmpvar_85;
+  tmpvar_85 = max (vec4(0.0, 0.0, 0.0, 0.0), impl_low_textureCubeLodEXT (_MainTex, st_7, _Level));
+  s1_4 = (tmpvar_84 + tmpvar_85);
+  st_7 = ((xlv_TEXCOORD0.xyz - (1.5 * tmpvar_12)) - (1.5 * tmpvar_13));
+  mediump vec3 tmpvar_86;
+  tmpvar_86 = min (max (st_7, vec3(-1.0, -1.0, -1.0)), vec3(1.0, 1.0, 1.0));
+  mediump vec3 tmpvar_87;
+  tmpvar_87 = abs((st_7 - tmpvar_86));
+  mediump vec4 tmpvar_88;
+  tmpvar_88.xyz = (tmpvar_86 - (max (
+    max (tmpvar_87.x, tmpvar_87.y)
+  , tmpvar_87.z) * tmpvar_11));
+  tmpvar_88.w = _Level;
+  lowp vec4 tmpvar_89;
+  tmpvar_89 = max (vec4(0.0, 0.0, 0.0, 0.0), impl_low_textureCubeLodEXT (_MainTex, tmpvar_88.xyz, _Level));
+  s2_3 = (tmpvar_82 + tmpvar_89);
+  st_7 = ((xlv_TEXCOORD0.xyz - (2.5 * tmpvar_12)) - (1.5 * tmpvar_13));
+  mediump vec3 tmpvar_90;
+  tmpvar_90 = min (max (st_7, vec3(-1.0, -1.0, -1.0)), vec3(1.0, 1.0, 1.0));
+  mediump vec3 tmpvar_91;
+  tmpvar_91 = abs((st_7 - tmpvar_90));
+  mediump vec4 tmpvar_92;
+  tmpvar_92.xyz = (tmpvar_90 - (max (
+    max (tmpvar_91.x, tmpvar_91.y)
+  , tmpvar_91.z) * tmpvar_11));
+  tmpvar_92.w = _Level;
+  lowp vec4 tmpvar_93;
+  tmpvar_93 = max (vec4(0.0, 0.0, 0.0, 0.0), impl_low_textureCubeLodEXT (_MainTex, tmpvar_92.xyz, _Level));
+  s3_2 = (tmpvar_77 + tmpvar_93);
+  w_5 = (w_5 + dot (c_1, vec3(2.0, 2.0, 2.0)));
+  s1_4 = ((c_1.x * s1_4) + (c_1.y * s2_3));
+  s_6 = (s_6 + (c_1.z * s3_2));
+  s_6 = (s_6 + s1_4);
+  c_1 = (tmpvar_19 * tmpvar_19.xxx);
+  st_7 = (tmpvar_32 - (0.5 * tmpvar_13));
+  lowp vec4 tmpvar_94;
+  tmpvar_94 = impl_low_textureCubeLodEXT (_MainTex, st_7, _Level);
+  mediump vec4 tmpvar_95;
+  tmpvar_95 = max (vec4(0.0, 0.0, 0.0, 0.0), tmpvar_94);
+  st_7 = (tmpvar_24 - (0.5 * tmpvar_13));
+  lowp vec4 tmpvar_96;
+  tmpvar_96 = impl_low_textureCubeLodEXT (_MainTex, st_7, _Level);
+  mediump vec4 tmpvar_97;
+  tmpvar_97 = max (vec4(0.0, 0.0, 0.0, 0.0), tmpvar_96);
+  st_7 = ((xlv_TEXCOORD0.xyz - (0.5 * tmpvar_12)) - (0.5 * tmpvar_13));
+  lowp vec4 tmpvar_98;
+  tmpvar_98 = impl_low_textureCubeLodEXT (_MainTex, st_7, _Level);
+  mediump vec4 tmpvar_99;
+  tmpvar_99 = max (vec4(0.0, 0.0, 0.0, 0.0), tmpvar_98);
+  st_7 = ((xlv_TEXCOORD0.xyz + (0.5 * tmpvar_12)) - (0.5 * tmpvar_13));
+  lowp vec4 tmpvar_100;
+  tmpvar_100 = max (vec4(0.0, 0.0, 0.0, 0.0), impl_low_textureCubeLodEXT (_MainTex, st_7, _Level));
+  s1_4 = (tmpvar_99 + tmpvar_100);
+  st_7 = (tmpvar_20 - (0.5 * tmpvar_13));
+  lowp vec4 tmpvar_101;
+  tmpvar_101 = max (vec4(0.0, 0.0, 0.0, 0.0), impl_low_textureCubeLodEXT (_MainTex, st_7, _Level));
+  s2_3 = (tmpvar_97 + tmpvar_101);
+  st_7 = (tmpvar_28 - (0.5 * tmpvar_13));
+  lowp vec4 tmpvar_102;
+  tmpvar_102 = max (vec4(0.0, 0.0, 0.0, 0.0), impl_low_textureCubeLodEXT (_MainTex, st_7, _Level));
+  s3_2 = (tmpvar_95 + tmpvar_102);
+  w_5 = (w_5 + dot (c_1, vec3(2.0, 2.0, 2.0)));
+  s1_4 = ((c_1.x * s1_4) + (c_1.y * s2_3));
+  s_6 = (s_6 + (c_1.z * s3_2));
+  s_6 = (s_6 + s1_4);
+  c_1 = (tmpvar_19 * tmpvar_19.xxx);
+  st_7 = (tmpvar_28 + (0.5 * tmpvar_13));
+  lowp vec4 tmpvar_103;
+  tmpvar_103 = impl_low_textureCubeLodEXT (_MainTex, st_7, _Level);
+  mediump vec4 tmpvar_104;
+  tmpvar_104 = max (vec4(0.0, 0.0, 0.0, 0.0), tmpvar_103);
+  st_7 = (tmpvar_20 + (0.5 * tmpvar_13));
+  lowp vec4 tmpvar_105;
+  tmpvar_105 = impl_low_textureCubeLodEXT (_MainTex, st_7, _Level);
+  mediump vec4 tmpvar_106;
+  tmpvar_106 = max (vec4(0.0, 0.0, 0.0, 0.0), tmpvar_105);
+  st_7 = ((xlv_TEXCOORD0.xyz + (0.5 * tmpvar_12)) + (0.5 * tmpvar_13));
+  lowp vec4 tmpvar_107;
+  tmpvar_107 = impl_low_textureCubeLodEXT (_MainTex, st_7, _Level);
+  mediump vec4 tmpvar_108;
+  tmpvar_108 = max (vec4(0.0, 0.0, 0.0, 0.0), tmpvar_107);
+  st_7 = ((xlv_TEXCOORD0.xyz - (0.5 * tmpvar_12)) + (0.5 * tmpvar_13));
+  lowp vec4 tmpvar_109;
+  tmpvar_109 = max (vec4(0.0, 0.0, 0.0, 0.0), impl_low_textureCubeLodEXT (_MainTex, st_7, _Level));
+  s1_4 = (tmpvar_108 + tmpvar_109);
+  st_7 = (tmpvar_24 + (0.5 * tmpvar_13));
+  lowp vec4 tmpvar_110;
+  tmpvar_110 = max (vec4(0.0, 0.0, 0.0, 0.0), impl_low_textureCubeLodEXT (_MainTex, st_7, _Level));
+  s2_3 = (tmpvar_106 + tmpvar_110);
+  st_7 = (tmpvar_32 + (0.5 * tmpvar_13));
+  lowp vec4 tmpvar_111;
+  tmpvar_111 = max (vec4(0.0, 0.0, 0.0, 0.0), impl_low_textureCubeLodEXT (_MainTex, st_7, _Level));
+  s3_2 = (tmpvar_104 + tmpvar_111);
+  w_5 = (w_5 + dot (c_1, vec3(2.0, 2.0, 2.0)));
+  s1_4 = ((c_1.x * s1_4) + (c_1.y * s2_3));
+  s_6 = (s_6 + (c_1.z * s3_2));
+  s_6 = (s_6 + s1_4);
+  c_1 = (tmpvar_19 * tmpvar_19.yyy);
+  st_7 = ((xlv_TEXCOORD0.xyz - (2.5 * tmpvar_12)) + (1.5 * tmpvar_13));
+  mediump vec3 tmpvar_112;
+  tmpvar_112 = min (max (st_7, vec3(-1.0, -1.0, -1.0)), vec3(1.0, 1.0, 1.0));
+  mediump vec3 tmpvar_113;
+  tmpvar_113 = abs((st_7 - tmpvar_112));
+  mediump vec4 tmpvar_114;
+  tmpvar_114.xyz = (tmpvar_112 - (max (
+    max (tmpvar_113.x, tmpvar_113.y)
+  , tmpvar_113.z) * tmpvar_11));
+  tmpvar_114.w = _Level;
+  lowp vec4 tmpvar_115;
+  tmpvar_115 = impl_low_textureCubeLodEXT (_MainTex, tmpvar_114.xyz, _Level);
+  mediump vec4 tmpvar_116;
+  tmpvar_116 = max (vec4(0.0, 0.0, 0.0, 0.0), tmpvar_115);
+  st_7 = ((xlv_TEXCOORD0.xyz - (1.5 * tmpvar_12)) + (1.5 * tmpvar_13));
+  mediump vec3 tmpvar_117;
+  tmpvar_117 = min (max (st_7, vec3(-1.0, -1.0, -1.0)), vec3(1.0, 1.0, 1.0));
+  mediump vec3 tmpvar_118;
+  tmpvar_118 = abs((st_7 - tmpvar_117));
+  mediump vec4 tmpvar_119;
+  tmpvar_119.xyz = (tmpvar_117 - (max (
+    max (tmpvar_118.x, tmpvar_118.y)
+  , tmpvar_118.z) * tmpvar_11));
+  tmpvar_119.w = _Level;
+  lowp vec4 tmpvar_120;
+  tmpvar_120 = impl_low_textureCubeLodEXT (_MainTex, tmpvar_119.xyz, _Level);
+  mediump vec4 tmpvar_121;
+  tmpvar_121 = max (vec4(0.0, 0.0, 0.0, 0.0), tmpvar_120);
+  st_7 = (tmpvar_36 - (0.5 * tmpvar_12));
+  lowp vec4 tmpvar_122;
+  tmpvar_122 = impl_low_textureCubeLodEXT (_MainTex, st_7, _Level);
+  mediump vec4 tmpvar_123;
+  tmpvar_123 = max (vec4(0.0, 0.0, 0.0, 0.0), tmpvar_122);
+  st_7 = (tmpvar_36 + (0.5 * tmpvar_12));
+  lowp vec4 tmpvar_124;
+  tmpvar_124 = max (vec4(0.0, 0.0, 0.0, 0.0), impl_low_textureCubeLodEXT (_MainTex, st_7, _Level));
+  s1_4 = (tmpvar_123 + tmpvar_124);
+  st_7 = ((xlv_TEXCOORD0.xyz + (1.5 * tmpvar_12)) + (1.5 * tmpvar_13));
+  mediump vec3 tmpvar_125;
+  tmpvar_125 = min (max (st_7, vec3(-1.0, -1.0, -1.0)), vec3(1.0, 1.0, 1.0));
+  mediump vec3 tmpvar_126;
+  tmpvar_126 = abs((st_7 - tmpvar_125));
+  mediump vec4 tmpvar_127;
+  tmpvar_127.xyz = (tmpvar_125 - (max (
+    max (tmpvar_126.x, tmpvar_126.y)
+  , tmpvar_126.z) * tmpvar_11));
+  tmpvar_127.w = _Level;
+  lowp vec4 tmpvar_128;
+  tmpvar_128 = max (vec4(0.0, 0.0, 0.0, 0.0), impl_low_textureCubeLodEXT (_MainTex, tmpvar_127.xyz, _Level));
+  s2_3 = (tmpvar_121 + tmpvar_128);
+  st_7 = ((xlv_TEXCOORD0.xyz + (2.5 * tmpvar_12)) + (1.5 * tmpvar_13));
+  mediump vec3 tmpvar_129;
+  tmpvar_129 = min (max (st_7, vec3(-1.0, -1.0, -1.0)), vec3(1.0, 1.0, 1.0));
+  mediump vec3 tmpvar_130;
+  tmpvar_130 = abs((st_7 - tmpvar_129));
+  mediump vec4 tmpvar_131;
+  tmpvar_131.xyz = (tmpvar_129 - (max (
+    max (tmpvar_130.x, tmpvar_130.y)
+  , tmpvar_130.z) * tmpvar_11));
+  tmpvar_131.w = _Level;
+  lowp vec4 tmpvar_132;
+  tmpvar_132 = max (vec4(0.0, 0.0, 0.0, 0.0), impl_low_textureCubeLodEXT (_MainTex, tmpvar_131.xyz, _Level));
+  s3_2 = (tmpvar_116 + tmpvar_132);
+  w_5 = (w_5 + dot (c_1, vec3(2.0, 2.0, 2.0)));
+  s1_4 = ((c_1.x * s1_4) + (c_1.y * s2_3));
+  s_6 = (s_6 + (c_1.z * s3_2));
+  s_6 = (s_6 + s1_4);
+  c_1 = (tmpvar_19 * tmpvar_19.zzz);
+  st_7 = ((xlv_TEXCOORD0.xyz + (2.5 * tmpvar_12)) + (2.5 * tmpvar_13));
+  mediump vec3 tmpvar_133;
+  tmpvar_133 = min (max (st_7, vec3(-1.0, -1.0, -1.0)), vec3(1.0, 1.0, 1.0));
+  mediump vec3 tmpvar_134;
+  tmpvar_134 = abs((st_7 - tmpvar_133));
+  mediump vec4 tmpvar_135;
+  tmpvar_135.xyz = (tmpvar_133 - (max (
+    max (tmpvar_134.x, tmpvar_134.y)
+  , tmpvar_134.z) * tmpvar_11));
+  tmpvar_135.w = _Level;
+  lowp vec4 tmpvar_136;
+  tmpvar_136 = impl_low_textureCubeLodEXT (_MainTex, tmpvar_135.xyz, _Level);
+  mediump vec4 tmpvar_137;
+  tmpvar_137 = max (vec4(0.0, 0.0, 0.0, 0.0), tmpvar_136);
+  st_7 = ((xlv_TEXCOORD0.xyz + (1.5 * tmpvar_12)) + (2.5 * tmpvar_13));
+  mediump vec3 tmpvar_138;
+  tmpvar_138 = min (max (st_7, vec3(-1.0, -1.0, -1.0)), vec3(1.0, 1.0, 1.0));
+  mediump vec3 tmpvar_139;
+  tmpvar_139 = abs((st_7 - tmpvar_138));
+  mediump vec4 tmpvar_140;
+  tmpvar_140.xyz = (tmpvar_138 - (max (
+    max (tmpvar_139.x, tmpvar_139.y)
+  , tmpvar_139.z) * tmpvar_11));
+  tmpvar_140.w = _Level;
+  lowp vec4 tmpvar_141;
+  tmpvar_141 = impl_low_textureCubeLodEXT (_MainTex, tmpvar_140.xyz, _Level);
+  mediump vec4 tmpvar_142;
+  tmpvar_142 = max (vec4(0.0, 0.0, 0.0, 0.0), tmpvar_141);
+  st_7 = (tmpvar_44 + (0.5 * tmpvar_12));
+  lowp vec4 tmpvar_143;
+  tmpvar_143 = impl_low_textureCubeLodEXT (_MainTex, st_7, _Level);
+  mediump vec4 tmpvar_144;
+  tmpvar_144 = max (vec4(0.0, 0.0, 0.0, 0.0), tmpvar_143);
+  st_7 = (tmpvar_44 - (0.5 * tmpvar_12));
+  lowp vec4 tmpvar_145;
+  tmpvar_145 = max (vec4(0.0, 0.0, 0.0, 0.0), impl_low_textureCubeLodEXT (_MainTex, st_7, _Level));
+  s1_4 = (tmpvar_144 + tmpvar_145);
+  st_7 = ((xlv_TEXCOORD0.xyz - (1.5 * tmpvar_12)) + (2.5 * tmpvar_13));
+  mediump vec3 tmpvar_146;
+  tmpvar_146 = min (max (st_7, vec3(-1.0, -1.0, -1.0)), vec3(1.0, 1.0, 1.0));
+  mediump vec3 tmpvar_147;
+  tmpvar_147 = abs((st_7 - tmpvar_146));
+  mediump vec4 tmpvar_148;
+  tmpvar_148.xyz = (tmpvar_146 - (max (
+    max (tmpvar_147.x, tmpvar_147.y)
+  , tmpvar_147.z) * tmpvar_11));
+  tmpvar_148.w = _Level;
+  lowp vec4 tmpvar_149;
+  tmpvar_149 = max (vec4(0.0, 0.0, 0.0, 0.0), impl_low_textureCubeLodEXT (_MainTex, tmpvar_148.xyz, _Level));
+  s2_3 = (tmpvar_142 + tmpvar_149);
+  st_7 = ((xlv_TEXCOORD0.xyz - (2.5 * tmpvar_12)) + (2.5 * tmpvar_13));
+  mediump vec3 tmpvar_150;
+  mediump vec3 tmpvar_151;
+  tmpvar_151 = min (max (st_7, vec3(-1.0, -1.0, -1.0)), vec3(1.0, 1.0, 1.0));
+  mediump vec3 tmpvar_152;
+  tmpvar_152 = abs((st_7 - tmpvar_151));
+  tmpvar_150 = (tmpvar_151 - (max (
+    max (tmpvar_152.x, tmpvar_152.y)
+  , tmpvar_152.z) * tmpvar_11));
+  st_7 = tmpvar_150;
+  lowp vec4 tmpvar_153;
+  tmpvar_153 = max (vec4(0.0, 0.0, 0.0, 0.0), impl_low_textureCubeLodEXT (_MainTex, tmpvar_150, _Level));
+  s3_2 = (tmpvar_137 + tmpvar_153);
+  w_5 = (w_5 + dot (c_1, vec3(2.0, 2.0, 2.0)));
+  s1_4 = ((c_1.x * s1_4) + (c_1.y * s2_3));
+  s_6 = (s_6 + (c_1.z * s3_2));
+  s_6 = (s_6 + s1_4);
+  gl_FragData[0] = (s_6 / w_5);
+}
+
+
+#endif
+"
+}
+SubProgram "gles3 " {
+"!!GLES3
+#ifdef VERTEX
+#version 300 es
+precision highp float;
+precision highp int;
+uniform 	vec4 _Time;
+uniform 	vec4 _SinTime;
+uniform 	vec4 _CosTime;
+uniform 	vec4 unity_DeltaTime;
+uniform 	vec3 _WorldSpaceCameraPos;
+uniform 	vec4 _ProjectionParams;
+uniform 	vec4 _ScreenParams;
+uniform 	vec4 _ZBufferParams;
+uniform 	vec4 unity_OrthoParams;
+uniform 	vec4 unity_CameraWorldClipPlanes[6];
+uniform 	mat4 unity_CameraProjection;
+uniform 	mat4 unity_CameraInvProjection;
+uniform 	vec4 _WorldSpaceLightPos0;
+uniform 	vec4 _LightPositionRange;
+uniform 	vec4 unity_4LightPosX0;
+uniform 	vec4 unity_4LightPosY0;
+uniform 	vec4 unity_4LightPosZ0;
+uniform 	mediump vec4 unity_4LightAtten0;
+uniform 	mediump vec4 unity_LightColor[8];
+uniform 	vec4 unity_LightPosition[8];
+uniform 	mediump vec4 unity_LightAtten[8];
+uniform 	vec4 unity_SpotDirection[8];
+uniform 	mediump vec4 unity_SHAr;
+uniform 	mediump vec4 unity_SHAg;
+uniform 	mediump vec4 unity_SHAb;
+uniform 	mediump vec4 unity_SHBr;
+uniform 	mediump vec4 unity_SHBg;
+uniform 	mediump vec4 unity_SHBb;
+uniform 	mediump vec4 unity_SHC;
+uniform 	mediump vec3 unity_LightColor0;
+uniform 	mediump vec3 unity_LightColor1;
+uniform 	mediump vec3 unity_LightColor2;
+uniform 	mediump vec3 unity_LightColor3;
+uniform 	vec4 unity_ShadowSplitSpheres[4];
+uniform 	vec4 unity_ShadowSplitSqRadii;
+uniform 	vec4 unity_LightShadowBias;
+uniform 	vec4 _LightSplitsNear;
+uniform 	vec4 _LightSplitsFar;
+uniform 	mat4 unity_World2Shadow[4];
+uniform 	mediump vec4 _LightShadowData;
+uniform 	vec4 unity_ShadowFadeCenterAndType;
+uniform 	mat4 glstate_matrix_mvp;
+uniform 	mat4 glstate_matrix_modelview0;
+uniform 	mat4 glstate_matrix_invtrans_modelview0;
+uniform 	mat4 _Object2World;
+uniform 	mat4 _World2Object;
+uniform 	vec4 unity_LODFade;
+uniform 	mat4 glstate_matrix_transpose_modelview0;
+uniform 	mat4 glstate_matrix_projection;
+uniform 	lowp vec4 glstate_lightmodel_ambient;
+uniform 	mat4 unity_MatrixV;
+uniform 	mat4 unity_MatrixVP;
+uniform 	lowp vec4 unity_AmbientSky;
+uniform 	lowp vec4 unity_AmbientEquator;
+uniform 	lowp vec4 unity_AmbientGround;
+uniform 	lowp vec4 unity_FogColor;
+uniform 	vec4 unity_FogParams;
+uniform 	vec4 unity_LightmapST;
+uniform 	vec4 unity_DynamicLightmapST;
+uniform 	vec4 unity_SpecCube0_BoxMax;
+uniform 	vec4 unity_SpecCube0_BoxMin;
+uniform 	vec4 unity_SpecCube0_ProbePosition;
+uniform 	mediump vec4 unity_SpecCube0_HDR;
+uniform 	vec4 unity_SpecCube1_BoxMax;
+uniform 	vec4 unity_SpecCube1_BoxMin;
+uniform 	vec4 unity_SpecCube1_ProbePosition;
+uniform 	mediump vec4 unity_SpecCube1_HDR;
+uniform 	lowp vec4 unity_ColorSpaceGrey;
+uniform 	lowp vec4 unity_ColorSpaceDouble;
+uniform 	mediump vec4 unity_ColorSpaceDielectricSpec;
+uniform 	mediump vec4 unity_ColorSpaceLuminance;
+uniform 	mediump vec4 unity_Lightmap_HDR;
+uniform 	mediump vec4 unity_DynamicLightmap_HDR;
+uniform 	mediump float _Texel;
+uniform 	mediump float _Radius;
+uniform 	mediump float _Level;
+uniform 	mediump float _Scale;
+in highp vec4 in_POSITION0;
+in highp vec4 in_TEXCOORD0;
+out vec4 undefined;
+out mediump vec4 vs_TEXCOORD0;
+highp vec4 t0;
+void main()
+{
+    //Instruction 5109
+    //MUL
+    t0 = in_POSITION0.yyyy * glstate_matrix_mvp[1];
+    //Instruction 5110
+    //MAD
+    t0 = glstate_matrix_mvp[0] * in_POSITION0.xxxx + t0;
+    //Instruction 5111
+    //MAD
+    t0 = glstate_matrix_mvp[2] * in_POSITION0.zzzz + t0;
+    //Instruction 5112
+    //MAD
+    t0 = glstate_matrix_mvp[3] * in_POSITION0.wwww + t0;
+    //Instruction 5113
+    //MOV
+    gl_Position = t0;
+    //Instruction 5114
+    //MOV
+    vs_TEXCOORD0 = in_TEXCOORD0;
+    //Instruction 5115
+    //RET
+    return;
+}
+
+#endif
+#ifdef FRAGMENT
+#version 300 es
+precision highp float;
+precision highp int;
+uniform 	vec4 _Time;
+uniform 	vec4 _SinTime;
+uniform 	vec4 _CosTime;
+uniform 	vec4 unity_DeltaTime;
+uniform 	vec3 _WorldSpaceCameraPos;
+uniform 	vec4 _ProjectionParams;
+uniform 	vec4 _ScreenParams;
+uniform 	vec4 _ZBufferParams;
+uniform 	vec4 unity_OrthoParams;
+uniform 	vec4 unity_CameraWorldClipPlanes[6];
+uniform 	mat4 unity_CameraProjection;
+uniform 	mat4 unity_CameraInvProjection;
+uniform 	vec4 _WorldSpaceLightPos0;
+uniform 	vec4 _LightPositionRange;
+uniform 	vec4 unity_4LightPosX0;
+uniform 	vec4 unity_4LightPosY0;
+uniform 	vec4 unity_4LightPosZ0;
+uniform 	mediump vec4 unity_4LightAtten0;
+uniform 	mediump vec4 unity_LightColor[8];
+uniform 	vec4 unity_LightPosition[8];
+uniform 	mediump vec4 unity_LightAtten[8];
+uniform 	vec4 unity_SpotDirection[8];
+uniform 	mediump vec4 unity_SHAr;
+uniform 	mediump vec4 unity_SHAg;
+uniform 	mediump vec4 unity_SHAb;
+uniform 	mediump vec4 unity_SHBr;
+uniform 	mediump vec4 unity_SHBg;
+uniform 	mediump vec4 unity_SHBb;
+uniform 	mediump vec4 unity_SHC;
+uniform 	mediump vec3 unity_LightColor0;
+uniform 	mediump vec3 unity_LightColor1;
+uniform 	mediump vec3 unity_LightColor2;
+uniform 	mediump vec3 unity_LightColor3;
+uniform 	vec4 unity_ShadowSplitSpheres[4];
+uniform 	vec4 unity_ShadowSplitSqRadii;
+uniform 	vec4 unity_LightShadowBias;
+uniform 	vec4 _LightSplitsNear;
+uniform 	vec4 _LightSplitsFar;
+uniform 	mat4 unity_World2Shadow[4];
+uniform 	mediump vec4 _LightShadowData;
+uniform 	vec4 unity_ShadowFadeCenterAndType;
+uniform 	mat4 glstate_matrix_mvp;
+uniform 	mat4 glstate_matrix_modelview0;
+uniform 	mat4 glstate_matrix_invtrans_modelview0;
+uniform 	mat4 _Object2World;
+uniform 	mat4 _World2Object;
+uniform 	vec4 unity_LODFade;
+uniform 	mat4 glstate_matrix_transpose_modelview0;
+uniform 	mat4 glstate_matrix_projection;
+uniform 	lowp vec4 glstate_lightmodel_ambient;
+uniform 	mat4 unity_MatrixV;
+uniform 	mat4 unity_MatrixVP;
+uniform 	lowp vec4 unity_AmbientSky;
+uniform 	lowp vec4 unity_AmbientEquator;
+uniform 	lowp vec4 unity_AmbientGround;
+uniform 	lowp vec4 unity_FogColor;
+uniform 	vec4 unity_FogParams;
+uniform 	vec4 unity_LightmapST;
+uniform 	vec4 unity_DynamicLightmapST;
+uniform 	vec4 unity_SpecCube0_BoxMax;
+uniform 	vec4 unity_SpecCube0_BoxMin;
+uniform 	vec4 unity_SpecCube0_ProbePosition;
+uniform 	mediump vec4 unity_SpecCube0_HDR;
+uniform 	vec4 unity_SpecCube1_BoxMax;
+uniform 	vec4 unity_SpecCube1_BoxMin;
+uniform 	vec4 unity_SpecCube1_ProbePosition;
+uniform 	mediump vec4 unity_SpecCube1_HDR;
+uniform 	lowp vec4 unity_ColorSpaceGrey;
+uniform 	lowp vec4 unity_ColorSpaceDouble;
+uniform 	mediump vec4 unity_ColorSpaceDielectricSpec;
+uniform 	mediump vec4 unity_ColorSpaceLuminance;
+uniform 	mediump vec4 unity_Lightmap_HDR;
+uniform 	mediump vec4 unity_DynamicLightmap_HDR;
+uniform 	mediump float _Texel;
+uniform 	mediump float _Radius;
+uniform 	mediump float _Level;
+uniform 	mediump float _Scale;
+uniform lowp samplerCube _MainTex;
+in mediump vec4 vs_TEXCOORD0;
+layout(location = 0) out mediump vec4 SV_Target0;
+mediump vec3 t16_0;
+mediump vec4 t16_1;
+lowp vec4 t10_1;
+bvec3 tb1;
+mediump vec3 t16_2;
+mediump vec4 t16_3;
+lowp vec4 t10_3;
+mediump vec4 t16_4;
+lowp vec4 t10_4;
+mediump vec4 t16_5;
+lowp vec4 t10_5;
+mediump vec3 t16_6;
+mediump vec4 t16_7;
+lowp vec4 t10_7;
+mediump vec4 t16_8;
+lowp vec4 t10_8;
+mediump vec3 t16_9;
+mediump vec3 t16_10;
+mediump vec3 t16_11;
+mediump vec3 t16_12;
+mediump vec4 t16_13;
+lowp vec4 t10_13;
+mediump vec4 t16_14;
+lowp vec4 t10_14;
+mediump vec4 t16_15;
+lowp vec4 t10_15;
+mediump vec3 t16_16;
+mediump float t16_17;
+mediump float t16_51;
+mediump float t16_53;
+mediump float t16_54;
+mediump float t16_55;
+void main()
+{
+    //Instruction 4776
+    //MOV
+    t16_0.x = _Scale;
+    //Instruction 4777
+    //MOV
+    t16_0.yz = vec2(3.0, 5.0);
+    //Instruction 4778
+    //EQ
+    tb1.xyz = equal(abs(vs_TEXCOORD0.xyzx), vec4(1.0, 1.0, 1.0, 0.0)).xyz;
+    //Instruction 4779
+    //MOVC
+    t16_2.x = (tb1.x) ? vs_TEXCOORD0.x : float(0.0);
+    t16_2.y = (tb1.y) ? vs_TEXCOORD0.y : float(0.0);
+    t16_2.z = (tb1.z) ? vs_TEXCOORD0.z : float(0.0);
+    //Instruction 4780
+    //ADD
+    t16_3.xyz = -abs(t16_2.xyz) + vec3(1.0, 1.0, 1.0);
+    //Instruction 4781
+    //MUL
+    t16_3.xyz = t16_3.xyz * vs_TEXCOORD0.xyz;
+    //Instruction 4782
+    //DP3
+    t16_51 = dot(t16_3.xyz, t16_3.xyz);
+    //Instruction 4783
+    //ADD
+    t16_51 = t16_51 + 1.0;
+    //Instruction 4784
+    //SQRT
+    t16_51 = sqrt(t16_51);
+    //Instruction 4785
+    //DIV
+    t16_51 = float(1.0) / t16_51;
+    //Instruction 4786
+    //MUL
+    t16_53 = t16_51 * t16_51;
+    //Instruction 4787
+    //MUL
+    t16_3.x = t16_51 * t16_53;
+    //Instruction 4788
+    //MUL
+    t16_3.yz = t16_3.xx * vec2(vec2(_Scale, _Scale));
+    //Instruction 4789
+    //MUL
+    t16_0.xyz = t16_0.xyz * t16_3.xyz;
+    //Instruction 4790
+    //MUL
+    t16_0.xyz = t16_0.xyz * (-t16_0.xyz);
+    //Instruction 4791
+    //MUL
+    t16_1.xyz = t16_0.xyz * vec3(1.44269502, 1.44269502, 1.44269502);
+    //Instruction 4792
+    //EXP
+    t16_1.xyz = exp2(t16_1.xyz);
+    //Instruction 4793
+    //MUL
+    t16_0.xyz = t16_1.zzz * t16_1.xyz;
+    //Instruction 4794
+    //MUL
+    t16_3.xyz = t16_2.zxy * vec3(_Texel);
+    //Instruction 4795
+    //MAD
+    t16_4.xyz = (-t16_3.xyz) * vec3(1.5, 1.5, 1.5) + vs_TEXCOORD0.xyz;
+    //Instruction 4796
+    //MAD
+    t16_5.xyz = (-t16_3.zxy) * vec3(2.5, 2.5, 2.5) + t16_4.xyz;
+    //Instruction 4797
+    //MAX
+    t16_6.xyz = max(t16_5.xyz, vec3(-1.0, -1.0, -1.0));
+    //Instruction 4798
+    //MIN
+    t16_6.xyz = min(t16_6.xyz, vec3(1.0, 1.0, 1.0));
+    //Instruction 4799
+    //ADD
+    t16_5.xyz = t16_5.xyz + (-t16_6.xyz);
+    //Instruction 4800
+    //MAX
+    t16_51 = max(abs(t16_5.y), abs(t16_5.x));
+    //Instruction 4801
+    //MAX
+    t16_51 = max(abs(t16_5.z), t16_51);
+    //Instruction 4802
+    //MAD
+    t16_5.xyz = (-vec3(t16_51)) * t16_2.xyz + t16_6.xyz;
+    //Instruction 4803
+    //SAMPLE_L
+    t10_5 = textureLod(_MainTex, t16_5.xyz, _Level);
+    //Instruction 4804
+    //MAX
+    t16_5 = max(t10_5, vec4(0.0, 0.0, 0.0, 0.0));
+    //Instruction 4805
+    //MAD
+    t16_6.xyz = t16_3.xyz * vec3(1.5, 1.5, 1.5) + vs_TEXCOORD0.xyz;
+    //Instruction 4806
+    //MAD
+    t16_7.xyz = (-t16_3.zxy) * vec3(2.5, 2.5, 2.5) + t16_6.xyz;
+    //Instruction 4807
+    //MAX
+    t16_8.xyz = max(t16_7.xyz, vec3(-1.0, -1.0, -1.0));
+    //Instruction 4808
+    //MIN
+    t16_8.xyz = min(t16_8.xyz, vec3(1.0, 1.0, 1.0));
+    //Instruction 4809
+    //ADD
+    t16_7.xyz = t16_7.xyz + (-t16_8.xyz);
+    //Instruction 4810
+    //MAX
+    t16_51 = max(abs(t16_7.y), abs(t16_7.x));
+    //Instruction 4811
+    //MAX
+    t16_51 = max(abs(t16_7.z), t16_51);
+    //Instruction 4812
+    //MAD
+    t16_7.xyz = (-vec3(t16_51)) * t16_2.xyz + t16_8.xyz;
+    //Instruction 4813
+    //SAMPLE_L
+    t10_7 = textureLod(_MainTex, t16_7.xyz, _Level);
+    //Instruction 4814
+    //MAX
+    t16_7 = max(t10_7, vec4(0.0, 0.0, 0.0, 0.0));
+    //Instruction 4815
+    //ADD
+    t16_5 = t16_5 + t16_7;
+    //Instruction 4816
+    //MUL
+    t16_5 = t16_0.yyyy * t16_5;
+    //Instruction 4817
+    //MAD
+    t16_8.xyz = (-t16_3.zxy) * vec3(2.5, 2.5, 2.5) + vs_TEXCOORD0.xyz;
+    //Instruction 4818
+    //MAX
+    t16_9.xyz = max(t16_8.xyz, vec3(-1.0, -1.0, -1.0));
+    //Instruction 4819
+    //MIN
+    t16_9.xyz = min(t16_9.xyz, vec3(1.0, 1.0, 1.0));
+    //Instruction 4820
+    //ADD
+    t16_8.xyz = t16_8.xyz + (-t16_9.xyz);
+    //Instruction 4821
+    //MAX
+    t16_51 = max(abs(t16_8.y), abs(t16_8.x));
+    //Instruction 4822
+    //MAX
+    t16_51 = max(abs(t16_8.z), t16_51);
+    //Instruction 4823
+    //MAD
+    t16_8.xyz = (-vec3(t16_51)) * t16_2.xyz + t16_9.xyz;
+    //Instruction 4824
+    //MAD
+    t16_9.xyz = (-t16_3.xyz) * vec3(0.5, 0.5, 0.5) + t16_8.xyz;
+    //Instruction 4825
+    //MAD
+    t16_8.xyz = t16_3.xyz * vec3(0.5, 0.5, 0.5) + t16_8.xyz;
+    //Instruction 4826
+    //SAMPLE_L
+    t10_7 = textureLod(_MainTex, t16_8.xyz, _Level);
+    //Instruction 4827
+    //MAX
+    t16_7 = max(t10_7, vec4(0.0, 0.0, 0.0, 0.0));
+    //Instruction 4828
+    //SAMPLE_L
+    t10_8 = textureLod(_MainTex, t16_9.xyz, _Level);
+    //Instruction 4829
+    //MAX
+    t16_8 = max(t10_8, vec4(0.0, 0.0, 0.0, 0.0));
+    //Instruction 4830
+    //ADD
+    t16_7 = t16_7 + t16_8;
+    //Instruction 4831
+    //MAD
+    t16_5 = t16_0.xxxx * t16_7 + t16_5;
+    //Instruction 4832
+    //MAD
+    t16_9.xyz = (-t16_3.xyz) * vec3(2.5, 2.5, 2.5) + vs_TEXCOORD0.xyz;
+    //Instruction 4833
+    //MAD
+    t16_10.xyz = (-t16_3.zxy) * vec3(2.5, 2.5, 2.5) + t16_9.xyz;
+    //Instruction 4834
+    //MAX
+    t16_11.xyz = max(t16_10.xyz, vec3(-1.0, -1.0, -1.0));
+    //Instruction 4835
+    //MIN
+    t16_11.xyz = min(t16_11.xyz, vec3(1.0, 1.0, 1.0));
+    //Instruction 4836
+    //ADD
+    t16_10.xyz = t16_10.xyz + (-t16_11.xyz);
+    //Instruction 4837
+    //MAX
+    t16_51 = max(abs(t16_10.y), abs(t16_10.x));
+    //Instruction 4838
+    //MAX
+    t16_51 = max(abs(t16_10.z), t16_51);
+    //Instruction 4839
+    //MAD
+    t16_10.xyz = (-vec3(t16_51)) * t16_2.xyz + t16_11.xyz;
+    //Instruction 4840
+    //SAMPLE_L
+    t10_7 = textureLod(_MainTex, t16_10.xyz, _Level);
+    //Instruction 4841
+    //MAX
+    t16_7 = max(t10_7, vec4(0.0, 0.0, 0.0, 0.0));
+    //Instruction 4842
+    //MAD
+    t16_10.xyz = t16_3.xyz * vec3(2.5, 2.5, 2.5) + vs_TEXCOORD0.xyz;
+    //Instruction 4843
+    //MAD
+    t16_11.xyz = (-t16_3.zxy) * vec3(2.5, 2.5, 2.5) + t16_10.xyz;
+    //Instruction 4844
+    //MAX
+    t16_12.xyz = max(t16_11.xyz, vec3(-1.0, -1.0, -1.0));
+    //Instruction 4845
+    //MIN
+    t16_12.xyz = min(t16_12.xyz, vec3(1.0, 1.0, 1.0));
+    //Instruction 4846
+    //ADD
+    t16_11.xyz = t16_11.xyz + (-t16_12.xyz);
+    //Instruction 4847
+    //MAX
+    t16_51 = max(abs(t16_11.y), abs(t16_11.x));
+    //Instruction 4848
+    //MAX
+    t16_51 = max(abs(t16_11.z), t16_51);
+    //Instruction 4849
+    //MAD
+    t16_11.xyz = (-vec3(t16_51)) * t16_2.xyz + t16_12.xyz;
+    //Instruction 4850
+    //SAMPLE_L
+    t10_8 = textureLod(_MainTex, t16_11.xyz, _Level);
+    //Instruction 4851
+    //MAX
+    t16_8 = max(t10_8, vec4(0.0, 0.0, 0.0, 0.0));
+    //Instruction 4852
+    //ADD
+    t16_7 = t16_7 + t16_8;
+    //Instruction 4853
+    //MAD
+    t16_5 = t16_0.zzzz * t16_7 + t16_5;
+    //Instruction 4854
+    //MUL
+    t16_11.xyz = t16_1.yyy * t16_1.xyz;
+    //Instruction 4855
+    //MUL
+    t16_12.xyz = t16_1.xxx * t16_1.xyz;
+    //Instruction 4856
+    //MAD
+    t16_13.xyz = (-t16_3.zxy) * vec3(1.5, 1.5, 1.5) + t16_10.xyz;
+    //Instruction 4857
+    //MAX
+    t16_14.xyz = max(t16_13.xyz, vec3(-1.0, -1.0, -1.0));
+    //Instruction 4858
+    //MIN
+    t16_14.xyz = min(t16_14.xyz, vec3(1.0, 1.0, 1.0));
+    //Instruction 4859
+    //ADD
+    t16_13.xyz = t16_13.xyz + (-t16_14.xyz);
+    //Instruction 4860
+    //MAX
+    t16_51 = max(abs(t16_13.y), abs(t16_13.x));
+    //Instruction 4861
+    //MAX
+    t16_51 = max(abs(t16_13.z), t16_51);
+    //Instruction 4862
+    //MAD
+    t16_13.xyz = (-vec3(t16_51)) * t16_2.xyz + t16_14.xyz;
+    //Instruction 4863
+    //SAMPLE_L
+    t10_1 = textureLod(_MainTex, t16_13.xyz, _Level);
+    //Instruction 4864
+    //MAX
+    t16_1 = max(t10_1, vec4(0.0, 0.0, 0.0, 0.0));
+    //Instruction 4865
+    //MAD
+    t16_13.xyz = (-t16_3.zxy) * vec3(1.5, 1.5, 1.5) + t16_9.xyz;
+    //Instruction 4866
+    //MAX
+    t16_14.xyz = max(t16_13.xyz, vec3(-1.0, -1.0, -1.0));
+    //Instruction 4867
+    //MIN
+    t16_14.xyz = min(t16_14.xyz, vec3(1.0, 1.0, 1.0));
+    //Instruction 4868
+    //ADD
+    t16_13.xyz = t16_13.xyz + (-t16_14.xyz);
+    //Instruction 4869
+    //MAX
+    t16_51 = max(abs(t16_13.y), abs(t16_13.x));
+    //Instruction 4870
+    //MAX
+    t16_51 = max(abs(t16_13.z), t16_51);
+    //Instruction 4871
+    //MAD
+    t16_13.xyz = (-vec3(t16_51)) * t16_2.xyz + t16_14.xyz;
+    //Instruction 4872
+    //SAMPLE_L
+    t10_7 = textureLod(_MainTex, t16_13.xyz, _Level);
+    //Instruction 4873
+    //MAX
+    t16_7 = max(t10_7, vec4(0.0, 0.0, 0.0, 0.0));
+    //Instruction 4874
+    //ADD
+    t16_1 = t16_1 + t16_7;
+    //Instruction 4875
+    //MAD
+    t16_1 = t16_11.zzzz * t16_1 + t16_5;
+    //Instruction 4876
+    //MAD
+    t16_13.xyz = (-t16_3.zxy) * vec3(1.5, 1.5, 1.5) + t16_6.xyz;
+    //Instruction 4877
+    //MAX
+    t16_14.xyz = max(t16_13.xyz, vec3(-1.0, -1.0, -1.0));
+    //Instruction 4878
+    //MIN
+    t16_14.xyz = min(t16_14.xyz, vec3(1.0, 1.0, 1.0));
+    //Instruction 4879
+    //ADD
+    t16_13.xyz = t16_13.xyz + (-t16_14.xyz);
+    //Instruction 4880
+    //MAX
+    t16_51 = max(abs(t16_13.y), abs(t16_13.x));
+    //Instruction 4881
+    //MAX
+    t16_51 = max(abs(t16_13.z), t16_51);
+    //Instruction 4882
+    //MAD
+    t16_13.xyz = (-vec3(t16_51)) * t16_2.xyz + t16_14.xyz;
+    //Instruction 4883
+    //SAMPLE_L
+    t10_5 = textureLod(_MainTex, t16_13.xyz, _Level);
+    //Instruction 4884
+    //MAX
+    t16_5 = max(t10_5, vec4(0.0, 0.0, 0.0, 0.0));
+    //Instruction 4885
+    //MAD
+    t16_13.xyz = (-t16_3.zxy) * vec3(1.5, 1.5, 1.5) + t16_4.xyz;
+    //Instruction 4886
+    //MAX
+    t16_14.xyz = max(t16_13.xyz, vec3(-1.0, -1.0, -1.0));
+    //Instruction 4887
+    //MIN
+    t16_14.xyz = min(t16_14.xyz, vec3(1.0, 1.0, 1.0));
+    //Instruction 4888
+    //ADD
+    t16_13.xyz = t16_13.xyz + (-t16_14.xyz);
+    //Instruction 4889
+    //MAX
+    t16_51 = max(abs(t16_13.y), abs(t16_13.x));
+    //Instruction 4890
+    //MAX
+    t16_51 = max(abs(t16_13.z), t16_51);
+    //Instruction 4891
+    //MAD
+    t16_13.xyz = (-vec3(t16_51)) * t16_2.xyz + t16_14.xyz;
+    //Instruction 4892
+    //SAMPLE_L
+    t10_7 = textureLod(_MainTex, t16_13.xyz, _Level);
+    //Instruction 4893
+    //MAX
+    t16_7 = max(t10_7, vec4(0.0, 0.0, 0.0, 0.0));
+    //Instruction 4894
+    //ADD
+    t16_5 = t16_5 + t16_7;
+    //Instruction 4895
+    //MUL
+    t16_5 = t16_5 * t16_11.yyyy;
+    //Instruction 4896
+    //MAD
+    t16_13.xyz = (-t16_3.zxy) * vec3(1.5, 1.5, 1.5) + vs_TEXCOORD0.xyz;
+    //Instruction 4897
+    //MAX
+    t16_14.xyz = max(t16_13.xyz, vec3(-1.0, -1.0, -1.0));
+    //Instruction 4898
+    //MIN
+    t16_14.xyz = min(t16_14.xyz, vec3(1.0, 1.0, 1.0));
+    //Instruction 4899
+    //ADD
+    t16_13.xyz = t16_13.xyz + (-t16_14.xyz);
+    //Instruction 4900
+    //MAX
+    t16_51 = max(abs(t16_13.y), abs(t16_13.x));
+    //Instruction 4901
+    //MAX
+    t16_51 = max(abs(t16_13.z), t16_51);
+    //Instruction 4902
+    //MAD
+    t16_13.xyz = (-vec3(t16_51)) * t16_2.xyz + t16_14.xyz;
+    //Instruction 4903
+    //MAD
+    t16_14.xyz = t16_3.xyz * vec3(0.5, 0.5, 0.5) + t16_13.xyz;
+    //Instruction 4904
+    //MAD
+    t16_13.xyz = (-t16_3.xyz) * vec3(0.5, 0.5, 0.5) + t16_13.xyz;
+    //Instruction 4905
+    //SAMPLE_L
+    t10_7 = textureLod(_MainTex, t16_13.xyz, _Level);
+    //Instruction 4906
+    //MAX
+    t16_7 = max(t10_7, vec4(0.0, 0.0, 0.0, 0.0));
+    //Instruction 4907
+    //SAMPLE_L
+    t10_8 = textureLod(_MainTex, t16_14.xyz, _Level);
+    //Instruction 4908
+    //MAX
+    t16_8 = max(t10_8, vec4(0.0, 0.0, 0.0, 0.0));
+    //Instruction 4909
+    //ADD
+    t16_7 = t16_7 + t16_8;
+    //Instruction 4910
+    //MAD
+    t16_5 = t16_11.xxxx * t16_7 + t16_5;
+    //Instruction 4911
+    //ADD
+    t16_1 = t16_1 + t16_5;
+    //Instruction 4912
+    //MAX
+    t16_13.xyz = max(t16_9.xyz, vec3(-1.0, -1.0, -1.0));
+    //Instruction 4913
+    //MIN
+    t16_13.xyz = min(t16_13.xyz, vec3(1.0, 1.0, 1.0));
+    //Instruction 4914
+    //ADD
+    t16_14.xyz = t16_9.xyz + (-t16_13.xyz);
+    //Instruction 4915
+    //MAX
+    t16_51 = max(abs(t16_14.y), abs(t16_14.x));
+    //Instruction 4916
+    //MAX
+    t16_51 = max(abs(t16_14.z), t16_51);
+    //Instruction 4917
+    //MAD
+    t16_13.xyz = (-vec3(t16_51)) * t16_2.xyz + t16_13.xyz;
+    //Instruction 4918
+    //MAD
+    t16_14.xyz = (-t16_3.zxy) * vec3(0.5, 0.5, 0.5) + t16_13.xyz;
+    //Instruction 4919
+    //MAD
+    t16_13.xyz = t16_3.zxy * vec3(0.5, 0.5, 0.5) + t16_13.xyz;
+    //Instruction 4920
+    //SAMPLE_L
+    t10_5 = textureLod(_MainTex, t16_13.xyz, _Level);
+    //Instruction 4921
+    //MAX
+    t16_5 = max(t10_5, vec4(0.0, 0.0, 0.0, 0.0));
+    //Instruction 4922
+    //SAMPLE_L
+    t10_7 = textureLod(_MainTex, t16_14.xyz, _Level);
+    //Instruction 4923
+    //MAX
+    t16_7 = max(t10_7, vec4(0.0, 0.0, 0.0, 0.0));
+    //Instruction 4924
+    //MAX
+    t16_13.xyz = max(t16_10.xyz, vec3(-1.0, -1.0, -1.0));
+    //Instruction 4925
+    //MIN
+    t16_13.xyz = min(t16_13.xyz, vec3(1.0, 1.0, 1.0));
+    //Instruction 4926
+    //ADD
+    t16_14.xyz = t16_10.xyz + (-t16_13.xyz);
+    //Instruction 4927
+    //MAX
+    t16_51 = max(abs(t16_14.y), abs(t16_14.x));
+    //Instruction 4928
+    //MAX
+    t16_51 = max(abs(t16_14.z), t16_51);
+    //Instruction 4929
+    //MAD
+    t16_13.xyz = (-vec3(t16_51)) * t16_2.xyz + t16_13.xyz;
+    //Instruction 4930
+    //MAD
+    t16_14.xyz = (-t16_3.zxy) * vec3(0.5, 0.5, 0.5) + t16_13.xyz;
+    //Instruction 4931
+    //MAD
+    t16_13.xyz = t16_3.zxy * vec3(0.5, 0.5, 0.5) + t16_13.xyz;
+    //Instruction 4932
+    //SAMPLE_L
+    t10_8 = textureLod(_MainTex, t16_13.xyz, _Level);
+    //Instruction 4933
+    //MAX
+    t16_8 = max(t10_8, vec4(0.0, 0.0, 0.0, 0.0));
+    //Instruction 4934
+    //ADD
+    t16_5 = t16_5 + t16_8;
+    //Instruction 4935
+    //SAMPLE_L
+    t10_8 = textureLod(_MainTex, t16_14.xyz, _Level);
+    //Instruction 4936
+    //MAX
+    t16_8 = max(t10_8, vec4(0.0, 0.0, 0.0, 0.0));
+    //Instruction 4937
+    //ADD
+    t16_7 = t16_7 + t16_8;
+    //Instruction 4938
+    //MAD
+    t16_1 = t16_12.zzzz * t16_7 + t16_1;
+    //Instruction 4939
+    //MAX
+    t16_13.xyz = max(t16_4.xyz, vec3(-1.0, -1.0, -1.0));
+    //Instruction 4940
+    //MIN
+    t16_13.xyz = min(t16_13.xyz, vec3(1.0, 1.0, 1.0));
+    //Instruction 4941
+    //ADD
+    t16_14.xyz = t16_4.xyz + (-t16_13.xyz);
+    //Instruction 4942
+    //MAX
+    t16_51 = max(abs(t16_14.y), abs(t16_14.x));
+    //Instruction 4943
+    //MAX
+    t16_51 = max(abs(t16_14.z), t16_51);
+    //Instruction 4944
+    //MAD
+    t16_13.xyz = (-vec3(t16_51)) * t16_2.xyz + t16_13.xyz;
+    //Instruction 4945
+    //MAD
+    t16_14.xyz = (-t16_3.zxy) * vec3(0.5, 0.5, 0.5) + t16_13.xyz;
+    //Instruction 4946
+    //MAD
+    t16_13.xyz = t16_3.zxy * vec3(0.5, 0.5, 0.5) + t16_13.xyz;
+    //Instruction 4947
+    //SAMPLE_L
+    t10_7 = textureLod(_MainTex, t16_13.xyz, _Level);
+    //Instruction 4948
+    //MAX
+    t16_7 = max(t10_7, vec4(0.0, 0.0, 0.0, 0.0));
+    //Instruction 4949
+    //SAMPLE_L
+    t10_8 = textureLod(_MainTex, t16_14.xyz, _Level);
+    //Instruction 4950
+    //MAX
+    t16_8 = max(t10_8, vec4(0.0, 0.0, 0.0, 0.0));
+    //Instruction 4951
+    //MAX
+    t16_13.xyz = max(t16_6.xyz, vec3(-1.0, -1.0, -1.0));
+    //Instruction 4952
+    //MIN
+    t16_13.xyz = min(t16_13.xyz, vec3(1.0, 1.0, 1.0));
+    //Instruction 4953
+    //ADD
+    t16_14.xyz = t16_6.xyz + (-t16_13.xyz);
+    //Instruction 4954
+    //MAX
+    t16_51 = max(abs(t16_14.y), abs(t16_14.x));
+    //Instruction 4955
+    //MAX
+    t16_51 = max(abs(t16_14.z), t16_51);
+    //Instruction 4956
+    //MAD
+    t16_13.xyz = (-vec3(t16_51)) * t16_2.xyz + t16_13.xyz;
+    //Instruction 4957
+    //MAD
+    t16_14.xyz = (-t16_3.zxy) * vec3(0.5, 0.5, 0.5) + t16_13.xyz;
+    //Instruction 4958
+    //MAD
+    t16_13.xyz = t16_3.zxy * vec3(0.5, 0.5, 0.5) + t16_13.xyz;
+    //Instruction 4959
+    //SAMPLE_L
+    t10_13 = textureLod(_MainTex, t16_13.xyz, _Level);
+    //Instruction 4960
+    //MAX
+    t16_13 = max(t10_13, vec4(0.0, 0.0, 0.0, 0.0));
+    //Instruction 4961
+    //ADD
+    t16_7 = t16_7 + t16_13;
+    //Instruction 4962
+    //MUL
+    t16_7 = t16_7 * t16_12.yyyy;
+    //Instruction 4963
+    //SAMPLE_L
+    t10_13 = textureLod(_MainTex, t16_14.xyz, _Level);
+    //Instruction 4964
+    //MAX
+    t16_13 = max(t10_13, vec4(0.0, 0.0, 0.0, 0.0));
+    //Instruction 4965
+    //ADD
+    t16_8 = t16_8 + t16_13;
+    //Instruction 4966
+    //MUL
+    t16_8 = t16_8 * t16_12.yyyy;
+    //Instruction 4967
+    //MAD
+    t16_14.xyz = (-t16_3.xyz) * vec3(0.5, 0.5, 0.5) + vs_TEXCOORD0.xyz;
+    //Instruction 4968
+    //MAD
+    t16_15.xyz = (-t16_3.zxy) * vec3(0.5, 0.5, 0.5) + t16_14.xyz;
+    //Instruction 4969
+    //MAD
+    t16_14.xyz = t16_3.zxy * vec3(0.5, 0.5, 0.5) + t16_14.xyz;
+    //Instruction 4970
+    //SAMPLE_L
+    t10_13 = textureLod(_MainTex, t16_14.xyz, _Level);
+    //Instruction 4971
+    //MAX
+    t16_13 = max(t10_13, vec4(0.0, 0.0, 0.0, 0.0));
+    //Instruction 4972
+    //SAMPLE_L
+    t10_14 = textureLod(_MainTex, t16_15.xyz, _Level);
+    //Instruction 4973
+    //MAX
+    t16_14 = max(t10_14, vec4(0.0, 0.0, 0.0, 0.0));
+    //Instruction 4974
+    //MAD
+    t16_15.xyz = t16_3.xyz * vec3(0.5, 0.5, 0.5) + vs_TEXCOORD0.xyz;
+    //Instruction 4975
+    //MAD
+    t16_16.xyz = (-t16_3.zxy) * vec3(0.5, 0.5, 0.5) + t16_15.xyz;
+    //Instruction 4976
+    //MAD
+    t16_15.xyz = t16_3.zxy * vec3(0.5, 0.5, 0.5) + t16_15.xyz;
+    //Instruction 4977
+    //SAMPLE_L
+    t10_15 = textureLod(_MainTex, t16_15.xyz, _Level);
+    //Instruction 4978
+    //MAX
+    t16_15 = max(t10_15, vec4(0.0, 0.0, 0.0, 0.0));
+    //Instruction 4979
+    //ADD
+    t16_13 = t16_13 + t16_15;
+    //Instruction 4980
+    //MAD
+    t16_7 = t16_12.xxxx * t16_13 + t16_7;
+    //Instruction 4981
+    //SAMPLE_L
+    t10_13 = textureLod(_MainTex, t16_16.xyz, _Level);
+    //Instruction 4982
+    //MAX
+    t16_13 = max(t10_13, vec4(0.0, 0.0, 0.0, 0.0));
+    //Instruction 4983
+    //ADD
+    t16_13 = t16_13 + t16_14;
+    //Instruction 4984
+    //MAD
+    t16_8 = t16_12.xxxx * t16_13 + t16_8;
+    //Instruction 4985
+    //ADD
+    t16_1 = t16_1 + t16_8;
+    //Instruction 4986
+    //MAD
+    t16_1 = t16_12.zzzz * t16_5 + t16_1;
+    //Instruction 4987
+    //DP3
+    t16_51 = dot(t16_12.xyz, vec3(2.0, 2.0, 2.0));
+    //Instruction 4988
+    //ADD
+    t16_1 = t16_7 + t16_1;
+    //Instruction 4989
+    //MAD
+    t16_12.xyz = t16_3.zxy * vec3(1.5, 1.5, 1.5) + t16_9.xyz;
+    //Instruction 4990
+    //MAD
+    t16_9.xyz = t16_3.zxy * vec3(2.5, 2.5, 2.5) + t16_9.xyz;
+    //Instruction 4991
+    //MAX
+    t16_16.xyz = max(t16_12.xyz, vec3(-1.0, -1.0, -1.0));
+    //Instruction 4992
+    //MIN
+    t16_16.xyz = min(t16_16.xyz, vec3(1.0, 1.0, 1.0));
+    //Instruction 4993
+    //ADD
+    t16_12.xyz = t16_12.xyz + (-t16_16.xyz);
+    //Instruction 4994
+    //MAX
+    t16_53 = max(abs(t16_12.y), abs(t16_12.x));
+    //Instruction 4995
+    //MAX
+    t16_53 = max(abs(t16_12.z), t16_53);
+    //Instruction 4996
+    //MAD
+    t16_12.xyz = (-vec3(t16_53)) * t16_2.xyz + t16_16.xyz;
+    //Instruction 4997
+    //SAMPLE_L
+    t10_5 = textureLod(_MainTex, t16_12.xyz, _Level);
+    //Instruction 4998
+    //MAX
+    t16_5 = max(t10_5, vec4(0.0, 0.0, 0.0, 0.0));
+    //Instruction 4999
+    //MAD
+    t16_12.xyz = t16_3.zxy * vec3(1.5, 1.5, 1.5) + t16_10.xyz;
+    //Instruction 5000
+    //MAD
+    t16_10.xyz = t16_3.zxy * vec3(2.5, 2.5, 2.5) + t16_10.xyz;
+    //Instruction 5001
+    //MAX
+    t16_16.xyz = max(t16_12.xyz, vec3(-1.0, -1.0, -1.0));
+    //Instruction 5002
+    //MIN
+    t16_16.xyz = min(t16_16.xyz, vec3(1.0, 1.0, 1.0));
+    //Instruction 5003
+    //ADD
+    t16_12.xyz = t16_12.xyz + (-t16_16.xyz);
+    //Instruction 5004
+    //MAX
+    t16_53 = max(abs(t16_12.y), abs(t16_12.x));
+    //Instruction 5005
+    //MAX
+    t16_53 = max(abs(t16_12.z), t16_53);
+    //Instruction 5006
+    //MAD
+    t16_12.xyz = (-vec3(t16_53)) * t16_2.xyz + t16_16.xyz;
+    //Instruction 5007
+    //SAMPLE_L
+    t10_7 = textureLod(_MainTex, t16_12.xyz, _Level);
+    //Instruction 5008
+    //MAX
+    t16_7 = max(t10_7, vec4(0.0, 0.0, 0.0, 0.0));
+    //Instruction 5009
+    //ADD
+    t16_5 = t16_5 + t16_7;
+    //Instruction 5010
+    //MAD
+    t16_1 = t16_11.zzzz * t16_5 + t16_1;
+    //Instruction 5011
+    //MAD
+    t16_12.xyz = t16_3.zxy * vec3(1.5, 1.5, 1.5) + t16_4.xyz;
+    //Instruction 5012
+    //MAD
+    t16_4.xyz = t16_3.zxy * vec3(2.5, 2.5, 2.5) + t16_4.xyz;
+    //Instruction 5013
+    //MAX
+    t16_16.xyz = max(t16_12.xyz, vec3(-1.0, -1.0, -1.0));
+    //Instruction 5014
+    //MIN
+    t16_16.xyz = min(t16_16.xyz, vec3(1.0, 1.0, 1.0));
+    //Instruction 5015
+    //ADD
+    t16_12.xyz = t16_12.xyz + (-t16_16.xyz);
+    //Instruction 5016
+    //MAX
+    t16_53 = max(abs(t16_12.y), abs(t16_12.x));
+    //Instruction 5017
+    //MAX
+    t16_53 = max(abs(t16_12.z), t16_53);
+    //Instruction 5018
+    //MAD
+    t16_12.xyz = (-vec3(t16_53)) * t16_2.xyz + t16_16.xyz;
+    //Instruction 5019
+    //SAMPLE_L
+    t10_5 = textureLod(_MainTex, t16_12.xyz, _Level);
+    //Instruction 5020
+    //MAX
+    t16_5 = max(t10_5, vec4(0.0, 0.0, 0.0, 0.0));
+    //Instruction 5021
+    //MAD
+    t16_12.xyz = t16_3.zxy * vec3(1.5, 1.5, 1.5) + t16_6.xyz;
+    //Instruction 5022
+    //MAD
+    t16_6.xyz = t16_3.zxy * vec3(2.5, 2.5, 2.5) + t16_6.xyz;
+    //Instruction 5023
+    //MAX
+    t16_16.xyz = max(t16_12.xyz, vec3(-1.0, -1.0, -1.0));
+    //Instruction 5024
+    //MIN
+    t16_16.xyz = min(t16_16.xyz, vec3(1.0, 1.0, 1.0));
+    //Instruction 5025
+    //ADD
+    t16_12.xyz = t16_12.xyz + (-t16_16.xyz);
+    //Instruction 5026
+    //MAX
+    t16_53 = max(abs(t16_12.y), abs(t16_12.x));
+    //Instruction 5027
+    //MAX
+    t16_53 = max(abs(t16_12.z), t16_53);
+    //Instruction 5028
+    //MAD
+    t16_12.xyz = (-vec3(t16_53)) * t16_2.xyz + t16_16.xyz;
+    //Instruction 5029
+    //SAMPLE_L
+    t10_7 = textureLod(_MainTex, t16_12.xyz, _Level);
+    //Instruction 5030
+    //MAX
+    t16_7 = max(t10_7, vec4(0.0, 0.0, 0.0, 0.0));
+    //Instruction 5031
+    //ADD
+    t16_5 = t16_5 + t16_7;
+    //Instruction 5032
+    //MUL
+    t16_5 = t16_5 * t16_11.yyyy;
+    //Instruction 5033
+    //MAD
+    t16_12.xyz = t16_3.zxy * vec3(1.5, 1.5, 1.5) + vs_TEXCOORD0.xyz;
+    //Instruction 5034
+    //MAX
+    t16_16.xyz = max(t16_12.xyz, vec3(-1.0, -1.0, -1.0));
+    //Instruction 5035
+    //MIN
+    t16_16.xyz = min(t16_16.xyz, vec3(1.0, 1.0, 1.0));
+    //Instruction 5036
+    //ADD
+    t16_12.xyz = t16_12.xyz + (-t16_16.xyz);
+    //Instruction 5037
+    //MAX
+    t16_53 = max(abs(t16_12.y), abs(t16_12.x));
+    //Instruction 5038
+    //MAX
+    t16_53 = max(abs(t16_12.z), t16_53);
+    //Instruction 5039
+    //MAD
+    t16_12.xyz = (-vec3(t16_53)) * t16_2.xyz + t16_16.xyz;
+    //Instruction 5040
+    //MAD
+    t16_16.xyz = (-t16_3.xyz) * vec3(0.5, 0.5, 0.5) + t16_12.xyz;
+    //Instruction 5041
+    //MAD
+    t16_12.xyz = t16_3.xyz * vec3(0.5, 0.5, 0.5) + t16_12.xyz;
+    //Instruction 5042
+    //SAMPLE_L
+    t10_7 = textureLod(_MainTex, t16_12.xyz, _Level);
+    //Instruction 5043
+    //MAX
+    t16_7 = max(t10_7, vec4(0.0, 0.0, 0.0, 0.0));
+    //Instruction 5044
+    //SAMPLE_L
+    t10_8 = textureLod(_MainTex, t16_16.xyz, _Level);
+    //Instruction 5045
+    //MAX
+    t16_8 = max(t10_8, vec4(0.0, 0.0, 0.0, 0.0));
+    //Instruction 5046
+    //ADD
+    t16_7 = t16_7 + t16_8;
+    //Instruction 5047
+    //MAD
+    t16_5 = t16_11.xxxx * t16_7 + t16_5;
+    //Instruction 5048
+    //DP3
+    t16_53 = dot(t16_11.xyz, vec3(2.0, 2.0, 2.0));
+    //Instruction 5049
+    //ADD
+    t16_1 = t16_1 + t16_5;
+    //Instruction 5050
+    //MAX
+    t16_11.xyz = max(t16_10.xyz, vec3(-1.0, -1.0, -1.0));
+    //Instruction 5051
+    //MIN
+    t16_11.xyz = min(t16_11.xyz, vec3(1.0, 1.0, 1.0));
+    //Instruction 5052
+    //ADD
+    t16_10.xyz = t16_10.xyz + (-t16_11.xyz);
+    //Instruction 5053
+    //MAX
+    t16_54 = max(abs(t16_10.y), abs(t16_10.x));
+    //Instruction 5054
+    //MAX
+    t16_54 = max(abs(t16_10.z), t16_54);
+    //Instruction 5055
+    //MAD
+    t16_10.xyz = (-vec3(t16_54)) * t16_2.xyz + t16_11.xyz;
+    //Instruction 5056
+    //SAMPLE_L
+    t10_5 = textureLod(_MainTex, t16_10.xyz, _Level);
+    //Instruction 5057
+    //MAX
+    t16_5 = max(t10_5, vec4(0.0, 0.0, 0.0, 0.0));
+    //Instruction 5058
+    //MAX
+    t16_10.xyz = max(t16_9.xyz, vec3(-1.0, -1.0, -1.0));
+    //Instruction 5059
+    //MIN
+    t16_10.xyz = min(t16_10.xyz, vec3(1.0, 1.0, 1.0));
+    //Instruction 5060
+    //ADD
+    t16_9.xyz = t16_9.xyz + (-t16_10.xyz);
+    //Instruction 5061
+    //MAX
+    t16_54 = max(abs(t16_9.y), abs(t16_9.x));
+    //Instruction 5062
+    //MAX
+    t16_54 = max(abs(t16_9.z), t16_54);
+    //Instruction 5063
+    //MAD
+    t16_9.xyz = (-vec3(t16_54)) * t16_2.xyz + t16_10.xyz;
+    //Instruction 5064
+    //SAMPLE_L
+    t10_7 = textureLod(_MainTex, t16_9.xyz, _Level);
+    //Instruction 5065
+    //MAX
+    t16_7 = max(t10_7, vec4(0.0, 0.0, 0.0, 0.0));
+    //Instruction 5066
+    //ADD
+    t16_5 = t16_5 + t16_7;
+    //Instruction 5067
+    //MAD
+    t16_1 = t16_0.zzzz * t16_5 + t16_1;
+    //Instruction 5068
+    //MAD
+    t16_9.xyz = t16_3.zxy * vec3(2.5, 2.5, 2.5) + vs_TEXCOORD0.xyz;
+    //Instruction 5069
+    //MAX
+    t16_10.xyz = max(t16_9.xyz, vec3(-1.0, -1.0, -1.0));
+    //Instruction 5070
+    //MIN
+    t16_10.xyz = min(t16_10.xyz, vec3(1.0, 1.0, 1.0));
+    //Instruction 5071
+    //ADD
+    t16_9.xyz = t16_9.xyz + (-t16_10.xyz);
+    //Instruction 5072
+    //MAX
+    t16_54 = max(abs(t16_9.y), abs(t16_9.x));
+    //Instruction 5073
+    //MAX
+    t16_54 = max(abs(t16_9.z), t16_54);
+    //Instruction 5074
+    //MAD
+    t16_9.xyz = (-vec3(t16_54)) * t16_2.xyz + t16_10.xyz;
+    //Instruction 5075
+    //MAD
+    t16_10.xyz = t16_3.xyz * vec3(0.5, 0.5, 0.5) + t16_9.xyz;
+    //Instruction 5076
+    //MAD
+    t16_3.xyz = (-t16_3.xyz) * vec3(0.5, 0.5, 0.5) + t16_9.xyz;
+    //Instruction 5077
+    //SAMPLE_L
+    t10_3 = textureLod(_MainTex, t16_3.xyz, _Level);
+    //Instruction 5078
+    //MAX
+    t16_3 = max(t10_3, vec4(0.0, 0.0, 0.0, 0.0));
+    //Instruction 5079
+    //SAMPLE_L
+    t10_5 = textureLod(_MainTex, t16_10.xyz, _Level);
+    //Instruction 5080
+    //MAX
+    t16_5 = max(t10_5, vec4(0.0, 0.0, 0.0, 0.0));
+    //Instruction 5081
+    //ADD
+    t16_3 = t16_3 + t16_5;
+    //Instruction 5082
+    //MAX
+    t16_9.xyz = max(t16_6.xyz, vec3(-1.0, -1.0, -1.0));
+    //Instruction 5083
+    //MIN
+    t16_9.xyz = min(t16_9.xyz, vec3(1.0, 1.0, 1.0));
+    //Instruction 5084
+    //ADD
+    t16_6.xyz = t16_6.xyz + (-t16_9.xyz);
+    //Instruction 5085
+    //MAX
+    t16_55 = max(abs(t16_6.y), abs(t16_6.x));
+    //Instruction 5086
+    //MAX
+    t16_55 = max(abs(t16_6.z), t16_55);
+    //Instruction 5087
+    //MAD
+    t16_6.xyz = (-vec3(t16_55)) * t16_2.xyz + t16_9.xyz;
+    //Instruction 5088
+    //SAMPLE_L
+    t10_5 = textureLod(_MainTex, t16_6.xyz, _Level);
+    //Instruction 5089
+    //MAX
+    t16_5 = max(t10_5, vec4(0.0, 0.0, 0.0, 0.0));
+    //Instruction 5090
+    //MAX
+    t16_6.xyz = max(t16_4.xyz, vec3(-1.0, -1.0, -1.0));
+    //Instruction 5091
+    //MIN
+    t16_6.xyz = min(t16_6.xyz, vec3(1.0, 1.0, 1.0));
+    //Instruction 5092
+    //ADD
+    t16_4.xyz = t16_4.xyz + (-t16_6.xyz);
+    //Instruction 5093
+    //MAX
+    t16_4.x = max(abs(t16_4.y), abs(t16_4.x));
+    //Instruction 5094
+    //MAX
+    t16_4.x = max(abs(t16_4.z), t16_4.x);
+    //Instruction 5095
+    //MAD
+    t16_2.xyz = (-t16_4.xxx) * t16_2.xyz + t16_6.xyz;
+    //Instruction 5096
+    //SAMPLE_L
+    t10_4 = textureLod(_MainTex, t16_2.xyz, _Level);
+    //Instruction 5097
+    //MAX
+    t16_4 = max(t10_4, vec4(0.0, 0.0, 0.0, 0.0));
+    //Instruction 5098
+    //ADD
+    t16_4 = t16_4 + t16_5;
+    //Instruction 5099
+    //MUL
+    t16_4 = t16_0.yyyy * t16_4;
+    //Instruction 5100
+    //MAD
+    t16_3 = t16_0.xxxx * t16_3 + t16_4;
+    //Instruction 5101
+    //DP3
+    t16_0.x = dot(t16_0.xyz, vec3(2.0, 2.0, 2.0));
+    //Instruction 5102
+    //ADD
+    t16_1 = t16_1 + t16_3;
+    //Instruction 5103
+    //ADD
+    t16_17 = t16_53 + t16_0.x;
+    //Instruction 5104
+    //MAD
+    t16_17 = t16_51 * 2.0 + t16_17;
+    //Instruction 5105
+    //ADD
+    t16_17 = t16_53 + t16_17;
+    //Instruction 5106
+    //ADD
+    t16_0.x = t16_0.x + t16_17;
+    //Instruction 5107
+    //DIV
+    SV_Target0 = t16_1 / t16_0.xxxx;
+    //Instruction 5108
+    //RET
+    return;
+}
+
+#endif
+"
+}
+}
+Program "fp" {
+SubProgram "gles " {
+"!!GLES"
+}
+SubProgram "gles3 " {
+"!!GLES3"
+}
+}
+ }
+}
+SubShader { 
+ LOD 200
+ Tags { "RenderType"="Opaque" }
+ Pass {
+  Tags { "RenderType"="Opaque" }
+  ZTest Always
+  ZWrite Off
+  Cull Off
+  Fog { Mode Off }
+  GpuProgramID 128188
+Program "vp" {
+SubProgram "gles " {
+"!!GLES
+#version 100
+
+#ifdef VERTEX
+attribute vec4 _glesVertex;
+attribute vec4 _glesMultiTexCoord0;
+uniform highp mat4 glstate_matrix_mvp;
+varying mediump vec4 xlv_TEXCOORD0;
+void main ()
+{
+  highp vec4 tmpvar_1;
+  tmpvar_1 = _glesMultiTexCoord0;
+  mediump vec4 tmpvar_2;
+  tmpvar_2 = tmpvar_1;
+  gl_Position = (glstate_matrix_mvp * _glesVertex);
+  xlv_TEXCOORD0 = tmpvar_2;
+}
+
+
+#endif
+#ifdef FRAGMENT
+uniform lowp samplerCube _MainTex;
+uniform mediump float _Level;
+varying mediump vec4 xlv_TEXCOORD0;
+void main ()
+{
+  mediump vec4 tmpvar_1;
+  lowp vec4 tmpvar_2;
+  tmpvar_2 = textureCube (_MainTex, xlv_TEXCOORD0.xyz, _Level);
+  tmpvar_1 = tmpvar_2;
+  gl_FragData[0] = tmpvar_1;
+}
+
+
+#endif
+"
+}
+SubProgram "gles3 " {
+"!!GLES3
+#ifdef VERTEX
+#version 300 es
+precision highp float;
+precision highp int;
+uniform 	vec4 _Time;
+uniform 	vec4 _SinTime;
+uniform 	vec4 _CosTime;
+uniform 	vec4 unity_DeltaTime;
+uniform 	vec3 _WorldSpaceCameraPos;
+uniform 	vec4 _ProjectionParams;
+uniform 	vec4 _ScreenParams;
+uniform 	vec4 _ZBufferParams;
+uniform 	vec4 unity_OrthoParams;
+uniform 	vec4 unity_CameraWorldClipPlanes[6];
+uniform 	mat4 unity_CameraProjection;
+uniform 	mat4 unity_CameraInvProjection;
+uniform 	vec4 _WorldSpaceLightPos0;
+uniform 	vec4 _LightPositionRange;
+uniform 	vec4 unity_4LightPosX0;
+uniform 	vec4 unity_4LightPosY0;
+uniform 	vec4 unity_4LightPosZ0;
+uniform 	mediump vec4 unity_4LightAtten0;
+uniform 	mediump vec4 unity_LightColor[8];
+uniform 	vec4 unity_LightPosition[8];
+uniform 	mediump vec4 unity_LightAtten[8];
+uniform 	vec4 unity_SpotDirection[8];
+uniform 	mediump vec4 unity_SHAr;
+uniform 	mediump vec4 unity_SHAg;
+uniform 	mediump vec4 unity_SHAb;
+uniform 	mediump vec4 unity_SHBr;
+uniform 	mediump vec4 unity_SHBg;
+uniform 	mediump vec4 unity_SHBb;
+uniform 	mediump vec4 unity_SHC;
+uniform 	mediump vec3 unity_LightColor0;
+uniform 	mediump vec3 unity_LightColor1;
+uniform 	mediump vec3 unity_LightColor2;
+uniform 	mediump vec3 unity_LightColor3;
+uniform 	vec4 unity_ShadowSplitSpheres[4];
+uniform 	vec4 unity_ShadowSplitSqRadii;
+uniform 	vec4 unity_LightShadowBias;
+uniform 	vec4 _LightSplitsNear;
+uniform 	vec4 _LightSplitsFar;
+uniform 	mat4 unity_World2Shadow[4];
+uniform 	mediump vec4 _LightShadowData;
+uniform 	vec4 unity_ShadowFadeCenterAndType;
+uniform 	mat4 glstate_matrix_mvp;
+uniform 	mat4 glstate_matrix_modelview0;
+uniform 	mat4 glstate_matrix_invtrans_modelview0;
+uniform 	mat4 _Object2World;
+uniform 	mat4 _World2Object;
+uniform 	vec4 unity_LODFade;
+uniform 	mat4 glstate_matrix_transpose_modelview0;
+uniform 	mat4 glstate_matrix_projection;
+uniform 	lowp vec4 glstate_lightmodel_ambient;
+uniform 	mat4 unity_MatrixV;
+uniform 	mat4 unity_MatrixVP;
+uniform 	lowp vec4 unity_AmbientSky;
+uniform 	lowp vec4 unity_AmbientEquator;
+uniform 	lowp vec4 unity_AmbientGround;
+uniform 	lowp vec4 unity_FogColor;
+uniform 	vec4 unity_FogParams;
+uniform 	vec4 unity_LightmapST;
+uniform 	vec4 unity_DynamicLightmapST;
+uniform 	vec4 unity_SpecCube0_BoxMax;
+uniform 	vec4 unity_SpecCube0_BoxMin;
+uniform 	vec4 unity_SpecCube0_ProbePosition;
+uniform 	mediump vec4 unity_SpecCube0_HDR;
+uniform 	vec4 unity_SpecCube1_BoxMax;
+uniform 	vec4 unity_SpecCube1_BoxMin;
+uniform 	vec4 unity_SpecCube1_ProbePosition;
+uniform 	mediump vec4 unity_SpecCube1_HDR;
+uniform 	lowp vec4 unity_ColorSpaceGrey;
+uniform 	lowp vec4 unity_ColorSpaceDouble;
+uniform 	mediump vec4 unity_ColorSpaceDielectricSpec;
+uniform 	mediump vec4 unity_ColorSpaceLuminance;
+uniform 	mediump vec4 unity_Lightmap_HDR;
+uniform 	mediump vec4 unity_DynamicLightmap_HDR;
+uniform 	mediump float _Texel;
+uniform 	mediump float _Radius;
+uniform 	mediump float _Level;
+uniform 	mediump float _Scale;
+in highp vec4 in_POSITION0;
+in highp vec4 in_TEXCOORD0;
+out vec4 undefined;
+out mediump vec4 vs_TEXCOORD0;
+highp vec4 t0;
+void main()
+{
+    //Instruction 5119
+    //MUL
+    t0 = in_POSITION0.yyyy * glstate_matrix_mvp[1];
+    //Instruction 5120
+    //MAD
+    t0 = glstate_matrix_mvp[0] * in_POSITION0.xxxx + t0;
+    //Instruction 5121
+    //MAD
+    t0 = glstate_matrix_mvp[2] * in_POSITION0.zzzz + t0;
+    //Instruction 5122
+    //MAD
+    t0 = glstate_matrix_mvp[3] * in_POSITION0.wwww + t0;
+    //Instruction 5123
+    //MOV
+    gl_Position = t0;
+    //Instruction 5124
+    //MOV
+    vs_TEXCOORD0 = in_TEXCOORD0;
+    //Instruction 5125
+    //RET
+    return;
+}
+
+#endif
+#ifdef FRAGMENT
+#version 300 es
+precision highp float;
+precision highp int;
+uniform 	vec4 _Time;
+uniform 	vec4 _SinTime;
+uniform 	vec4 _CosTime;
+uniform 	vec4 unity_DeltaTime;
+uniform 	vec3 _WorldSpaceCameraPos;
+uniform 	vec4 _ProjectionParams;
+uniform 	vec4 _ScreenParams;
+uniform 	vec4 _ZBufferParams;
+uniform 	vec4 unity_OrthoParams;
+uniform 	vec4 unity_CameraWorldClipPlanes[6];
+uniform 	mat4 unity_CameraProjection;
+uniform 	mat4 unity_CameraInvProjection;
+uniform 	vec4 _WorldSpaceLightPos0;
+uniform 	vec4 _LightPositionRange;
+uniform 	vec4 unity_4LightPosX0;
+uniform 	vec4 unity_4LightPosY0;
+uniform 	vec4 unity_4LightPosZ0;
+uniform 	mediump vec4 unity_4LightAtten0;
+uniform 	mediump vec4 unity_LightColor[8];
+uniform 	vec4 unity_LightPosition[8];
+uniform 	mediump vec4 unity_LightAtten[8];
+uniform 	vec4 unity_SpotDirection[8];
+uniform 	mediump vec4 unity_SHAr;
+uniform 	mediump vec4 unity_SHAg;
+uniform 	mediump vec4 unity_SHAb;
+uniform 	mediump vec4 unity_SHBr;
+uniform 	mediump vec4 unity_SHBg;
+uniform 	mediump vec4 unity_SHBb;
+uniform 	mediump vec4 unity_SHC;
+uniform 	mediump vec3 unity_LightColor0;
+uniform 	mediump vec3 unity_LightColor1;
+uniform 	mediump vec3 unity_LightColor2;
+uniform 	mediump vec3 unity_LightColor3;
+uniform 	vec4 unity_ShadowSplitSpheres[4];
+uniform 	vec4 unity_ShadowSplitSqRadii;
+uniform 	vec4 unity_LightShadowBias;
+uniform 	vec4 _LightSplitsNear;
+uniform 	vec4 _LightSplitsFar;
+uniform 	mat4 unity_World2Shadow[4];
+uniform 	mediump vec4 _LightShadowData;
+uniform 	vec4 unity_ShadowFadeCenterAndType;
+uniform 	mat4 glstate_matrix_mvp;
+uniform 	mat4 glstate_matrix_modelview0;
+uniform 	mat4 glstate_matrix_invtrans_modelview0;
+uniform 	mat4 _Object2World;
+uniform 	mat4 _World2Object;
+uniform 	vec4 unity_LODFade;
+uniform 	mat4 glstate_matrix_transpose_modelview0;
+uniform 	mat4 glstate_matrix_projection;
+uniform 	lowp vec4 glstate_lightmodel_ambient;
+uniform 	mat4 unity_MatrixV;
+uniform 	mat4 unity_MatrixVP;
+uniform 	lowp vec4 unity_AmbientSky;
+uniform 	lowp vec4 unity_AmbientEquator;
+uniform 	lowp vec4 unity_AmbientGround;
+uniform 	lowp vec4 unity_FogColor;
+uniform 	vec4 unity_FogParams;
+uniform 	vec4 unity_LightmapST;
+uniform 	vec4 unity_DynamicLightmapST;
+uniform 	vec4 unity_SpecCube0_BoxMax;
+uniform 	vec4 unity_SpecCube0_BoxMin;
+uniform 	vec4 unity_SpecCube0_ProbePosition;
+uniform 	mediump vec4 unity_SpecCube0_HDR;
+uniform 	vec4 unity_SpecCube1_BoxMax;
+uniform 	vec4 unity_SpecCube1_BoxMin;
+uniform 	vec4 unity_SpecCube1_ProbePosition;
+uniform 	mediump vec4 unity_SpecCube1_HDR;
+uniform 	lowp vec4 unity_ColorSpaceGrey;
+uniform 	lowp vec4 unity_ColorSpaceDouble;
+uniform 	mediump vec4 unity_ColorSpaceDielectricSpec;
+uniform 	mediump vec4 unity_ColorSpaceLuminance;
+uniform 	mediump vec4 unity_Lightmap_HDR;
+uniform 	mediump vec4 unity_DynamicLightmap_HDR;
+uniform 	mediump float _Texel;
+uniform 	mediump float _Radius;
+uniform 	mediump float _Level;
+uniform 	mediump float _Scale;
+uniform lowp samplerCube _MainTex;
+in mediump vec4 vs_TEXCOORD0;
+layout(location = 0) out mediump vec4 SV_Target0;
+lowp vec4 t10_0;
+void main()
+{
+    //Instruction 5116
+    //SAMPLE_L
+    t10_0 = textureLod(_MainTex, vs_TEXCOORD0.xyz, _Level);
+    //Instruction 5117
+    //MOV
+    SV_Target0 = t10_0;
+    //Instruction 5118
+    //RET
+    return;
+}
+
+#endif
+"
+}
+}
+Program "fp" {
+SubProgram "gles " {
+"!!GLES"
+}
+SubProgram "gles3 " {
+"!!GLES3"
+}
+}
+ }
+}
+}
